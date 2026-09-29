@@ -4,6 +4,16 @@ Alle wichtigen Änderungen an der Home-Assistant-Konfiguration werden hier kurz 
 
 ## 2026-09-29
 
+### Verschlüsseltes Backup hinzugefügt
+
+- Verschlüsseltes Backup unter `backups/home-assistant-2026-09-29.tar.gz.enc` hinzugefügt.
+- Enthält die sensible HA-Konfiguration einschließlich Secrets und ESPHome-Dateien.
+- Datenbank, Logs, Cache, Abhängigkeiten und vorhandene Backups ausgeschlossen.
+- Verschlüsselung: AES-256-CBC mit PBKDF2 und zufälligem Salt.
+- Entschlüsselung und gzip-Integrität vor dem Push erfolgreich geprüft.
+
+## 2026-09-29
+
 ### Aktueller Pi-Stand synchronisiert
 
 - Aktive `automations.yaml` und `scripts.yaml` übernommen.
