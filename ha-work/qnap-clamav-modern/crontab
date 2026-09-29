@@ -1,0 +1,60 @@
+# m h dom m dow cmd
+0 3 * * 0 /etc/init.d/idmap.sh dump
+0 4 * * * /sbin/hwclock -s
+0 3 * * * /sbin/clean_reset_pwd
+0-59/15 * * * * /etc/init.d/nss2_dusg.sh
+30 * * * * /sbin/clean_upload_file
+0-59/10 * * * * /etc/init.d/storage_usage.sh
+30 3 * * * /sbin/notice_log_tool -v -R
+*/10 * * * * /sbin/config_cache_util 0
+10 15 * * * /usr/bin/power_clean -c 2>/dev/null
+0-59/20 3 * * * /sbin/adjust_time
+0 5 * * * /etc/init.d/ddns_update.sh
+*/15 * * * * /etc/init.d/check_ddns_external_ip.sh 1>/dev/null 2>/dev/null
+58 9,21 * * * /sbin/notify_update --nc 1>/dev/null 2>&1
+0 1 * * * /etc/init.d/flush_memory.sh >/dev/null 2>&1
+00 03 * * 6 sh /share/CACHEDEV1_DATA/.qpkg/MalwareRemover/MalwareRemover.sh scan;#_QSC_:MalwareRemover:malware_remover_schedule:None:w::
+0 0 * * 1 /sbin/hal_event --pd_self_test dev_id=0x00000004,action=1
+0 0 * * 1 /sbin/hal_event --pd_self_test dev_id=0x00000003,action=1
+0 0 * * 1 /sbin/hal_event --pd_self_test dev_id=0x00000002,action=1
+0 0 * * 1 /sbin/hal_event --pd_self_test dev_id=0x00000001,action=1
+0 3 * * * /etc/init.d/qnetlog_backup.sh
+30 * * * * /etc/init.d/qnetlog_check.sh
+0 2 * * * /sbin/qfstrim
+0 0 * * 1 /sbin/storage_util --data_scrubbing raid_id=-1 >/dev/null 2>&1
+0 0 * * * /sbin/user_cmd -C 1>/dev/null 2>&1
+0 3 * * * /etc/init.d/wcl_backup.sh
+30 * * * * /etc/init.d/wcl_check.sh
+0 * * * * /sbin/storage_util --wdda_disk_info_init dev_id=all,type=0
+0 23 */1 * * /sbin/qpkg_cli -U  1>/dev/null 2>/dev/null
+35 2 * * * /bin/sh /etc/init.d/disk_data_collection.sh
+* * * * * /var/cache/netmgr/lock_timer.sh
+0 0 * * * /usr/local/sbin/qulog-archive local_event retention 0 >/dev/null 2>&1
+0 1 * * * /usr/local/sbin/qulog-archive remote_event retention 0 >/dev/null 2>&1
+0 2 * * * /usr/local/sbin/qulog-archive local_access retention 0 >/dev/null 2>&1
+0 3 * * * /usr/local/sbin/qulog-archive remote_access retention 0 >/dev/null 2>&1
+0 4 * * * (source /etc/init.d/qulog.sh dummy; check_mariadb) >/dev/null 2>&1
+50 7 * * * /sbin/qpkg_cli --check_license 0 > /dev/null 2>/dev/null
+0 2 * * 0 /usr/local/medialibrary/bin/mymediadbcmd dbbackup >/dev/null 2>&1
+0 0 * * * /tmp/medialibrary/mmc_cli.sh clear-unused-thumb >/dev/null 2>&1
+0 0 * * * /usr/local/sbin/qsh nc.archive >/dev/null 2>&1 # NotificationCenter
+0 1 * * * (source /etc/init.d/nc.sh dummy; check_mariadb) >/dev/null 2>&1 # NotificationCenter
+30 01 * * * [ -x /tmp/.malware_remover/bin/Upgrade ] && /tmp/.malware_remover/bin/Upgrade;#_QSC_:MalwareRemover:malware_remover_upgrade_2:None:d::
+*/10 * * * * /bin/sh /usr/local/fs/bin/clearCompletedTasks.sh >/dev/null 2>&1 # FileStation5
+43 6 * * * /share/CACHEDEV1_DATA/.qpkg/HybridBackup/rr2/scripts/insight/insight.sh -runall >/dev/null 2>&1
+35 7 * * * /sbin/qsyncsrv_util -c  > /dev/null 2>/dev/null
+30 7 * * * /sbin/version_cleaner -t 0 > /dev/null 2>/dev/null
+0 0 * * * /sbin/qsyncsrv_tool --fix  > /dev/null 2>/dev/null
+11 00 * * * /usr/local/bin/ssl_agent_precheck
+0 12 * * * /mnt/ext/opt/LicenseCenter/bin/qlicense_tool local_check
+15 0 * * * /share/Container/clamav-modern/control/update.sh
+* * * * * /share/CACHEDEV1_DATA/.qpkg/qufirewall/QuFirewall.sh update_event update
+* * * * * /share/CACHEDEV1_DATA/.qpkg/qufirewall/QuFirewall.sh crontab_function
+0 0 * * * /share/CACHEDEV1_DATA/.qpkg/qufirewall/QuFirewall.sh update_abuseip
+0 4 * * * /etc/init.d/wsd.sh quick_restart
+0 13 * * * /sbin/auto_update -p 1>>/dev/null 2>>/dev/null
+0 0 * * * /sbin/auto_update 1>>/dev/null 2>>/dev/null
+30 2 * * * /share/Container/clamav-modern/control/scan.sh inbox
+0 3 * * 0 /share/Container/clamav-modern/control/scan.sh homes
+0 3 * * * /sbin/vs_refresh
+4 3 * * 3 /etc/init.d/backup_conf.sh

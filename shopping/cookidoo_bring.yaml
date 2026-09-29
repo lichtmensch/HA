@@ -1,0 +1,157 @@
+script:
+  cookidoo_nach_bring:
+    alias: Cookidoo → Bring!
+    description: >-
+      Überträgt neue offene Cookidoo-Zutaten und Zusatzkäufe nach Timo Seli.
+      Bestehende Bring-Einträge werden nicht überschrieben. Die 13 Altzutaten
+      vom 26.09.2026 sind ausgeschlossen. Die lokale Merkliste verhindert Wiederholungen.
+    icon: mdi:cart-arrow-down
+    mode: single
+    max_exceeded: silent
+    fields:
+      nur_pruefen:
+        name: Nur prüfen
+        default: false
+        selector:
+          boolean:
+    sequence:
+      - variables:
+          ziel: todo.timo_seli
+          merkliste: todo.cookidoo_import_merkliste
+          quellen:
+            - todo.cookidoo_einkaufsliste
+            - todo.cookidoo_zusatzliche_kaufe
+          alt_uids:
+            - 01J9VMPNMDKMFS05S5E8BB8SB6
+            - 01J9VMPNMDTFZ10DTC2XX7S56R
+            - 01J9VMPNMDAXF544E0PHFWX74E
+            - 01J9VMPNMD1A3FCT75NYKW2701
+            - 01J9VMPNMDD7QHGAT99P864H78
+            - 01J9VMPNMDVVHBS77W9A1CC26G
+            - 01J9VMPNME741VDF5QXF59DCN7
+            - 01J9VMPNMEWMGJ1ZTBKTM4RTHC
+            - 01J9VMPNMEY5MT5Q0NKK9ZBRRH
+            - 01J9VMPNMEBATAAH97SWKKBB0H
+            - 01J9VMPNMEY3WM8H4S8859C8PN
+            - 01J9VMPNME0QA3FMRZ6SWJXWJF
+            - 01J9VMPNMEM0P52G0NA3Q92EBD
+          neu: []
+          konflikte: []
+          ausgeschlossen: 0
+          gemerkt: 0
+      - action: homeassistant.update_entity
+        target:
+          entity_id:
+            - todo.cookidoo_einkaufsliste
+            - todo.cookidoo_zusatzliche_kaufe
+            - todo.timo_seli
+      - if: "{{ (quellen + [ziel, merkliste]) | select('is_state', 'unavailable') | list | count > 0 or (quellen + [ziel, merkliste]) | select('is_state', 'unknown') | list | count > 0 }}"
+        then:
+          - stop: Eine benötigte Einkaufsliste ist nicht verfügbar. Es wurde nichts übertragen.
+            error: true
+      - action: todo.get_items
+        target:
+          entity_id: "{{ quellen }}"
+        data:
+          status: needs_action
+        response_variable: quelle_daten
+      - action: todo.get_items
+        target:
+          entity_id: "{{ ziel }}"
+        data:
+          status: needs_action
+        response_variable: ziel_daten
+      - action: todo.get_items
+        target:
+          entity_id: "{{ merkliste }}"
+        response_variable: merk_daten
+      - variables:
+          bekannt: "{{ merk_daten[merkliste]['items'] | map(attribute='summary') | list }}"
+          vorhanden: "{{ ziel_daten[ziel]['items'] }}"
+      - repeat:
+          for_each: "{{ quellen }}"
+          sequence:
+            - variables:
+                quelle: "{{ repeat.item }}"
+            - repeat:
+                for_each: "{{ quelle_daten[quelle]['items'] }}"
+                sequence:
+                  - variables:
+                      zutat: "{{ repeat.item }}"
+                      name: "{{ repeat.item.summary | trim }}"
+                      menge: "{{ repeat.item.get('description', '') | default('', true) | trim }}"
+                  - variables:
+                      schluessel: "{{ [quelle, zutat.uid, name, menge] | to_json }}"
+                      treffer: >-
+                        {% set ns = namespace(items=[]) %}
+                        {% for p in vorhanden %}
+                          {% if p.summary | trim | lower == name | lower %}
+                            {% set ns.items = ns.items + [p] %}
+                          {% endif %}
+                        {% endfor %}
+                        {{ ns.items }}
+                  - choose:
+                      - conditions: "{{ quelle == 'todo.cookidoo_einkaufsliste' and zutat.uid in alt_uids }}"
+                        sequence:
+                          - variables:
+                              ausgeschlossen: "{{ ausgeschlossen + 1 }}"
+                      - conditions: "{{ schluessel in bekannt }}"
+                        sequence:
+                          - variables:
+                              gemerkt: "{{ gemerkt + 1 }}"
+                      - conditions: "{{ treffer | count > 0 }}"
+                        sequence:
+                          - if: "{{ treffer[0].get('description', '') | default('', true) | trim != menge }}"
+                            then:
+                              - variables:
+                                  konflikte: "{{ konflikte + [name ~ ' (Cookidoo: ' ~ (menge or 'ohne Menge') ~ ')'] }}"
+                            else:
+                              - if: "{{ not (nur_pruefen | default(false) | bool) }}"
+                                then:
+                                  - action: todo.add_item
+                                    target:
+                                      entity_id: "{{ merkliste }}"
+                                    data:
+                                      item: "{{ schluessel }}"
+                                      description: Bereits identisch in Bring vorhanden.
+                              - variables:
+                                  bekannt: "{{ bekannt + [schluessel] }}"
+                                  gemerkt: "{{ gemerkt + 1 }}"
+                    default:
+                      - if: "{{ not (nur_pruefen | default(false) | bool) }}"
+                        then:
+                          - action: todo.add_item
+                            target:
+                              entity_id: "{{ ziel }}"
+                            data:
+                              item: "{{ name }}"
+                              description: "{{ menge }}"
+                          - action: todo.add_item
+                            target:
+                              entity_id: "{{ merkliste }}"
+                            data:
+                              item: "{{ schluessel }}"
+                              description: "{{ now().isoformat() }}"
+                      - variables:
+                          neu: "{{ neu + [name ~ (' · ' ~ menge if menge else '')] }}"
+                          vorhanden: "{{ vorhanden + [dict(summary=name, description=menge)] }}"
+                          bekannt: "{{ bekannt + [schluessel] }}"
+      - variables:
+          ergebnis:
+            prueflauf: "{{ nur_pruefen | default(false) | bool }}"
+            neue_eintraege: "{{ neu }}"
+            bereits_beruecksichtigt: "{{ gemerkt }}"
+            ausgeschlossene_altzutaten: "{{ ausgeschlossen }}"
+            mengen_manuell_pruefen: "{{ konflikte }}"
+      - if: "{{ not (nur_pruefen | default(false) | bool) }}"
+        then:
+          - action: persistent_notification.create
+            data:
+              notification_id: cookidoo_bring_import
+              title: Cookidoo → Bring!
+              message: >-
+                {{ neu | count }} neue Einträge nach Timo Seli übertragen.
+                {{ gemerkt }} bereits berücksichtigt; {{ ausgeschlossen }} alte Zutaten ausgeschlossen.
+                {% if konflikte %}Nicht verändert – Menge bitte selbst vergleichen: {{ konflikte | join('; ') }}.{% endif %}
+      - stop: Importprüfung abgeschlossen.
+        response_variable: ergebnis

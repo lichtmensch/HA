@@ -1,0 +1,269 @@
+{
+  "version": 1,
+  "minor_version": 1,
+  "key": "lovelace.dashboard_unifi",
+  "data": {
+    "config": {
+      "title": "UniFi",
+      "views": [
+        {
+          "title": "Übersicht",
+          "path": "overview",
+          "icon": "mdi:access-point-network",
+          "type": "sections",
+          "max_columns": 2,
+          "sections": [
+            {
+              "type": "grid",
+              "cards": [
+                {
+                  "type": "heading",
+                  "heading": "Netzwerk im Überblick",
+                  "icon": "mdi:lan"
+                },
+                {
+                  "type": "grid",
+                  "columns": 2,
+                  "square": false,
+                  "cards": [
+                    {
+                      "type": "tile",
+                      "entity": "sensor.wecoliseti_clients",
+                      "name": "Haupt-WLAN",
+                      "icon": "mdi:wifi"
+                    },
+                    {
+                      "type": "tile",
+                      "entity": "sensor.wecoliseti_iot_clients",
+                      "name": "IoT-WLAN",
+                      "icon": "mdi:wifi-cog"
+                    },
+                    {
+                      "type": "tile",
+                      "entity": "sensor.u7_wohnzimmer_zustand",
+                      "name": "AP Wohnzimmer",
+                      "icon": "mdi:access-point-network"
+                    },
+                    {
+                      "type": "tile",
+                      "entity": "sensor.u7_gastezimmer_zustand",
+                      "name": "AP Gästezimmer",
+                      "icon": "mdi:access-point-network"
+                    }
+                  ]
+                },
+                {
+                  "type": "button",
+                  "name": "Verbundene Geräte ansehen",
+                  "icon": "mdi:devices",
+                  "tap_action": {
+                    "action": "navigate",
+                    "navigation_path": "/dashboard-unifi/clients"
+                  }
+                }
+              ]
+            },
+            {
+              "type": "grid",
+              "cards": [
+                {
+                  "type": "heading",
+                  "heading": "U7 Wohnzimmer",
+                  "icon": "mdi:access-point"
+                },
+                {
+                  "type": "grid",
+                  "columns": 2,
+                  "square": false,
+                  "cards": [
+                    {
+                      "type": "tile",
+                      "entity": "sensor.u7_wohnzimmer_clients",
+                      "name": "Clients",
+                      "icon": "mdi:devices"
+                    },
+                    {
+                      "type": "tile",
+                      "entity": "sensor.u7_wohnzimmer_cpu_auslastung",
+                      "name": "CPU",
+                      "icon": "mdi:cpu-64-bit"
+                    },
+                    {
+                      "type": "tile",
+                      "entity": "sensor.u7_wohnzimmer_speicherauslastung",
+                      "name": "Arbeitsspeicher",
+                      "icon": "mdi:memory"
+                    },
+                    {
+                      "type": "tile",
+                      "entity": "sensor.u7_wohnzimmer_betriebszeit",
+                      "name": "Online seit",
+                      "icon": "mdi:clock-outline"
+                    },
+                    {
+                      "type": "tile",
+                      "entity": "update.u7_wohnzimmer_firmware",
+                      "name": "Firmware",
+                      "icon": "mdi:update"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "grid",
+              "cards": [
+                {
+                  "type": "heading",
+                  "heading": "U7 Gästezimmer",
+                  "icon": "mdi:access-point"
+                },
+                {
+                  "type": "grid",
+                  "columns": 2,
+                  "square": false,
+                  "cards": [
+                    {
+                      "type": "tile",
+                      "entity": "sensor.u7_gastezimmer_clients",
+                      "name": "Clients",
+                      "icon": "mdi:devices"
+                    },
+                    {
+                      "type": "tile",
+                      "entity": "sensor.u7_gastezimmer_cpu_auslastung",
+                      "name": "CPU",
+                      "icon": "mdi:cpu-64-bit"
+                    },
+                    {
+                      "type": "tile",
+                      "entity": "sensor.u7_gastezimmer_speicherauslastung",
+                      "name": "Arbeitsspeicher",
+                      "icon": "mdi:memory"
+                    },
+                    {
+                      "type": "tile",
+                      "entity": "sensor.u7_gastezimmer_betriebszeit",
+                      "name": "Online seit",
+                      "icon": "mdi:clock-outline"
+                    },
+                    {
+                      "type": "tile",
+                      "entity": "update.u7_gastezimmer_firmware",
+                      "name": "Firmware",
+                      "icon": "mdi:update"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "grid",
+              "column_span": 2,
+              "cards": [
+                {
+                  "type": "heading",
+                  "heading": "Verlauf der letzten 24 Stunden",
+                  "icon": "mdi:chart-line"
+                },
+                {
+                  "type": "history-graph",
+                  "hours_to_show": 24,
+                  "entities": [
+                    {
+                      "entity": "sensor.wecoliseti_clients",
+                      "name": "Haupt-WLAN"
+                    },
+                    {
+                      "entity": "sensor.wecoliseti_iot_clients",
+                      "name": "IoT-WLAN"
+                    }
+                  ]
+                },
+                {
+                  "type": "history-graph",
+                  "hours_to_show": 24,
+                  "entities": [
+                    {
+                      "entity": "sensor.u7_wohnzimmer_cpu_auslastung",
+                      "name": "CPU Wohnzimmer"
+                    },
+                    {
+                      "entity": "sensor.u7_gastezimmer_cpu_auslastung",
+                      "name": "CPU Gästezimmer"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Clients",
+          "path": "clients",
+          "icon": "mdi:devices",
+          "type": "sections",
+          "max_columns": 1,
+          "sections": [
+            {
+              "type": "grid",
+              "cards": [
+                {
+                  "type": "heading",
+                  "heading": "Aktuell verbundene Geräte",
+                  "icon": "mdi:devices"
+                },
+                {
+                  "type": "entity-filter",
+                  "state_filter": [
+                    "home"
+                  ],
+                  "entities": [
+                    {"entity": "device_tracker.timosip15promax", "name": "iPhone Timo"},
+                    {"entity": "device_tracker.rollo_schlafzimmer", "name": "Rollo Schlafzimmer"},
+                    {"entity": "device_tracker.ipad", "name": "iPad"},
+                    {"entity": "device_tracker.outdoor_plug", "name": "Außensteckdose"},
+                    {"entity": "device_tracker.refrigerator", "name": "Kühlschrank"},
+                    {"entity": "device_tracker.appletvgaeste2", "name": "Apple TV Gästezimmer"},
+                    {"entity": "device_tracker.harmonyhub_2", "name": "Harmony Hub"},
+                    {"entity": "device_tracker.furbo_4", "name": "Furbo 1"},
+                    {"entity": "device_tracker.unifi_default_4c_1b_86_9a_53_31", "name": "Unbekannt · 4C:1B:86:9A:53:31"},
+                    {"entity": "device_tracker.plug_kaffeemachine", "name": "Steckdose Kaffeemaschine"},
+                    {"entity": "device_tracker.plug_trockner", "name": "Steckdose Trockner"},
+                    {"entity": "device_tracker.weather_station", "name": "Wetterstation"},
+                    {"entity": "device_tracker.roborock_vacuum_a97", "name": "Roborock"},
+                    {"entity": "device_tracker.watch_4", "name": "Apple Watch"},
+                    {"entity": "device_tracker.rollo_g_stewc", "name": "Rollo Gäste-WC"},
+                    {"entity": "device_tracker.mac_2", "name": "Mac"},
+                    {"entity": "device_tracker.unifi_default_00_0c_6c_11_03_bc", "name": "Unbekannt · 00:0C:6C:11:03:BC"},
+                    {"entity": "device_tracker.furbo_5", "name": "Furbo 2"},
+                    {"entity": "device_tracker.plug_waschmaschine", "name": "Steckdose Waschmaschine"},
+                    {"entity": "device_tracker.rollo_gastezimmer", "name": "Rollo Gästezimmer"},
+                    {"entity": "device_tracker.miele_001d63fffe0a33f0", "name": "Miele Gerät"},
+                    {"entity": "device_tracker.schlafzimmer", "name": "Schlafzimmer"},
+                    {"entity": "device_tracker.reolink_2", "name": "Reolink"},
+                    {"entity": "device_tracker.furbo_6", "name": "Furbo 3"},
+                    {"entity": "device_tracker.iphone", "name": "iPhone"},
+                    {"entity": "device_tracker.unifi_default_a4_cf_99_bc_3b_b8", "name": "Unbekannt · A4:CF:99:BC:3B:B8"},
+                    {"entity": "device_tracker.siemens_coffeemaker_71210038886", "name": "Siemens Kaffeemaschine"},
+                    {"entity": "device_tracker.unifi_default_d4_a3_3d_7f_f5_d3", "name": "Unbekannt · D4:A3:3D:7F:F5:D3"},
+                    {"entity": "device_tracker.rollo_bad", "name": "Rollo Bad"},
+                    {"entity": "device_tracker.terrassent_r_rollo", "name": "Terrassenrollo"},
+                    {"entity": "device_tracker.shellypstripg4_d885ace4e950_2", "name": "Shelly Steckdosenleiste"},
+                    {"entity": "device_tracker.wohnzimmerfenster_rollo", "name": "Wohnzimmerrollo"},
+                    {"entity": "device_tracker.espressif_2", "name": "Espressif"}
+                  ],
+                  "card": {
+                    "type": "entities",
+                    "title": "Online",
+                    "show_header_toggle": false
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

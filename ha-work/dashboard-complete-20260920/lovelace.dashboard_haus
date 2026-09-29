@@ -1,0 +1,2388 @@
+{
+  "version": 1,
+  "minor_version": 1,
+  "key": "lovelace.dashboard_haus",
+  "data": {
+    "config": {
+      "views": [
+        {
+          "title": "Haussteuerung",
+          "path": "haussteuerung",
+          "icon": "mdi:home-outline",
+          "type": "sections",
+          "max_columns": 2,
+          "sections": [
+            {
+              "type": "grid",
+              "cards": [
+                {
+                  "type": "custom:button-card",
+                  "name": "Zurück zur Hauptansicht",
+                  "icon": "mdi:arrow-left",
+                  "tap_action": {
+                    "action": "navigate",
+                    "navigation_path": "/ipad-basic/flur"
+                  },
+                  "styles": {
+                    "card": [
+                      {
+                        "height": "52px"
+                      },
+                      {
+                        "border-radius": "14px"
+                      },
+                      {
+                        "padding": "7px 14px"
+                      }
+                    ],
+                    "grid": [
+                      {
+                        "grid-template-areas": "'i n'"
+                      },
+                      {
+                        "grid-template-columns": "34px 1fr"
+                      }
+                    ],
+                    "icon": [
+                      {
+                        "width": "23px"
+                      }
+                    ],
+                    "name": [
+                      {
+                        "justify-self": "start"
+                      },
+                      {
+                        "font-size": "14px"
+                      },
+                      {
+                        "font-weight": "600"
+                      }
+                    ]
+                  }
+                },
+                {
+                  "type": "heading",
+                  "heading": "Wetter draußen",
+                  "icon": "mdi:weather-partly-cloudy"
+                },
+                {
+                  "type": "grid",
+                  "columns": 2,
+                  "square": false,
+                  "cards": [
+                    {
+                      "type": "custom:button-card",
+                      "entity": "sensor.aussentemperatur_dashboard",
+                      "name": "Außentemperatur",
+                      "icon": "mdi:thermometer-lines",
+                      "show_state": true,
+                      "tap_action": {
+                        "action": "more-info"
+                      },
+                      "styles": {
+                        "card": [
+                          {
+                            "height": "52px"
+                          },
+                          {
+                            "padding": "5px 8px"
+                          },
+                          {
+                            "border-radius": "12px"
+                          },
+                          {
+                            "border": "1px solid color-mix(in srgb, var(--divider-color) 75%, #e58b38 25%)"
+                          },
+                          {
+                            "background": "linear-gradient(135deg, color-mix(in srgb, var(--card-background-color) 94%, #e58b38 6%), var(--card-background-color))"
+                          }
+                        ],
+                        "grid": [
+                          {
+                            "grid-template-areas": "'i n' 'i s'"
+                          },
+                          {
+                            "grid-template-columns": "44px 1fr"
+                          }
+                        ],
+                        "icon": [
+                          {
+                            "width": "23px"
+                          },
+                          {
+                            "color": "#e58b38"
+                          }
+                        ],
+                        "name": [
+                          {
+                            "justify-self": "start"
+                          },
+                          {
+                            "font-size": "13px"
+                          },
+                          {
+                            "color": "var(--secondary-text-color)"
+                          }
+                        ],
+                        "state": [
+                          {
+                            "justify-self": "start"
+                          },
+                          {
+                            "font-size": "23px"
+                          },
+                          {
+                            "font-weight": "600"
+                          }
+                        ],
+                        "img_cell": [
+                          {
+                            "width": "38px"
+                          },
+                          {
+                            "height": "38px"
+                          },
+                          {
+                            "border-radius": "12px"
+                          },
+                          {
+                            "background": "color-mix(in srgb, #e58b38 16%, transparent)"
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "type": "custom:button-card",
+                      "entity": "sensor.aussenluftfeuchtigkeit_dashboard",
+                      "name": "Luftfeuchtigkeit",
+                      "icon": "mdi:water-percent",
+                      "show_state": true,
+                      "tap_action": {
+                        "action": "more-info"
+                      },
+                      "styles": {
+                        "card": [
+                          {
+                            "height": "52px"
+                          },
+                          {
+                            "padding": "5px 8px"
+                          },
+                          {
+                            "border-radius": "12px"
+                          },
+                          {
+                            "border": "1px solid color-mix(in srgb, var(--divider-color) 75%, #32a9c7 25%)"
+                          },
+                          {
+                            "background": "linear-gradient(135deg, color-mix(in srgb, var(--card-background-color) 94%, #32a9c7 6%), var(--card-background-color))"
+                          }
+                        ],
+                        "grid": [
+                          {
+                            "grid-template-areas": "'i n' 'i s'"
+                          },
+                          {
+                            "grid-template-columns": "44px 1fr"
+                          }
+                        ],
+                        "icon": [
+                          {
+                            "width": "23px"
+                          },
+                          {
+                            "color": "#32a9c7"
+                          }
+                        ],
+                        "name": [
+                          {
+                            "justify-self": "start"
+                          },
+                          {
+                            "font-size": "13px"
+                          },
+                          {
+                            "color": "var(--secondary-text-color)"
+                          }
+                        ],
+                        "state": [
+                          {
+                            "justify-self": "start"
+                          },
+                          {
+                            "font-size": "23px"
+                          },
+                          {
+                            "font-weight": "600"
+                          }
+                        ],
+                        "img_cell": [
+                          {
+                            "width": "38px"
+                          },
+                          {
+                            "height": "38px"
+                          },
+                          {
+                            "border-radius": "12px"
+                          },
+                          {
+                            "background": "color-mix(in srgb, #32a9c7 16%, transparent)"
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "type": "custom:button-card",
+                      "entity": "sensor.regen_mit_6h_prognose",
+                      "name": "Regen",
+                      "icon": "mdi:weather-pouring",
+                      "show_state": true,
+                      "tap_action": {
+                        "action": "more-info"
+                      },
+                      "styles": {
+                        "card": [
+                          {
+                            "height": "52px"
+                          },
+                          {
+                            "padding": "5px 8px"
+                          },
+                          {
+                            "border-radius": "12px"
+                          },
+                          {
+                            "border": "1px solid color-mix(in srgb, var(--divider-color) 75%, #4f8fd3 25%)"
+                          },
+                          {
+                            "background": "linear-gradient(135deg, color-mix(in srgb, var(--card-background-color) 94%, #4f8fd3 6%), var(--card-background-color))"
+                          }
+                        ],
+                        "grid": [
+                          {
+                            "grid-template-areas": "'i n' 'i s'"
+                          },
+                          {
+                            "grid-template-columns": "44px 1fr"
+                          }
+                        ],
+                        "icon": [
+                          {
+                            "width": "23px"
+                          },
+                          {
+                            "color": "#4f8fd3"
+                          }
+                        ],
+                        "name": [
+                          {
+                            "justify-self": "start"
+                          },
+                          {
+                            "font-size": "13px"
+                          },
+                          {
+                            "color": "var(--secondary-text-color)"
+                          }
+                        ],
+                        "state": [
+                          {
+                            "justify-self": "start"
+                          },
+                          {
+                            "font-size": "15px"
+                          },
+                          {
+                            "font-weight": "600"
+                          },
+                          {
+                            "white-space": "normal"
+                          }
+                        ],
+                        "img_cell": [
+                          {
+                            "width": "38px"
+                          },
+                          {
+                            "height": "38px"
+                          },
+                          {
+                            "border-radius": "12px"
+                          },
+                          {
+                            "background": "color-mix(in srgb, #4f8fd3 16%, transparent)"
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "type": "custom:button-card",
+                      "entity": "sensor.wind_mit_himmelsrichtung",
+                      "name": "Wind",
+                      "icon": "mdi:weather-windy",
+                      "show_state": true,
+                      "tap_action": {
+                        "action": "more-info"
+                      },
+                      "styles": {
+                        "card": [
+                          {
+                            "height": "52px"
+                          },
+                          {
+                            "padding": "5px 8px"
+                          },
+                          {
+                            "border-radius": "12px"
+                          },
+                          {
+                            "border": "1px solid color-mix(in srgb, var(--divider-color) 75%, #36a39a 25%)"
+                          },
+                          {
+                            "background": "linear-gradient(135deg, color-mix(in srgb, var(--card-background-color) 94%, #36a39a 6%), var(--card-background-color))"
+                          }
+                        ],
+                        "grid": [
+                          {
+                            "grid-template-areas": "'i n' 'i s'"
+                          },
+                          {
+                            "grid-template-columns": "44px 1fr"
+                          }
+                        ],
+                        "icon": [
+                          {
+                            "width": "23px"
+                          },
+                          {
+                            "color": "#36a39a"
+                          }
+                        ],
+                        "name": [
+                          {
+                            "justify-self": "start"
+                          },
+                          {
+                            "font-size": "13px"
+                          },
+                          {
+                            "color": "var(--secondary-text-color)"
+                          }
+                        ],
+                        "state": [
+                          {
+                            "justify-self": "start"
+                          },
+                          {
+                            "font-size": "17px"
+                          },
+                          {
+                            "font-weight": "600"
+                          }
+                        ],
+                        "img_cell": [
+                          {
+                            "width": "38px"
+                          },
+                          {
+                            "height": "38px"
+                          },
+                          {
+                            "border-radius": "12px"
+                          },
+                          {
+                            "background": "color-mix(in srgb, #36a39a 16%, transparent)"
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "grid",
+              "cards": [
+                {
+                  "type": "heading",
+                  "heading": "Schnellsteuerung",
+                  "icon": "mdi:gesture-tap-button"
+                },
+                {
+                  "type": "custom:button-card",
+                  "name": "Rollos öffnen",
+                  "icon": "mdi:window-shutter-open",
+                  "tap_action": {
+                    "action": "perform-action",
+                    "perform_action": "script.turn_on",
+                    "target": {
+                      "entity_id": "script.rollos_alle_oeffnen_schlafzimmer_87"
+                    }
+                  },
+                  "grid_options": {
+                    "columns": 6,
+                    "rows": 2
+                  },
+                  "show_state": false,
+                  "styles": {
+                    "card": [
+                      {
+                        "height": "68px"
+                      },
+                      {
+                        "border-radius": "12px"
+                      },
+                      {
+                        "padding": "8px 12px"
+                      },
+                      {
+                        "border": "1px solid color-mix(in srgb, var(--divider-color) 75%, #4f91c8 25%)"
+                      },
+                      {
+                        "background": "linear-gradient(135deg, color-mix(in srgb, var(--card-background-color) 94%, #4f91c8 6%), var(--card-background-color))"
+                      }
+                    ],
+                    "grid": [
+                      {
+                        "grid-template-areas": "'i n'"
+                      },
+                      {
+                        "grid-template-columns": "44px 1fr"
+                      }
+                    ],
+                    "icon": [
+                      {
+                        "width": "23px"
+                      },
+                      {
+                        "color": "#4f91c8"
+                      }
+                    ],
+                    "name": [
+                      {
+                        "justify-self": "start"
+                      },
+                      {
+                        "font-size": "14px"
+                      },
+                      {
+                        "font-weight": "600"
+                      }
+                    ],
+                    "img_cell": [
+                      {
+                        "width": "38px"
+                      },
+                      {
+                        "height": "38px"
+                      },
+                      {
+                        "border-radius": "12px"
+                      },
+                      {
+                        "background": "color-mix(in srgb, #4f91c8 16%, transparent)"
+                      }
+                    ]
+                  }
+                },
+                {
+                  "type": "custom:button-card",
+                  "name": "Rollos schließen",
+                  "icon": "mdi:window-shutter",
+                  "tap_action": {
+                    "action": "perform-action",
+                    "perform_action": "script.turn_on",
+                    "target": {
+                      "entity_id": "script.rollos_alle_schliesen_30_komfortposition"
+                    }
+                  },
+                  "grid_options": {
+                    "columns": 6,
+                    "rows": 2
+                  },
+                  "show_state": false,
+                  "styles": {
+                    "card": [
+                      {
+                        "height": "68px"
+                      },
+                      {
+                        "border-radius": "12px"
+                      },
+                      {
+                        "padding": "8px 12px"
+                      },
+                      {
+                        "border": "1px solid color-mix(in srgb, var(--divider-color) 75%, #8568c5 25%)"
+                      },
+                      {
+                        "background": "linear-gradient(135deg, color-mix(in srgb, var(--card-background-color) 94%, #8568c5 6%), var(--card-background-color))"
+                      }
+                    ],
+                    "grid": [
+                      {
+                        "grid-template-areas": "'i n'"
+                      },
+                      {
+                        "grid-template-columns": "44px 1fr"
+                      }
+                    ],
+                    "icon": [
+                      {
+                        "width": "23px"
+                      },
+                      {
+                        "color": "#8568c5"
+                      }
+                    ],
+                    "name": [
+                      {
+                        "justify-self": "start"
+                      },
+                      {
+                        "font-size": "14px"
+                      },
+                      {
+                        "font-weight": "600"
+                      }
+                    ],
+                    "img_cell": [
+                      {
+                        "width": "38px"
+                      },
+                      {
+                        "height": "38px"
+                      },
+                      {
+                        "border-radius": "12px"
+                      },
+                      {
+                        "background": "color-mix(in srgb, #8568c5 16%, transparent)"
+                      }
+                    ]
+                  }
+                },
+                {
+                  "type": "tile",
+                  "entity": "light.alle_lampen_dashboard",
+                  "name": "Alle Lichter",
+                  "icon": "mdi:lightbulb-group-outline",
+                  "tap_action": {
+                    "action": "navigate",
+                    "navigation_path": "/dashboard-haus/haussteuerung/licht-alle"
+                  },
+                  "grid_options": {
+                    "columns": 6,
+                    "rows": 2
+                  },
+                  "vertical": false,
+                  "features_position": "bottom",
+                  "color": "amber"
+                },
+                {
+                  "type": "tile",
+                  "entity": "light.wohnbereich_dashboard",
+                  "name": "Wohnbereich",
+                  "icon": "mdi:sofa-outline",
+                  "tap_action": {
+                    "action": "navigate",
+                    "navigation_path": "/dashboard-haus/haussteuerung/licht-wohnbereich"
+                  },
+                  "grid_options": {
+                    "columns": 6,
+                    "rows": 2
+                  },
+                  "vertical": false,
+                  "features_position": "bottom",
+                  "color": "amber"
+                }
+              ]
+            },
+            {
+              "type": "grid",
+              "cards": [
+                {
+                  "type": "heading",
+                  "heading": "Wohnzimmer",
+                  "icon": "mdi:sofa-outline",
+                  "heading_style": "title",
+                  "tap_action": {
+                    "action": "navigate",
+                    "navigation_path": "/dashboard-haus/licht-wohnzimmer"
+                  }
+                },
+                {
+                  "type": "tile",
+                  "entity": "sensor.weather_station_temperatur",
+                  "name": "Raumtemperatur",
+                  "icon": "mdi:thermometer-lines",
+                  "color": "orange",
+                  "grid_options": {
+                    "columns": 12,
+                    "rows": 1
+                  },
+                  "vertical": false,
+                  "features_position": "bottom"
+                },
+                {
+                  "type": "tile",
+                  "entity": "light.wohnzimmer",
+                  "name": "Licht",
+                  "icon": "mdi:lightbulb-outline",
+                  "grid_options": {
+                    "columns": 6,
+                    "rows": 2
+                  },
+                  "tap_action": {
+                    "action": "navigate",
+                    "navigation_path": "/dashboard-haus/haussteuerung/licht-wohnzimmer"
+                  },
+                  "vertical": false,
+                  "features_position": "bottom",
+                  "color": "amber"
+                },
+                {
+                  "type": "tile",
+                  "entity": "cover.wohnzimmerfenster_rollo",
+                  "name": "Rollo",
+                  "icon": "mdi:window-shutter",
+                  "features": [
+                    {
+                      "type": "cover-open-close"
+                    }
+                  ],
+                  "grid_options": {
+                    "columns": 6,
+                    "rows": 2
+                  },
+                  "vertical": false,
+                  "features_position": "bottom",
+                  "color": "blue"
+                }
+              ]
+            },
+            {
+              "type": "grid",
+              "cards": [
+                {
+                  "type": "heading",
+                  "heading": "Küche",
+                  "icon": "mdi:countertop-outline",
+                  "heading_style": "title",
+                  "tap_action": {
+                    "action": "navigate",
+                    "navigation_path": "/dashboard-haus/licht-kueche"
+                  }
+                },
+                {
+                  "type": "tile",
+                  "entity": "light.kuche",
+                  "name": "Licht",
+                  "icon": "mdi:lightbulb-outline",
+                  "grid_options": {
+                    "columns": 12,
+                    "rows": 2
+                  },
+                  "tap_action": {
+                    "action": "navigate",
+                    "navigation_path": "/dashboard-haus/haussteuerung/licht-kueche"
+                  },
+                  "vertical": false,
+                  "features_position": "bottom",
+                  "color": "amber"
+                },
+                {
+                  "type": "tile",
+                  "entity": "sensor.kaffeevollautomat_betriebszustand",
+                  "name": "Kaffeevollautomat",
+                  "icon": "mdi:coffee-maker-outline",
+                  "grid_options": {
+                    "columns": 6,
+                    "rows": 2
+                  },
+                  "tap_action": {
+                    "action": "navigate",
+                    "navigation_path": "/dashboard-haus/haussteuerung/kaffeevollautomat"
+                  },
+                  "vertical": false,
+                  "features_position": "bottom"
+                },
+                {
+                  "type": "tile",
+                  "entity": "sensor.kuhlschrank_kuhlschranktemperatur",
+                  "name": "Kühlschrank",
+                  "icon": "mdi:fridge-outline",
+                  "grid_options": {
+                    "columns": 6,
+                    "rows": 2
+                  },
+                  "tap_action": {
+                    "action": "navigate",
+                    "navigation_path": "/dashboard-haus/haussteuerung/kuehlschrank"
+                  },
+                  "vertical": false,
+                  "features_position": "bottom",
+                  "color": "orange"
+                },
+                {
+                  "type": "tile",
+                  "entity": "sensor.shellyplugmg3_70af09e33520_leistung",
+                  "name": "Spülmaschine",
+                  "icon": "mdi:dishwasher",
+                  "color": "blue",
+                  "vertical": false,
+                  "grid_options": {
+                    "columns": 6,
+                    "rows": 2
+                  },
+                  "tap_action": {
+                    "action": "more-info"
+                  },
+                  "features_position": "bottom"
+                },
+                {
+                  "type": "tile",
+                  "entity": "binary_sensor.kuhlschrank_kuhlschranktur",
+                  "name": "Kühlschranktür offen",
+                  "icon": "mdi:fridge-alert-outline",
+                  "color": "teal",
+                  "visibility": [
+                    {
+                      "condition": "state",
+                      "entity": "binary_sensor.kuhlschrank_kuhlschranktur",
+                      "state": "on"
+                    }
+                  ],
+                  "grid_options": {
+                    "columns": 12,
+                    "rows": 2
+                  },
+                  "tap_action": {
+                    "action": "navigate",
+                    "navigation_path": "/dashboard-haus/haussteuerung/kuehlschrank"
+                  },
+                  "vertical": false,
+                  "features_position": "bottom"
+                },
+                {
+                  "type": "tile",
+                  "entity": "binary_sensor.kuhlschrank_gefrierschranktur",
+                  "name": "Gefrierschranktür offen",
+                  "icon": "mdi:fridge-alert-outline",
+                  "color": "teal",
+                  "visibility": [
+                    {
+                      "condition": "state",
+                      "entity": "binary_sensor.kuhlschrank_gefrierschranktur",
+                      "state": "on"
+                    }
+                  ],
+                  "grid_options": {
+                    "columns": 12,
+                    "rows": 2
+                  },
+                  "tap_action": {
+                    "action": "navigate",
+                    "navigation_path": "/dashboard-haus/haussteuerung/kuehlschrank"
+                  },
+                  "vertical": false,
+                  "features_position": "bottom"
+                },
+                {
+                  "type": "tile",
+                  "entity": "binary_sensor.kuhlschrank_coolselect_tur",
+                  "name": "CoolSelect+ Tür offen",
+                  "icon": "mdi:door-open",
+                  "color": "teal",
+                  "visibility": [
+                    {
+                      "condition": "state",
+                      "entity": "binary_sensor.kuhlschrank_coolselect_tur",
+                      "state": "on"
+                    }
+                  ],
+                  "grid_options": {
+                    "columns": 12,
+                    "rows": 2
+                  },
+                  "tap_action": {
+                    "action": "navigate",
+                    "navigation_path": "/dashboard-haus/haussteuerung/kuehlschrank"
+                  },
+                  "vertical": false,
+                  "features_position": "bottom"
+                }
+              ]
+            },
+            {
+              "type": "grid",
+              "cards": [
+                {
+                  "type": "heading",
+                  "heading": "Esszimmer",
+                  "icon": "mdi:table-chair",
+                  "heading_style": "title",
+                  "tap_action": {
+                    "action": "navigate",
+                    "navigation_path": "/dashboard-haus/licht-esszimmer"
+                  }
+                },
+                {
+                  "type": "tile",
+                  "entity": "light.esszimmer",
+                  "name": "Licht",
+                  "icon": "mdi:lightbulb-outline",
+                  "grid_options": {
+                    "columns": 6,
+                    "rows": 2
+                  },
+                  "tap_action": {
+                    "action": "navigate",
+                    "navigation_path": "/dashboard-haus/haussteuerung/licht-esszimmer"
+                  },
+                  "vertical": false,
+                  "features_position": "bottom",
+                  "color": "amber"
+                },
+                {
+                  "type": "tile",
+                  "entity": "cover.terrassentur_rollo_rollo_terrassentur",
+                  "name": "Terrassenrollo",
+                  "icon": "mdi:window-shutter",
+                  "features": [
+                    {
+                      "type": "cover-open-close"
+                    }
+                  ],
+                  "grid_options": {
+                    "columns": 6,
+                    "rows": 2
+                  },
+                  "vertical": false,
+                  "features_position": "bottom",
+                  "color": "blue"
+                }
+              ]
+            },
+            {
+              "type": "grid",
+              "cards": [
+                {
+                  "type": "heading",
+                  "heading": "Schlafzimmer",
+                  "icon": "mdi:bed-king-outline",
+                  "heading_style": "title",
+                  "tap_action": {
+                    "action": "navigate",
+                    "navigation_path": "/dashboard-haus/licht-schlafzimmer"
+                  }
+                },
+                {
+                  "type": "tile",
+                  "entity": "sensor.weather_station_schlafzimmer_temperatur",
+                  "name": "Raumtemperatur",
+                  "icon": "mdi:thermometer-lines",
+                  "color": "orange",
+                  "grid_options": {
+                    "columns": 12,
+                    "rows": 1
+                  },
+                  "vertical": false,
+                  "features_position": "bottom"
+                },
+                {
+                  "type": "tile",
+                  "entity": "light.schlafzimmer",
+                  "name": "Licht",
+                  "icon": "mdi:lightbulb-outline",
+                  "grid_options": {
+                    "columns": 6,
+                    "rows": 2
+                  },
+                  "tap_action": {
+                    "action": "navigate",
+                    "navigation_path": "/dashboard-haus/haussteuerung/licht-schlafzimmer"
+                  },
+                  "vertical": false,
+                  "features_position": "bottom",
+                  "color": "amber"
+                },
+                {
+                  "type": "tile",
+                  "entity": "cover.rollo_schlafzimmer",
+                  "name": "Rollo",
+                  "icon": "mdi:window-shutter",
+                  "features": [
+                    {
+                      "type": "cover-open-close"
+                    }
+                  ],
+                  "grid_options": {
+                    "columns": 6,
+                    "rows": 2
+                  },
+                  "vertical": false,
+                  "features_position": "bottom",
+                  "color": "blue"
+                },
+                {
+                  "type": "tile",
+                  "entity": "sensor.schlafzimmer_schlafzimmer_tv_leistung",
+                  "name": "Schlafzimmer TV",
+                  "icon": "mdi:television-classic",
+                  "grid_options": {
+                    "columns": 6,
+                    "rows": 2
+                  },
+                  "vertical": false,
+                  "features_position": "bottom"
+                }
+              ]
+            },
+            {
+              "type": "grid",
+              "cards": [
+                {
+                  "type": "heading",
+                  "heading": "Gästezimmer",
+                  "icon": "mdi:bed-outline"
+                },
+                {
+                  "type": "tile",
+                  "entity": "sensor.weather_station_gastezimmer_temperatur",
+                  "name": "Raumtemperatur",
+                  "icon": "mdi:thermometer-lines",
+                  "color": "orange",
+                  "grid_options": {
+                    "columns": 12,
+                    "rows": 1
+                  },
+                  "vertical": false,
+                  "features_position": "bottom"
+                },
+                {
+                  "type": "tile",
+                  "entity": "light.gastezimmer_2",
+                  "name": "Licht",
+                  "icon": "mdi:lightbulb-outline",
+                  "grid_options": {
+                    "columns": 6,
+                    "rows": 2
+                  },
+                  "vertical": false,
+                  "features_position": "bottom",
+                  "color": "amber"
+                },
+                {
+                  "type": "tile",
+                  "entity": "cover.shelly2pmg3_8cbfea9a6bb0_rollo_gastezimmer",
+                  "name": "Rollo",
+                  "icon": "mdi:window-shutter",
+                  "features": [
+                    {
+                      "type": "cover-open-close"
+                    }
+                  ],
+                  "grid_options": {
+                    "columns": 6,
+                    "rows": 2
+                  },
+                  "vertical": false,
+                  "features_position": "bottom",
+                  "color": "blue"
+                },
+                {
+                  "type": "tile",
+                  "entity": "sensor.gastezimmer_plug_tx_gastezimmer_leistung",
+                  "name": "Plug TV Gästezimmer",
+                  "icon": "mdi:power-plug-outline",
+                  "grid_options": {
+                    "columns": 6,
+                    "rows": 2
+                  },
+                  "vertical": false,
+                  "features_position": "bottom"
+                }
+              ]
+            },
+            {
+              "type": "grid",
+              "cards": [
+                {
+                  "type": "heading",
+                  "heading": "Flur",
+                  "icon": "mdi:door-open"
+                },
+                {
+                  "type": "tile",
+                  "entity": "light.flur",
+                  "name": "Licht",
+                  "icon": "mdi:lightbulb-outline",
+                  "grid_options": {
+                    "columns": 12,
+                    "rows": 2
+                  },
+                  "vertical": false,
+                  "features_position": "bottom",
+                  "color": "amber"
+                }
+              ]
+            },
+            {
+              "type": "grid",
+              "cards": [
+                {
+                  "type": "heading",
+                  "heading": "Gäste WC",
+                  "icon": "mdi:toilet"
+                },
+                {
+                  "type": "tile",
+                  "entity": "light.gaste_wc",
+                  "name": "Licht",
+                  "icon": "mdi:lightbulb-outline",
+                  "grid_options": {
+                    "columns": 6,
+                    "rows": 2
+                  },
+                  "vertical": false,
+                  "features_position": "bottom",
+                  "color": "amber"
+                },
+                {
+                  "type": "tile",
+                  "entity": "cover.shelly2pmg3_8cbfea97b428_rollo_gaste_wc",
+                  "name": "Rollo",
+                  "icon": "mdi:window-shutter",
+                  "features": [
+                    {
+                      "type": "cover-open-close"
+                    }
+                  ],
+                  "grid_options": {
+                    "columns": 6,
+                    "rows": 2
+                  },
+                  "vertical": false,
+                  "features_position": "bottom",
+                  "color": "blue"
+                }
+              ]
+            },
+            {
+              "type": "grid",
+              "cards": [
+                {
+                  "type": "heading",
+                  "heading": "Abstellkammer",
+                  "icon": "mdi:archive-outline"
+                },
+                {
+                  "type": "tile",
+                  "entity": "light.abstellkammer_2",
+                  "name": "Licht",
+                  "icon": "mdi:lightbulb-outline",
+                  "grid_options": {
+                    "columns": 12,
+                    "rows": 2
+                  },
+                  "vertical": false,
+                  "features_position": "bottom",
+                  "color": "amber"
+                }
+              ]
+            },
+            {
+              "type": "grid",
+              "cards": [
+                {
+                  "type": "heading",
+                  "heading": "Bad",
+                  "icon": "mdi:shower-head"
+                },
+                {
+                  "type": "tile",
+                  "entity": "sensor.weather_station_bad_temperatur",
+                  "name": "Raumtemperatur",
+                  "icon": "mdi:thermometer-lines",
+                  "color": "orange",
+                  "grid_options": {
+                    "columns": 12,
+                    "rows": 1
+                  },
+                  "vertical": false,
+                  "features_position": "bottom"
+                },
+                {
+                  "type": "tile",
+                  "entity": "cover.shelly2pmg3_8cbfea9cc4f4_rollo_bad",
+                  "name": "Rollo",
+                  "icon": "mdi:window-shutter",
+                  "features": [
+                    {
+                      "type": "cover-open-close"
+                    }
+                  ],
+                  "grid_options": {
+                    "columns": 12,
+                    "rows": 2
+                  },
+                  "vertical": false,
+                  "features_position": "bottom",
+                  "color": "blue"
+                }
+              ]
+            },
+            {
+              "type": "grid",
+              "cards": [
+                {
+                  "type": "heading",
+                  "heading": "Terrasse",
+                  "icon": "mdi:balcony"
+                },
+                {
+                  "type": "tile",
+                  "entity": "sensor.weather_station_aussen_temperatur",
+                  "name": "Außentemperatur",
+                  "icon": "mdi:thermometer-lines",
+                  "color": "orange",
+                  "grid_options": {
+                    "columns": 12,
+                    "rows": 1
+                  },
+                  "vertical": false,
+                  "features_position": "bottom"
+                },
+                {
+                  "type": "tile",
+                  "entity": "light.terrasse_scheinwerfer",
+                  "name": "Flutlicht",
+                  "icon": "mdi:spotlight-beam",
+                  "grid_options": {
+                    "columns": 12,
+                    "rows": 2
+                  },
+                  "vertical": false,
+                  "features_position": "bottom",
+                  "color": "amber"
+                }
+              ]
+            }
+          ],
+          "dense_section_placement": true
+        },
+        {
+          "title": "Wohnzimmer",
+          "path": "licht-wohnzimmer",
+          "icon": "mdi:sofa-outline",
+          "subview": true,
+          "type": "sections",
+          "max_columns": 1,
+          "sections": [
+            {
+              "type": "grid",
+              "cards": [
+                {
+                  "type": "heading",
+                  "heading": "Wohnzimmer Licht",
+                  "icon": "mdi:sofa-outline"
+                },
+                {
+                  "type": "tile",
+                  "entity": "light.wohnzimmer_weisslicht",
+                  "name": "Weißlicht",
+                  "icon": "mdi:lightbulb-outline",
+                  "tap_action": {
+                    "action": "toggle"
+                  },
+                  "features": [
+                    {
+                      "type": "light-brightness"
+                    },
+                    {
+                      "type": "light-color-temp"
+                    }
+                  ],
+                  "features_position": "bottom",
+                  "vertical": false,
+                  "grid_options": {
+                    "columns": 12,
+                    "rows": 3
+                  }
+                },
+                {
+                  "type": "tile",
+                  "entity": "light.wohnzimmer_farblicht",
+                  "name": "Farblicht",
+                  "icon": "mdi:palette-outline",
+                  "tap_action": {
+                    "action": "toggle"
+                  },
+                  "features": [
+                    {
+                      "type": "light-brightness"
+                    },
+                    {
+                      "type": "light-color-favorites"
+                    }
+                  ],
+                  "features_position": "bottom",
+                  "vertical": false,
+                  "grid_options": {
+                    "columns": 12,
+                    "rows": 4
+                  }
+                },
+                {
+                  "type": "tile",
+                  "entity": "sensor.weather_station_temperatur"
+                },
+                {
+                  "type": "tile",
+                  "entity": "cover.wohnzimmerfenster_rollo",
+                  "features": [
+                    {
+                      "type": "cover-open-close"
+                    }
+                  ]
+                },
+                {
+                  "type": "tile",
+                  "entity": "sensor.wohnzimmerfenster_rollo_leistung"
+                },
+                {
+                  "type": "tile",
+                  "entity": "cover.wohnzimmerfenster_rollo",
+                  "features": [
+                    {
+                      "type": "cover-position"
+                    }
+                  ]
+                },
+                {
+                  "type": "tile",
+                  "entity": "sensor.shellypstripg4_d885ace4e950_output_0_leistung"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Küche",
+          "path": "licht-kueche",
+          "icon": "mdi:countertop-outline",
+          "subview": true,
+          "type": "sections",
+          "max_columns": 1,
+          "sections": [
+            {
+              "type": "grid",
+              "cards": [
+                {
+                  "type": "heading",
+                  "heading": "Küche Licht",
+                  "icon": "mdi:countertop-outline"
+                },
+                {
+                  "type": "tile",
+                  "entity": "light.kueche_weisslicht",
+                  "name": "Weißlicht",
+                  "icon": "mdi:lightbulb-outline",
+                  "tap_action": {
+                    "action": "toggle"
+                  },
+                  "features": [
+                    {
+                      "type": "light-brightness"
+                    },
+                    {
+                      "type": "light-color-temp"
+                    }
+                  ],
+                  "features_position": "bottom",
+                  "vertical": false,
+                  "grid_options": {
+                    "columns": 12,
+                    "rows": 3
+                  }
+                },
+                {
+                  "type": "tile",
+                  "entity": "light.kueche_farblicht",
+                  "name": "Farblicht",
+                  "icon": "mdi:palette-outline",
+                  "tap_action": {
+                    "action": "toggle"
+                  },
+                  "features": [
+                    {
+                      "type": "light-brightness"
+                    },
+                    {
+                      "type": "light-color-favorites"
+                    }
+                  ],
+                  "features_position": "bottom",
+                  "vertical": false,
+                  "grid_options": {
+                    "columns": 12,
+                    "rows": 4
+                  }
+                },
+                {
+                  "type": "tile",
+                  "entity": "sensor.kuhlschrank_kuhlschranktemperatur"
+                },
+                {
+                  "type": "tile",
+                  "entity": "sensor.shellyplugmg3_70af09e33520_leistung"
+                },
+                {
+                  "type": "tile",
+                  "entity": "sensor.shellyplugmg3_0892724df770_leistung"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Esszimmer",
+          "path": "licht-esszimmer",
+          "icon": "mdi:table-chair",
+          "subview": true,
+          "type": "sections",
+          "max_columns": 1,
+          "sections": [
+            {
+              "type": "grid",
+              "cards": [
+                {
+                  "type": "heading",
+                  "heading": "Esszimmer Licht",
+                  "icon": "mdi:table-chair"
+                },
+                {
+                  "type": "tile",
+                  "entity": "light.esszimmer_weisslicht",
+                  "name": "Weißlicht",
+                  "icon": "mdi:lightbulb-outline",
+                  "tap_action": {
+                    "action": "toggle"
+                  },
+                  "features": [
+                    {
+                      "type": "light-brightness"
+                    },
+                    {
+                      "type": "light-color-temp"
+                    }
+                  ],
+                  "features_position": "bottom",
+                  "vertical": false,
+                  "grid_options": {
+                    "columns": 12,
+                    "rows": 3
+                  }
+                },
+                {
+                  "type": "tile",
+                  "entity": "light.esszimmer_farblicht",
+                  "name": "Farblicht",
+                  "icon": "mdi:palette-outline",
+                  "tap_action": {
+                    "action": "toggle"
+                  },
+                  "features": [
+                    {
+                      "type": "light-brightness"
+                    },
+                    {
+                      "type": "light-color-favorites"
+                    }
+                  ],
+                  "features_position": "bottom",
+                  "vertical": false,
+                  "grid_options": {
+                    "columns": 12,
+                    "rows": 4
+                  }
+                },
+                {
+                  "type": "tile",
+                  "entity": "cover.terrassentur_rollo_rollo_terrassentur",
+                  "features": [
+                    {
+                      "type": "cover-open-close"
+                    }
+                  ]
+                },
+                {
+                  "type": "tile",
+                  "entity": "cover.terrassentur_rollo_rollo_terrassentur",
+                  "features": [
+                    {
+                      "type": "cover-position"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Schlafzimmer",
+          "path": "licht-schlafzimmer",
+          "icon": "mdi:bed-king-outline",
+          "subview": true,
+          "type": "sections",
+          "max_columns": 1,
+          "sections": [
+            {
+              "type": "grid",
+              "cards": [
+                {
+                  "type": "heading",
+                  "heading": "Schlafzimmer Licht",
+                  "icon": "mdi:bed-king-outline"
+                },
+                {
+                  "type": "tile",
+                  "entity": "light.schlafzimmer_weisslicht",
+                  "name": "Weißlicht",
+                  "icon": "mdi:lightbulb-outline",
+                  "tap_action": {
+                    "action": "toggle"
+                  },
+                  "features": [
+                    {
+                      "type": "light-brightness"
+                    },
+                    {
+                      "type": "light-color-temp"
+                    }
+                  ],
+                  "features_position": "bottom",
+                  "vertical": false,
+                  "grid_options": {
+                    "columns": 12,
+                    "rows": 3
+                  }
+                },
+                {
+                  "type": "tile",
+                  "entity": "light.schlafzimmer_farblicht",
+                  "name": "Farblicht",
+                  "icon": "mdi:palette-outline",
+                  "tap_action": {
+                    "action": "toggle"
+                  },
+                  "features": [
+                    {
+                      "type": "light-brightness"
+                    },
+                    {
+                      "type": "light-color-favorites"
+                    }
+                  ],
+                  "features_position": "bottom",
+                  "vertical": false,
+                  "grid_options": {
+                    "columns": 12,
+                    "rows": 4
+                  }
+                },
+                {
+                  "type": "tile",
+                  "entity": "sensor.weather_station_schlafzimmer_temperatur"
+                },
+                {
+                  "type": "tile",
+                  "entity": "cover.rollo_schlafzimmer",
+                  "features": [
+                    {
+                      "type": "cover-open-close"
+                    }
+                  ]
+                },
+                {
+                  "type": "tile",
+                  "entity": "cover.rollo_schlafzimmer",
+                  "features": [
+                    {
+                      "type": "cover-position"
+                    }
+                  ]
+                },
+                {
+                  "type": "tile",
+                  "entity": "sensor.schlafzimmer_schlafzimmer_tv_leistung"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Alle Lampen",
+          "path": "licht-alle",
+          "icon": "mdi:lightbulb-group-outline",
+          "subview": true,
+          "type": "sections",
+          "max_columns": 1,
+          "sections": [
+            {
+              "type": "grid",
+              "cards": [
+                {
+                  "type": "heading",
+                  "heading": "Alle Lampen",
+                  "icon": "mdi:lightbulb-group-outline"
+                },
+                {
+                  "type": "tile",
+                  "entity": "light.alle_lampen_weisslicht",
+                  "name": "Weißlicht",
+                  "icon": "mdi:lightbulb-outline",
+                  "tap_action": {
+                    "action": "toggle"
+                  },
+                  "features": [
+                    {
+                      "type": "light-brightness"
+                    },
+                    {
+                      "type": "light-color-temp"
+                    }
+                  ],
+                  "features_position": "bottom",
+                  "grid_options": {
+                    "columns": 12,
+                    "rows": 4
+                  }
+                },
+                {
+                  "type": "tile",
+                  "entity": "light.alle_lampen_farblicht",
+                  "name": "Farblicht",
+                  "icon": "mdi:palette-outline",
+                  "tap_action": {
+                    "action": "toggle"
+                  },
+                  "features": [
+                    {
+                      "type": "light-brightness"
+                    }
+                  ],
+                  "features_position": "bottom",
+                  "grid_options": {
+                    "columns": 12,
+                    "rows": 3
+                  }
+                },
+                {
+                  "type": "heading",
+                  "heading": "Kräftige Farben",
+                  "icon": "mdi:palette-outline"
+                },
+                {
+                  "type": "button",
+                  "name": "Rot",
+                  "icon": "mdi:circle",
+                  "color": "#ff0000",
+                  "tap_action": {
+                    "action": "perform-action",
+                    "perform_action": "light.turn_on",
+                    "target": {
+                      "entity_id": "light.alle_lampen_farblicht"
+                    },
+                    "data": {
+                      "rgb_color": [
+                        255,
+                        0,
+                        0
+                      ],
+                      "brightness_pct": 100
+                    }
+                  },
+                  "grid_options": {
+                    "columns": 3,
+                    "rows": 2
+                  }
+                },
+                {
+                  "type": "button",
+                  "name": "Blau",
+                  "icon": "mdi:circle",
+                  "color": "#0000ff",
+                  "tap_action": {
+                    "action": "perform-action",
+                    "perform_action": "light.turn_on",
+                    "target": {
+                      "entity_id": "light.alle_lampen_farblicht"
+                    },
+                    "data": {
+                      "rgb_color": [
+                        0,
+                        0,
+                        255
+                      ],
+                      "brightness_pct": 100
+                    }
+                  },
+                  "grid_options": {
+                    "columns": 3,
+                    "rows": 2
+                  }
+                },
+                {
+                  "type": "button",
+                  "name": "Grün",
+                  "icon": "mdi:circle",
+                  "color": "#00ff00",
+                  "tap_action": {
+                    "action": "perform-action",
+                    "perform_action": "light.turn_on",
+                    "target": {
+                      "entity_id": "light.alle_lampen_farblicht"
+                    },
+                    "data": {
+                      "rgb_color": [
+                        0,
+                        255,
+                        0
+                      ],
+                      "brightness_pct": 100
+                    }
+                  },
+                  "grid_options": {
+                    "columns": 3,
+                    "rows": 2
+                  }
+                },
+                {
+                  "type": "button",
+                  "name": "Cyan",
+                  "icon": "mdi:circle",
+                  "color": "#00ffff",
+                  "tap_action": {
+                    "action": "perform-action",
+                    "perform_action": "light.turn_on",
+                    "target": {
+                      "entity_id": "light.alle_lampen_farblicht"
+                    },
+                    "data": {
+                      "rgb_color": [
+                        0,
+                        255,
+                        255
+                      ],
+                      "brightness_pct": 100
+                    }
+                  },
+                  "grid_options": {
+                    "columns": 3,
+                    "rows": 2
+                  }
+                },
+                {
+                  "type": "button",
+                  "name": "Magenta",
+                  "icon": "mdi:circle",
+                  "color": "#ff00ff",
+                  "tap_action": {
+                    "action": "perform-action",
+                    "perform_action": "light.turn_on",
+                    "target": {
+                      "entity_id": "light.alle_lampen_farblicht"
+                    },
+                    "data": {
+                      "rgb_color": [
+                        255,
+                        0,
+                        255
+                      ],
+                      "brightness_pct": 100
+                    }
+                  },
+                  "grid_options": {
+                    "columns": 3,
+                    "rows": 2
+                  }
+                },
+                {
+                  "type": "button",
+                  "name": "Gelb",
+                  "icon": "mdi:circle",
+                  "color": "#ffff00",
+                  "tap_action": {
+                    "action": "perform-action",
+                    "perform_action": "light.turn_on",
+                    "target": {
+                      "entity_id": "light.alle_lampen_farblicht"
+                    },
+                    "data": {
+                      "rgb_color": [
+                        255,
+                        255,
+                        0
+                      ],
+                      "brightness_pct": 100
+                    }
+                  },
+                  "grid_options": {
+                    "columns": 3,
+                    "rows": 2
+                  }
+                },
+                {
+                  "type": "button",
+                  "name": "Orange",
+                  "icon": "mdi:circle",
+                  "color": "#ff5500",
+                  "tap_action": {
+                    "action": "perform-action",
+                    "perform_action": "light.turn_on",
+                    "target": {
+                      "entity_id": "light.alle_lampen_farblicht"
+                    },
+                    "data": {
+                      "rgb_color": [
+                        255,
+                        85,
+                        0
+                      ],
+                      "brightness_pct": 100
+                    }
+                  },
+                  "grid_options": {
+                    "columns": 3,
+                    "rows": 2
+                  }
+                },
+                {
+                  "type": "button",
+                  "name": "Violett",
+                  "icon": "mdi:circle",
+                  "color": "#8000ff",
+                  "tap_action": {
+                    "action": "perform-action",
+                    "perform_action": "light.turn_on",
+                    "target": {
+                      "entity_id": "light.alle_lampen_farblicht"
+                    },
+                    "data": {
+                      "rgb_color": [
+                        128,
+                        0,
+                        255
+                      ],
+                      "brightness_pct": 100
+                    }
+                  },
+                  "grid_options": {
+                    "columns": 3,
+                    "rows": 2
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Wohnbereich Licht",
+          "path": "licht-wohnbereich",
+          "icon": "mdi:palette-outline",
+          "subview": true,
+          "type": "sections",
+          "max_columns": 1,
+          "sections": [
+            {
+              "type": "grid",
+              "cards": [
+                {
+                  "type": "heading",
+                  "heading": "Wohnbereich Licht",
+                  "icon": "mdi:sofa-outline"
+                },
+                {
+                  "type": "tile",
+                  "entity": "light.wohnbereich_weisslicht",
+                  "name": "Weißlicht",
+                  "icon": "mdi:lightbulb-outline",
+                  "tap_action": {
+                    "action": "toggle"
+                  },
+                  "features": [
+                    {
+                      "type": "light-brightness"
+                    },
+                    {
+                      "type": "light-color-temp"
+                    }
+                  ],
+                  "features_position": "bottom",
+                  "grid_options": {
+                    "columns": 12,
+                    "rows": 4
+                  }
+                },
+                {
+                  "type": "tile",
+                  "entity": "light.wohnbereich_farblicht",
+                  "name": "Farblicht",
+                  "icon": "mdi:palette-outline",
+                  "tap_action": {
+                    "action": "toggle"
+                  },
+                  "features": [
+                    {
+                      "type": "light-brightness"
+                    }
+                  ],
+                  "features_position": "bottom",
+                  "grid_options": {
+                    "columns": 12,
+                    "rows": 3
+                  }
+                },
+                {
+                  "type": "heading",
+                  "heading": "Kräftige Farben",
+                  "icon": "mdi:palette-outline"
+                },
+                {
+                  "type": "button",
+                  "name": "Rot",
+                  "icon": "mdi:circle",
+                  "color": "#ff0000",
+                  "tap_action": {
+                    "action": "perform-action",
+                    "perform_action": "light.turn_on",
+                    "target": {
+                      "entity_id": "light.wohnbereich_farblicht"
+                    },
+                    "data": {
+                      "rgb_color": [
+                        255,
+                        0,
+                        0
+                      ],
+                      "brightness_pct": 100
+                    }
+                  },
+                  "grid_options": {
+                    "columns": 3,
+                    "rows": 2
+                  }
+                },
+                {
+                  "type": "button",
+                  "name": "Blau",
+                  "icon": "mdi:circle",
+                  "color": "#0000ff",
+                  "tap_action": {
+                    "action": "perform-action",
+                    "perform_action": "light.turn_on",
+                    "target": {
+                      "entity_id": "light.wohnbereich_farblicht"
+                    },
+                    "data": {
+                      "rgb_color": [
+                        0,
+                        0,
+                        255
+                      ],
+                      "brightness_pct": 100
+                    }
+                  },
+                  "grid_options": {
+                    "columns": 3,
+                    "rows": 2
+                  }
+                },
+                {
+                  "type": "button",
+                  "name": "Grün",
+                  "icon": "mdi:circle",
+                  "color": "#00ff00",
+                  "tap_action": {
+                    "action": "perform-action",
+                    "perform_action": "light.turn_on",
+                    "target": {
+                      "entity_id": "light.wohnbereich_farblicht"
+                    },
+                    "data": {
+                      "rgb_color": [
+                        0,
+                        255,
+                        0
+                      ],
+                      "brightness_pct": 100
+                    }
+                  },
+                  "grid_options": {
+                    "columns": 3,
+                    "rows": 2
+                  }
+                },
+                {
+                  "type": "button",
+                  "name": "Cyan",
+                  "icon": "mdi:circle",
+                  "color": "#00ffff",
+                  "tap_action": {
+                    "action": "perform-action",
+                    "perform_action": "light.turn_on",
+                    "target": {
+                      "entity_id": "light.wohnbereich_farblicht"
+                    },
+                    "data": {
+                      "rgb_color": [
+                        0,
+                        255,
+                        255
+                      ],
+                      "brightness_pct": 100
+                    }
+                  },
+                  "grid_options": {
+                    "columns": 3,
+                    "rows": 2
+                  }
+                },
+                {
+                  "type": "button",
+                  "name": "Magenta",
+                  "icon": "mdi:circle",
+                  "color": "#ff00ff",
+                  "tap_action": {
+                    "action": "perform-action",
+                    "perform_action": "light.turn_on",
+                    "target": {
+                      "entity_id": "light.wohnbereich_farblicht"
+                    },
+                    "data": {
+                      "rgb_color": [
+                        255,
+                        0,
+                        255
+                      ],
+                      "brightness_pct": 100
+                    }
+                  },
+                  "grid_options": {
+                    "columns": 3,
+                    "rows": 2
+                  }
+                },
+                {
+                  "type": "button",
+                  "name": "Gelb",
+                  "icon": "mdi:circle",
+                  "color": "#ffff00",
+                  "tap_action": {
+                    "action": "perform-action",
+                    "perform_action": "light.turn_on",
+                    "target": {
+                      "entity_id": "light.wohnbereich_farblicht"
+                    },
+                    "data": {
+                      "rgb_color": [
+                        255,
+                        255,
+                        0
+                      ],
+                      "brightness_pct": 100
+                    }
+                  },
+                  "grid_options": {
+                    "columns": 3,
+                    "rows": 2
+                  }
+                },
+                {
+                  "type": "button",
+                  "name": "Orange",
+                  "icon": "mdi:circle",
+                  "color": "#ff5500",
+                  "tap_action": {
+                    "action": "perform-action",
+                    "perform_action": "light.turn_on",
+                    "target": {
+                      "entity_id": "light.wohnbereich_farblicht"
+                    },
+                    "data": {
+                      "rgb_color": [
+                        255,
+                        85,
+                        0
+                      ],
+                      "brightness_pct": 100
+                    }
+                  },
+                  "grid_options": {
+                    "columns": 3,
+                    "rows": 2
+                  }
+                },
+                {
+                  "type": "button",
+                  "name": "Violett",
+                  "icon": "mdi:circle",
+                  "color": "#8000ff",
+                  "tap_action": {
+                    "action": "perform-action",
+                    "perform_action": "light.turn_on",
+                    "target": {
+                      "entity_id": "light.wohnbereich_farblicht"
+                    },
+                    "data": {
+                      "rgb_color": [
+                        128,
+                        0,
+                        255
+                      ],
+                      "brightness_pct": 100
+                    }
+                  },
+                  "grid_options": {
+                    "columns": 3,
+                    "rows": 2
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Kaffeevollautomat",
+          "path": "kaffeevollautomat",
+          "icon": "mdi:coffee-maker-outline",
+          "subview": true,
+          "type": "sections",
+          "max_columns": 1,
+          "sections": [
+            {
+              "type": "grid",
+              "cards": [
+                {
+                  "type": "heading",
+                  "heading": "Kaffeevollautomat",
+                  "icon": "mdi:coffee-maker-outline"
+                },
+                {
+                  "type": "tile",
+                  "entity": "sensor.kaffeevollautomat_betriebszustand",
+                  "name": "Zustand",
+                  "icon": "mdi:coffee-maker-outline",
+                  "grid_options": {
+                    "columns": 6,
+                    "rows": 2
+                  }
+                },
+                {
+                  "type": "tile",
+                  "entity": "switch.kaffeevollautomat_einschalter",
+                  "name": "Ein / Standby",
+                  "icon": "mdi:power",
+                  "grid_options": {
+                    "columns": 6,
+                    "rows": 2
+                  }
+                },
+                {
+                  "type": "tile",
+                  "entity": "binary_sensor.kaffeevollautomat_konnektivitat",
+                  "name": "Verbindung",
+                  "icon": "mdi:wifi",
+                  "grid_options": {
+                    "columns": 6,
+                    "rows": 2
+                  }
+                },
+                {
+                  "type": "tile",
+                  "entity": "binary_sensor.kaffeevollautomat_fernstart",
+                  "name": "Fernstart",
+                  "icon": "mdi:remote",
+                  "grid_options": {
+                    "columns": 6,
+                    "rows": 2
+                  }
+                },
+                {
+                  "type": "entities",
+                  "title": "Zubereitung",
+                  "show_header_toggle": false,
+                  "entities": [
+                    {
+                      "entity": "select.kaffeevollautomat_ausgewahltes_programm",
+                      "name": "Gewähltes Getränk"
+                    },
+                    {
+                      "entity": "sensor.kaffeevollautomat_programm_fortschritt",
+                      "name": "Fortschritt"
+                    }
+                  ],
+                  "grid_options": {
+                    "columns": 12,
+                    "rows": 3
+                  }
+                },
+                {
+                  "type": "button",
+                  "name": "Bezug starten",
+                  "icon": "mdi:coffee-to-go-outline",
+                  "show_state": false,
+                  "tap_action": {
+                    "action": "perform-action",
+                    "perform_action": "script.turn_on",
+                    "target": {
+                      "entity_id": "script.kaffeevollautomat_ausgewahltes_getrank_starten"
+                    },
+                    "confirmation": {
+                      "text": "Das ausgewählte Getränk jetzt zubereiten?"
+                    }
+                  },
+                  "grid_options": {
+                    "columns": 6,
+                    "rows": 2
+                  }
+                },
+                {
+                  "type": "button",
+                  "name": "Programm stoppen",
+                  "icon": "mdi:stop-circle-outline",
+                  "show_state": false,
+                  "tap_action": {
+                    "action": "perform-action",
+                    "perform_action": "button.press",
+                    "target": {
+                      "entity_id": "button.kaffeevollautomat_programm_stoppen"
+                    }
+                  },
+                  "grid_options": {
+                    "columns": 6,
+                    "rows": 2
+                  }
+                }
+              ]
+            },
+            {
+              "type": "grid",
+              "cards": [
+                {
+                  "type": "heading",
+                  "heading": "Statistik",
+                  "icon": "mdi:chart-line"
+                },
+                {
+                  "type": "tile",
+                  "entity": "sensor.kaffeevollautomat_kaffees",
+                  "name": "Kaffees",
+                  "icon": "mdi:coffee-outline",
+                  "grid_options": {
+                    "columns": 6,
+                    "rows": 2
+                  }
+                },
+                {
+                  "type": "tile",
+                  "entity": "sensor.kaffeevollautomat_kaffee_und_milchtassen",
+                  "name": "Kaffee & Milch",
+                  "icon": "mdi:coffee-outline",
+                  "grid_options": {
+                    "columns": 6,
+                    "rows": 2
+                  }
+                },
+                {
+                  "type": "tile",
+                  "entity": "sensor.kaffeevollautomat_heisswasser",
+                  "name": "Heißwasser",
+                  "icon": "mdi:kettle-outline",
+                  "grid_options": {
+                    "columns": 6,
+                    "rows": 2
+                  }
+                },
+                {
+                  "type": "tile",
+                  "entity": "sensor.kaffeevollautomat_tassen_mit_milch",
+                  "name": "Milchgetränke",
+                  "icon": "mdi:cup-outline",
+                  "grid_options": {
+                    "columns": 6,
+                    "rows": 2
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Kühlschrank",
+          "path": "kuehlschrank",
+          "icon": "mdi:fridge-outline",
+          "subview": true,
+          "type": "sections",
+          "max_columns": 1,
+          "sections": [
+            {
+              "type": "grid",
+              "cards": [
+                {
+                  "type": "heading",
+                  "heading": "Kühlschrank",
+                  "icon": "mdi:fridge-outline"
+                },
+                {
+                  "type": "tile",
+                  "entity": "sensor.kuhlschrank_kuhlschranktemperatur",
+                  "name": "Kühlen",
+                  "icon": "mdi:thermometer",
+                  "grid_options": {
+                    "columns": 6,
+                    "rows": 2
+                  }
+                },
+                {
+                  "type": "tile",
+                  "entity": "sensor.kuhlschrank_gefrierschranktemperatur",
+                  "name": "Gefrieren",
+                  "icon": "mdi:snowflake-thermometer",
+                  "grid_options": {
+                    "columns": 6,
+                    "rows": 2
+                  }
+                },
+                {
+                  "type": "tile",
+                  "entity": "binary_sensor.kuhlschrank_kuhlschranktur",
+                  "name": "Kühlschranktür",
+                  "icon": "mdi:fridge-outline",
+                  "color": "red",
+                  "grid_options": {
+                    "columns": 6,
+                    "rows": 2
+                  }
+                },
+                {
+                  "type": "tile",
+                  "entity": "binary_sensor.kuhlschrank_gefrierschranktur",
+                  "name": "Gefrierschranktür",
+                  "icon": "mdi:fridge-bottom",
+                  "color": "red",
+                  "grid_options": {
+                    "columns": 6,
+                    "rows": 2
+                  }
+                },
+                {
+                  "type": "tile",
+                  "entity": "binary_sensor.kuhlschrank_coolselect_tur",
+                  "name": "CoolSelect+ Tür",
+                  "icon": "mdi:door-closed",
+                  "color": "red",
+                  "grid_options": {
+                    "columns": 12,
+                    "rows": 2
+                  }
+                }
+              ]
+            },
+            {
+              "type": "grid",
+              "cards": [
+                {
+                  "type": "heading",
+                  "heading": "Funktionen",
+                  "icon": "mdi:toggle-switch-outline"
+                },
+                {
+                  "type": "entities",
+                  "show_header_toggle": false,
+                  "entities": [
+                    {
+                      "entity": "switch.kuhlschrank_power_kuhlen",
+                      "name": "Power-Kühlen"
+                    },
+                    {
+                      "entity": "switch.kuhlschrank_power_gefrieren",
+                      "name": "Power-Gefrieren"
+                    },
+                    {
+                      "entity": "switch.kuhlschrank_eiswurfel",
+                      "name": "Eiswürfel"
+                    },
+                    {
+                      "entity": "switch.kuhlschrank_ice_bites",
+                      "name": "Ice Bites"
+                    }
+                  ],
+                  "grid_options": {
+                    "columns": 12,
+                    "rows": 4
+                  }
+                }
+              ]
+            },
+            {
+              "type": "grid",
+              "cards": [
+                {
+                  "type": "heading",
+                  "heading": "Verbrauch und Filter",
+                  "icon": "mdi:chart-line"
+                },
+                {
+                  "type": "tile",
+                  "entity": "sensor.kuhlschrank_leistung",
+                  "name": "Aktuelle Leistung",
+                  "icon": "mdi:flash-outline",
+                  "grid_options": {
+                    "columns": 6,
+                    "rows": 2
+                  }
+                },
+                {
+                  "type": "tile",
+                  "entity": "sensor.kuhlschrank_energie",
+                  "name": "Gesamtenergie",
+                  "icon": "mdi:lightning-bolt-outline",
+                  "grid_options": {
+                    "columns": 6,
+                    "rows": 2
+                  }
+                },
+                {
+                  "type": "tile",
+                  "entity": "sensor.kuhlschrank_wasserfilterverbrauch",
+                  "name": "Filter verbraucht",
+                  "icon": "mdi:water-outline",
+                  "grid_options": {
+                    "columns": 6,
+                    "rows": 2
+                  }
+                },
+                {
+                  "type": "tile",
+                  "entity": "binary_sensor.kuhlschrank_filterstatus",
+                  "name": "Filterstatus",
+                  "icon": "mdi:filter-outline",
+                  "color": "red",
+                  "grid_options": {
+                    "columns": 6,
+                    "rows": 2
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

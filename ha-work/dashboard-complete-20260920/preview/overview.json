@@ -1,0 +1,1667 @@
+{
+  "title": "Übersicht",
+  "views": [
+    {
+      "title": "Übersicht",
+      "path": "flur",
+      "icon": "mdi:tablet-dashboard",
+      "type": "sections",
+      "max_columns": 2,
+      "dense_section_placement": true,
+      "sections": [
+        {
+          "type": "grid",
+          "cards": [
+            {
+              "type": "custom:button-card",
+              "section_mode": true,
+              "entity": "weather.forecast_home",
+              "triggers_update": [
+                "weather.forecast_home"
+              ],
+              "show_icon": true,
+              "icon": "[[[ const c=states['weather.forecast_home']?.state; const m={clear:'mdi:weather-sunny',sunny:'mdi:weather-sunny',partlycloudy:'mdi:weather-partly-cloudy',cloudy:'mdi:weather-cloudy',rainy:'mdi:weather-rainy',pouring:'mdi:weather-pouring',snowy:'mdi:weather-snowy',fog:'mdi:weather-fog',windy:'mdi:weather-windy','windy-variant':'mdi:weather-windy-variant'}; return m[c]||'mdi:weather-cloudy'; ]]]",
+              "show_state": false,
+              "custom_fields": {
+                "weather": "[[[ const c=states['weather.forecast_home']?.state; const symbols={sunny:'☀️',partlycloudy:'🌤️',cloudy:'☁️',rainy:'🌧️',pouring:'🌧️','clear-night':'🌙',fog:'🌫️',snowy:'🌨️','snowy-rainy':'🌨️',lightning:'⛈️','lightning-rainy':'⛈️',windy:'🌬️'}; return `<span style=\"font-size:64px;line-height:1\">${symbols[c]||'🌥️'}</span>`; ]]]"
+              },
+              "show_label": true,
+              "update_timer": "1s",
+              "name": "[[[ return new Intl.DateTimeFormat('de-DE', {hour:'2-digit', minute:'2-digit'}).format(new Date()); ]]]",
+              "label": "[[[ const text = new Intl.DateTimeFormat('de-DE', {weekday:'long', day:'2-digit', month:'long'}).format(new Date()); return text.charAt(0).toUpperCase() + text.slice(1); ]]]",
+              "tap_action": {
+                "action": "none"
+              },
+              "styles": {
+                "card": [
+                  {
+                    "height": "160px"
+                  },
+                  {
+                    "padding": "16px 22px"
+                  },
+                  {
+                    "border-radius": "20px"
+                  },
+                  {
+                    "background": "linear-gradient(135deg, rgba(35,78,112,0.96), rgba(18,34,52,0.96))"
+                  }
+                ],
+                "grid": [
+                  {
+                    "grid-template-areas": "'n weather' 'l l'"
+                  },
+                  {
+                    "grid-template-rows": "1fr 34px"
+                  },
+                  {
+                    "grid-template-columns": "1fr 86px"
+                  }
+                ],
+                "name": [
+                  {
+                    "font-size": "72px"
+                  },
+                  {
+                    "font-weight": "500"
+                  },
+                  {
+                    "justify-self": "start"
+                  },
+                  {
+                    "color": "white"
+                  }
+                ],
+                "icon": [
+                  {
+                    "width": "72px"
+                  },
+                  {
+                    "color": "[[[ const c=states['weather.forecast_home']?.state; const m={clear:'#FFD54F',sunny:'#FFD54F',partlycloudy:'#FFE082',cloudy:'#CFD8DC',rainy:'#64B5F6',pouring:'#42A5F5',snowy:'#E3F2FD',fog:'#B0BEC5',windy:'#80CBC4', 'windy-variant':'#80CBC4'}; return m[c]||'#CFD8DC'; ]]]"
+                  },
+                  {
+                    "justify-self": "end"
+                  },
+                  {
+                    "align-self": "start"
+                  },
+                  {
+                    "margin-top": "2px"
+                  }
+                ],
+                "custom_fields": [
+                  {
+                    "weather": [
+                      {
+                        "justify-self": "end"
+                      },
+                      {
+                        "align-self": "start"
+                      },
+                      {
+                        "margin-top": "-4px"
+                      }
+                    ]
+                  }
+                ],
+                "label": [
+                  {
+                    "font-size": "20px"
+                  },
+                  {
+                    "justify-self": "start"
+                  },
+                  {
+                    "color": "rgba(255,255,255,0.78)"
+                  }
+                ]
+              },
+              "grid_options": {
+                "columns": 12,
+                "rows": 3
+              }
+            },
+            {
+              "type": "grid",
+              "columns": 2,
+              "square": false,
+              "cards": [
+                {
+                  "type": "custom:button-card",
+                  "entity": "sensor.aussentemperatur_dashboard",
+                  "name": "Außentemperatur",
+                  "icon": "mdi:thermometer-lines",
+                  "show_state": true,
+                  "tap_action": {
+                    "action": "more-info"
+                  },
+                  "styles": {
+                    "card": [
+                      {
+                        "height": "64px"
+                      },
+                      {
+                        "padding": "7px 10px"
+                      },
+                      {
+                        "border-radius": "16px"
+                      },
+                      {
+                        "border": "1px solid color-mix(in srgb, var(--divider-color) 75%, #e58b38 25%)"
+                      },
+                      {
+                        "background": "linear-gradient(135deg, color-mix(in srgb, var(--card-background-color) 94%, #e58b38 6%), var(--card-background-color))"
+                      }
+                    ],
+                    "grid": [
+                      {
+                        "grid-template-areas": "'i n' 'i s'"
+                      },
+                      {
+                        "grid-template-columns": "44px 1fr"
+                      }
+                    ],
+                    "icon": [
+                      {
+                        "width": "23px"
+                      },
+                      {
+                        "color": "#e58b38"
+                      }
+                    ],
+                    "name": [
+                      {
+                        "justify-self": "start"
+                      },
+                      {
+                        "font-size": "13px"
+                      },
+                      {
+                        "color": "var(--secondary-text-color)"
+                      }
+                    ],
+                    "state": [
+                      {
+                        "justify-self": "start"
+                      },
+                      {
+                        "font-size": "23px"
+                      },
+                      {
+                        "font-weight": "600"
+                      }
+                    ],
+                    "img_cell": [
+                      {
+                        "width": "38px"
+                      },
+                      {
+                        "height": "38px"
+                      },
+                      {
+                        "border-radius": "12px"
+                      },
+                      {
+                        "background": "color-mix(in srgb, #e58b38 16%, transparent)"
+                      }
+                    ]
+                  }
+                },
+                {
+                  "type": "custom:button-card",
+                  "entity": "sensor.aussenluftfeuchtigkeit_dashboard",
+                  "name": "Luftfeuchtigkeit",
+                  "icon": "mdi:water-percent",
+                  "show_state": true,
+                  "tap_action": {
+                    "action": "more-info"
+                  },
+                  "styles": {
+                    "card": [
+                      {
+                        "height": "64px"
+                      },
+                      {
+                        "padding": "7px 10px"
+                      },
+                      {
+                        "border-radius": "16px"
+                      },
+                      {
+                        "border": "1px solid color-mix(in srgb, var(--divider-color) 75%, #32a9c7 25%)"
+                      },
+                      {
+                        "background": "linear-gradient(135deg, color-mix(in srgb, var(--card-background-color) 94%, #32a9c7 6%), var(--card-background-color))"
+                      }
+                    ],
+                    "grid": [
+                      {
+                        "grid-template-areas": "'i n' 'i s'"
+                      },
+                      {
+                        "grid-template-columns": "44px 1fr"
+                      }
+                    ],
+                    "icon": [
+                      {
+                        "width": "23px"
+                      },
+                      {
+                        "color": "#32a9c7"
+                      }
+                    ],
+                    "name": [
+                      {
+                        "justify-self": "start"
+                      },
+                      {
+                        "font-size": "13px"
+                      },
+                      {
+                        "color": "var(--secondary-text-color)"
+                      }
+                    ],
+                    "state": [
+                      {
+                        "justify-self": "start"
+                      },
+                      {
+                        "font-size": "23px"
+                      },
+                      {
+                        "font-weight": "600"
+                      }
+                    ],
+                    "img_cell": [
+                      {
+                        "width": "38px"
+                      },
+                      {
+                        "height": "38px"
+                      },
+                      {
+                        "border-radius": "12px"
+                      },
+                      {
+                        "background": "color-mix(in srgb, #32a9c7 16%, transparent)"
+                      }
+                    ]
+                  }
+                },
+                {
+                  "type": "custom:button-card",
+                  "entity": "sensor.regen_mit_6h_prognose",
+                  "name": "Regen",
+                  "icon": "mdi:weather-pouring",
+                  "show_state": true,
+                  "tap_action": {
+                    "action": "more-info"
+                  },
+                  "styles": {
+                    "card": [
+                      {
+                        "height": "64px"
+                      },
+                      {
+                        "padding": "7px 10px"
+                      },
+                      {
+                        "border-radius": "16px"
+                      },
+                      {
+                        "border": "1px solid color-mix(in srgb, var(--divider-color) 75%, #4f8fd3 25%)"
+                      },
+                      {
+                        "background": "linear-gradient(135deg, color-mix(in srgb, var(--card-background-color) 94%, #4f8fd3 6%), var(--card-background-color))"
+                      }
+                    ],
+                    "grid": [
+                      {
+                        "grid-template-areas": "'i n' 'i s'"
+                      },
+                      {
+                        "grid-template-columns": "44px 1fr"
+                      }
+                    ],
+                    "icon": [
+                      {
+                        "width": "23px"
+                      },
+                      {
+                        "color": "#4f8fd3"
+                      }
+                    ],
+                    "name": [
+                      {
+                        "justify-self": "start"
+                      },
+                      {
+                        "font-size": "13px"
+                      },
+                      {
+                        "color": "var(--secondary-text-color)"
+                      }
+                    ],
+                    "state": [
+                      {
+                        "justify-self": "start"
+                      },
+                      {
+                        "font-size": "15px"
+                      },
+                      {
+                        "font-weight": "600"
+                      },
+                      {
+                        "white-space": "normal"
+                      }
+                    ],
+                    "img_cell": [
+                      {
+                        "width": "38px"
+                      },
+                      {
+                        "height": "38px"
+                      },
+                      {
+                        "border-radius": "12px"
+                      },
+                      {
+                        "background": "color-mix(in srgb, #4f8fd3 16%, transparent)"
+                      }
+                    ]
+                  }
+                },
+                {
+                  "type": "custom:button-card",
+                  "entity": "sensor.wind_mit_himmelsrichtung",
+                  "name": "Wind",
+                  "icon": "mdi:weather-windy",
+                  "show_state": true,
+                  "tap_action": {
+                    "action": "more-info"
+                  },
+                  "styles": {
+                    "card": [
+                      {
+                        "height": "64px"
+                      },
+                      {
+                        "padding": "7px 10px"
+                      },
+                      {
+                        "border-radius": "16px"
+                      },
+                      {
+                        "border": "1px solid color-mix(in srgb, var(--divider-color) 75%, #36a39a 25%)"
+                      },
+                      {
+                        "background": "linear-gradient(135deg, color-mix(in srgb, var(--card-background-color) 94%, #36a39a 6%), var(--card-background-color))"
+                      }
+                    ],
+                    "grid": [
+                      {
+                        "grid-template-areas": "'i n' 'i s'"
+                      },
+                      {
+                        "grid-template-columns": "44px 1fr"
+                      }
+                    ],
+                    "icon": [
+                      {
+                        "width": "23px"
+                      },
+                      {
+                        "color": "#36a39a"
+                      }
+                    ],
+                    "name": [
+                      {
+                        "justify-self": "start"
+                      },
+                      {
+                        "font-size": "13px"
+                      },
+                      {
+                        "color": "var(--secondary-text-color)"
+                      }
+                    ],
+                    "state": [
+                      {
+                        "justify-self": "start"
+                      },
+                      {
+                        "font-size": "17px"
+                      },
+                      {
+                        "font-weight": "600"
+                      }
+                    ],
+                    "img_cell": [
+                      {
+                        "width": "38px"
+                      },
+                      {
+                        "height": "38px"
+                      },
+                      {
+                        "border-radius": "12px"
+                      },
+                      {
+                        "background": "color-mix(in srgb, #36a39a 16%, transparent)"
+                      }
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "type": "custom:button-card",
+              "name": "Raumtemperaturen",
+              "icon": "mdi:home-thermometer-outline",
+              "show_icon": true,
+              "show_state": false,
+              "custom_fields": {
+                "rooms": "[[[ const rooms=[['Wohnzimmer','sensor.weather_station_temperatur'],['Schlafzimmer','sensor.weather_station_schlafzimmer_temperatur'],['Gästezimmer','sensor.weather_station_gastezimmer_temperatur'],['Bad','sensor.weather_station_bad_temperatur']]; return '<div style=\"display:flex;flex-wrap:nowrap;justify-content:space-between;gap:4px;width:100%\">'+rooms.map(([name,id])=>{const s=states[id];const v=s&&!['unknown','unavailable'].includes(s.state)?Number(s.state).toLocaleString('de-DE',{maximumFractionDigits:1})+' °C':'–';return '<div style=\"display:flex;flex:1 1 0;align-items:center;justify-content:center;gap:3px;font-size:10px;line-height:16px;white-space:nowrap\"><span style=\"color:var(--secondary-text-color)\">'+name+'</span><span style=\"font-size:12px;font-weight:600\">'+v+'</span></div>';}).join('')+'</div>'; ]]]"
+              },
+              "styles": {
+                "card": [
+                  {
+                    "height": "72px"
+                  },
+                  {
+                    "padding": "6px 10px"
+                  },
+                  {
+                    "border-radius": "16px"
+                  },
+                  {
+                    "border": "1px solid var(--divider-color)"
+                  },
+                  {
+                    "background": "linear-gradient(135deg, color-mix(in srgb, var(--card-background-color) 94%, #d78358 6%), var(--card-background-color))"
+                  }
+                ],
+                "grid": [
+                  {
+                    "grid-template-areas": "'i n' 'rooms rooms'"
+                  },
+                  {
+                    "grid-template-columns": "28px 1fr"
+                  },
+                  {
+                    "grid-template-rows": "18px 1fr"
+                  }
+                ],
+                "icon": [
+                  {
+                    "width": "19px"
+                  },
+                  {
+                    "color": "#d78358"
+                  }
+                ],
+                "name": [
+                  {
+                    "justify-self": "start"
+                  },
+                  {
+                    "font-size": "13px"
+                  },
+                  {
+                    "font-weight": "600"
+                  }
+                ],
+                "custom_fields": [
+                  {
+                    "rooms": [
+                      {
+                        "width": "100%"
+                      }
+                    ]
+                  }
+                ]
+              },
+              "grid_options": {
+                "columns": 12,
+                "rows": 1
+              }
+            },
+            {
+              "type": "custom:button-card",
+              "entity": "sensor.wetter_flur_tageszeiten",
+              "show_icon": false,
+              "show_state": false,
+              "show_label": true,
+              "name": "[[[ const d=new Date(); const tomorrow=d.getHours()>=22; if(tomorrow)d.setDate(d.getDate()+1); const text=new Intl.DateTimeFormat('de-DE',{weekday:'long',day:'2-digit',month:'long'}).format(d); return `${tomorrow?'Morgen':'Heute'} · ${text.charAt(0).toUpperCase()+text.slice(1)}`; ]]]",
+              "label": "[[[ const tomorrow=new Date().getHours()>=22; const names={sunny:'Sonnig',partlycloudy:'Teilweise bewölkt',cloudy:'Bewölkt',rainy:'Regen',pouring:'Starker Regen','clear-night':'Klare Nacht',fog:'Nebel',snowy:'Schnee','snowy-rainy':'Schneeregen',lightning:'Gewitter','lightning-rainy':'Gewitterregen',windy:'Windig'}; if(!tomorrow){const w=states['weather.forecast_home'];const t=w?.attributes?.temperature;return `${names[w?.state]||w?.state||'–'}${t!==undefined?' · '+Number(t).toLocaleString('de-DE',{maximumFractionDigits:1})+' °C':''}`;} const periods=entity?.attributes?.periods||[]; const midday=periods.find(p=>p.label==='Mittags')||periods[0]||{}; return `${names[midday.condition]||midday.condition||'–'}${midday.temperature!=null?' · '+Number(midday.temperature).toLocaleString('de-DE',{maximumFractionDigits:1})+' °C':''}`; ]]]",
+              "custom_fields": {
+                "periods": "[[[ const items=entity?.attributes?.periods || []; const symbols={sunny:'☀️',partlycloudy:'🌤️',cloudy:'☁️',rainy:'🌧️',pouring:'🌧️','clear-night':'🌙',fog:'🌫️',snowy:'🌨️','snowy-rainy':'🌨️',lightning:'⛈️','lightning-rainy':'⛈️',windy:'🌬️'}; return `<div style=\"display:grid;grid-template-columns:repeat(4,1fr);width:100%;gap:0\">${items.map((p,i)=>`<div style=\"text-align:center;${i<3?'border-right:1px solid var(--divider-color);':''}\"><div style=\"font-size:13px;color:var(--secondary-text-color);margin-bottom:2px\">${p.label}</div><div style=\"font-size:28px;line-height:30px\">${symbols[p.condition]||'🌥️'}</div><div style=\"font-size:19px;font-weight:600;margin-top:1px\">${p.temperature!=null?Number(p.temperature).toLocaleString('de-DE',{maximumFractionDigits:1})+'°':'–'}</div><div style=\"font-size:11px;color:var(--secondary-text-color)\">${p.precipitation_probability!=null?'Regen '+Math.round(p.precipitation_probability)+' %':p.precipitation!=null?'Regen '+Number(p.precipitation).toLocaleString('de-DE',{maximumFractionDigits:1})+' mm':'Zeitraum vorbei'}</div></div>`).join('')}</div>`; ]]]"
+              },
+              "tap_action": {
+                "action": "more-info"
+              },
+              "styles": {
+                "card": [
+                  {
+                    "height": "140px"
+                  },
+                  {
+                    "padding": "9px 12px"
+                  },
+                  {
+                    "border-radius": "16px"
+                  }
+                ],
+                "grid": [
+                  {
+                    "grid-template-areas": "'n' 'l' 'periods'"
+                  },
+                  {
+                    "grid-template-rows": "24px 22px 1fr"
+                  }
+                ],
+                "name": [
+                  {
+                    "justify-self": "start"
+                  },
+                  {
+                    "font-size": "18px"
+                  },
+                  {
+                    "font-weight": "600"
+                  }
+                ],
+                "label": [
+                  {
+                    "justify-self": "start"
+                  },
+                  {
+                    "font-size": "13px"
+                  },
+                  {
+                    "color": "var(--secondary-text-color)"
+                  }
+                ],
+                "custom_fields": [
+                  {
+                    "periods": [
+                      {
+                        "width": "100%"
+                      },
+                      {
+                        "align-self": "end"
+                      }
+                    ]
+                  }
+                ]
+              },
+              "grid_options": {
+                "columns": 12,
+                "rows": 3
+              }
+            },
+            {
+              "type": "custom:button-card",
+              "entity": "sensor.wetter_nachste_tage",
+              "show_icon": false,
+              "show_name": false,
+              "show_state": false,
+              "custom_fields": {
+                "days": "[[[ const items=entity?.attributes?.days || []; const symbols={sunny:'☀️',partlycloudy:'🌤️',cloudy:'☁️',rainy:'🌧️',pouring:'🌧️','clear-night':'🌙',fog:'🌫️',snowy:'🌨️','snowy-rainy':'🌨️',lightning:'⛈️','lightning-rainy':'⛈️',windy:'🌬️'}; return `<div style=\"display:grid;grid-template-columns:repeat(5,1fr);width:100%\">${items.map(p=>{const d=new Date(p.datetime);const day=new Intl.DateTimeFormat('de-DE',{weekday:'short'}).format(d);return `<div style=\"text-align:center\"><div style=\"font-size:13px;color:var(--secondary-text-color)\">${day}</div><div style=\"font-size:24px;line-height:28px;margin:2px 0\">${symbols[p.condition]||'🌥️'}</div><div style=\"font-size:15px;font-weight:600\">${p.temperature!=null?Math.round(p.temperature)+'°':'–'}</div><div style=\"font-size:11px;color:var(--secondary-text-color)\">${p.templow!=null?Math.round(p.templow)+'°':'–'}</div></div>`}).join('')}</div>`; ]]]"
+              },
+              "tap_action": {
+                "action": "more-info"
+              },
+              "styles": {
+                "card": [
+                  {
+                    "height": "94px"
+                  },
+                  {
+                    "padding": "7px 10px"
+                  },
+                  {
+                    "border-radius": "16px"
+                  }
+                ],
+                "grid": [
+                  {
+                    "grid-template-areas": "'days'"
+                  }
+                ],
+                "custom_fields": [
+                  {
+                    "days": [
+                      {
+                        "width": "100%"
+                      }
+                    ]
+                  }
+                ]
+              },
+              "grid_options": {
+                "columns": 12,
+                "rows": 2
+              }
+            },
+            {
+              "type": "custom:button-card",
+              "entity": "sensor.wby61ef0205y05981_state_of_charge_predicted_on_integration_side",
+              "name": "BMW iX1",
+              "icon": "mdi:car-electric-outline",
+              "show_state": false,
+              "show_label": true,
+              "label": "[[[ const soc=states['sensor.wby61ef0205y05981_state_of_charge_predicted_on_integration_side']; const range=states['sensor.ix1_xdrive30_range_ev_remaining_range']; return `Ladezustand ${soc?hass.formatEntityState(soc):'–'}   ·   Reichweite ${range?hass.formatEntityState(range):'–'}`; ]]]",
+              "tap_action": {
+                "action": "more-info"
+              },
+              "styles": {
+                "card": [
+                  {
+                    "height": "76px"
+                  },
+                  {
+                    "border-radius": "16px"
+                  },
+                  {
+                    "padding": "9px 16px"
+                  },
+                  {
+                    "border": "1px solid var(--divider-color)"
+                  },
+                  {
+                    "background": "linear-gradient(135deg, color-mix(in srgb, var(--card-background-color) 93%, #2696c7 7%), var(--card-background-color))"
+                  }
+                ],
+                "grid": [
+                  {
+                    "grid-template-areas": "'i n' 'i l'"
+                  },
+                  {
+                    "grid-template-columns": "46px 1fr"
+                  }
+                ],
+                "icon": [
+                  {
+                    "width": "25px"
+                  },
+                  {
+                    "color": "#2696c7"
+                  }
+                ],
+                "name": [
+                  {
+                    "justify-self": "start"
+                  },
+                  {
+                    "font-size": "14px"
+                  }
+                ],
+                "label": [
+                  {
+                    "justify-self": "start"
+                  },
+                  {
+                    "font-size": "17px"
+                  },
+                  {
+                    "font-weight": "600"
+                  },
+                  {
+                    "white-space": "nowrap"
+                  }
+                ],
+                "img_cell": [
+                  {
+                    "width": "40px"
+                  },
+                  {
+                    "height": "40px"
+                  },
+                  {
+                    "border-radius": "12px"
+                  },
+                  {
+                    "background": "color-mix(in srgb, #2696c7 16%, transparent)"
+                  }
+                ]
+              },
+              "grid_options": {
+                "columns": 12,
+                "rows": 2
+              }
+            }
+          ]
+        },
+        {
+          "type": "grid",
+          "cards": [
+            {
+              "type": "custom:button-card",
+              "name": "Hinweise",
+              "label": "[[[ const lines=[]; const doors=[\"binary_sensor.kuhlschrank_kuhlschranktur\", \"binary_sensor.kuhlschrank_gefrierschranktur\", \"binary_sensor.kuhlschrank_coolselect_tur\"]; const names=['Kühlschranktür offen','Gefrierschranktür offen','CoolSelect-Tür offen']; doors.forEach((id,i)=>{if(states[id]?.state==='on')lines.push('🚪 '+names[i]);}); const run=states['input_boolean.trockner_lauf_aktiv']; const end=states['automation.trockner_lauf_fertig']?.attributes?.last_triggered; if(run?.state==='on')lines.push('🧺 Trockner läuft'); else if(end && Date.now()-Date.parse(end)<86400000) lines.push('🧺 Trockner: letzte Fertigmeldung '+new Date(end).toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'})); const bad=[\"sensor.weather_station_temperatur\", \"sensor.weather_station_kohlendioxid\", \"sensor.weather_station_luftfeuchtigkeit\", \"light.wohnzimmer_weisslicht\", \"light.wohnzimmer_farblicht\", \"light.hue_filament_bulb_3\", \"light.hue_filament_bulb_2\", \"light.hue_filament_bulb_1\", \"light.hue_play_gradient_lightstrip_1\", \"light.hue_color_floor_1\", \"light.wohnzimmer\", \"cover.wohnzimmerfenster_rollo\", \"media_player.wohnzimmer\", \"media_player.tv_65_wohnzimmer\", \"media_player.tv\", \"sensor.wohnzimmerfenster_rollo_leistung\", \"sensor.wohnzimmerfenster_rollo_energie\", \"sensor.shellypstripg4_d885ace4e950_output_0_leistung\", \"sensor.shellypstripg4_d885ace4e950_output_1_leistung\", \"sensor.shellypstripg4_d885ace4e950_output_2_leistung\", \"sensor.shellypstripg4_d885ace4e950_output_3_leistung\", \"sensor.shellypstripg4_d885ace4e950_output_0_energie\", \"sensor.shellypstripg4_d885ace4e950_output_1_energie\", \"sensor.shellypstripg4_d885ace4e950_output_2_energie\", \"sensor.shellypstripg4_d885ace4e950_output_3_energie\", \"sensor.hue_filament_bulb_1_power\", \"sensor.hue_filament_bulb_1_energy\", \"sensor.hue_filament_bulb_2_power\", \"sensor.hue_filament_bulb_2_energy\", \"sensor.hue_filament_bulb_3_power\", \"sensor.hue_filament_bulb_3_energy\", \"sensor.hue_color_floor_1_power\", \"sensor.hue_color_floor_1_energy\", \"switch.shellypstripg4_d885ace4e950_output_0\", \"switch.shellypstripg4_d885ace4e950_output_1\", \"switch.shellypstripg4_d885ace4e950_output_2\", \"switch.shellypstripg4_d885ace4e950_output_3\", \"sensor.weather_station_atmospharischer_druck\", \"sensor.weather_station_larm\", \"sensor.hue_motion_sensor_3_temperatur\", \"light.kueche_weisslicht\", \"light.kueche_farblicht\", \"light.theke_4\", \"light.theke_1\", \"light.theke_3\", \"light.kuche_decke\", \"light.hue_color_lamp_1\", \"light.kuche\", \"sensor.kaffeevollautomat_betriebszustand\", \"sensor.kuhlschrank_kuhlschranktemperatur\", \"sensor.kuhlschrank_gefrierschranktemperatur\", \"sensor.kuhlschrank_energie\", \"sensor.kuhlschrank_leistung\", \"sensor.shellyplugmg3_0892724df770_leistung\", \"sensor.shellyplugmg3_0892724df770_energie\", \"sensor.shellyplugmg3_70af09e33520_leistung\", \"sensor.shellyplugmg3_70af09e33520_energie\", \"sensor.hue_color_lamp_1_power\", \"sensor.hue_color_lamp_1_energy\", \"sensor.theke_1_power\", \"sensor.theke_1_energy\", \"sensor.theke_3_power\", \"sensor.theke_3_energy\", \"sensor.theke_4_power\", \"sensor.theke_4_energy\", \"sensor.kuche_decke_power\", \"sensor.kuche_decke_energy\", \"switch.kuhlschrank_eiswurfel\", \"switch.kuhlschrank_ice_bites\", \"switch.shellyplugmg3_0892724df770\", \"switch.kaffeevollautomat_einschalter\", \"switch.kaffeevollautomat_kindersicherung\", \"switch.kuche_kaffeevollautomat_mehrere_getranke\", \"switch.shellyplugmg3_70af09e33520\", \"sensor.kuhlschrank_wasserfilterverbrauch\", \"sensor.hue_motion_sensor_3_beleuchtungsstarke\", \"sensor.kuche_kuche_beleuchtungsstarke\", \"sensor.kaffeevollautomat_programm_endzeit\", \"sensor.kaffeevollautomat_programm_fortschritt\", \"light.esszimmer_weisslicht\", \"light.esszimmer_farblicht\", \"light.hue_play_2\", \"light.hue_play_3\", \"light.esszimmertisch\", \"light.hue_play_1\", \"light.esszimmer\", \"cover.terrassentur_rollo_rollo_terrassentur\", \"media_player.homepod_esszimmer\", \"sensor.terrassentur_rollo_rollo_terrassentur_leistung\", \"sensor.terrassentur_rollo_rollo_terrassentur_energie\", \"sensor.esszimmertisch_power\", \"sensor.esszimmertisch_energy\", \"sensor.hue_play_1_power\", \"sensor.hue_play_1_energy\", \"sensor.hue_play_2_power\", \"sensor.hue_play_2_energy\", \"sensor.hue_play_3_power\", \"sensor.hue_play_3_energy\", \"sensor.weather_station_schlafzimmer_temperatur\", \"sensor.weather_station_schlafzimmer_kohlendioxid\", \"sensor.weather_station_schlafzimmer_luftfeuchtigkeit\", \"light.schlafzimmer_weisslicht\", \"light.schlafzimmer_farblicht\", \"light.schlafzimmer_decke\", \"light.schlafzimmer\", \"light.stehlampe_schlafzimmer\", \"cover.rollo_schlafzimmer\", \"media_player.schlafzimmer\", \"sensor.rollo_schlafzimmer_leistung\", \"sensor.rollo_schlafzimmer_energie\", \"sensor.schlafzimmer_schlafzimmer_tv_leistung\", \"sensor.schlafzimmer_schlafzimmer_tv_energie\", \"sensor.schlafzimmer_decke_power\", \"sensor.schlafzimmer_decke_energy\", \"sensor.stehlampe_schlafzimmer_power\", \"sensor.stehlampe_schlafzimmer_energy\", \"switch.schlafzimmer_schlafzimmer_tv\", \"sensor.weather_station_gastezimmer_temperatur\", \"sensor.weather_station_gastezimmer_kohlendioxid\", \"sensor.weather_station_gastezimmer_luftfeuchtigkeit\", \"light.gastezimmer_2\", \"light.gaestezimmer_decke\", \"light.stehlampe_gaestezimmer\", \"cover.shelly2pmg3_8cbfea9a6bb0_rollo_gastezimmer\", \"media_player.apple_tv_gaeste\", \"sensor.shelly2pmg3_8cbfea9a6bb0_rollo_gastezimmer_leistung\", \"sensor.shelly2pmg3_8cbfea9a6bb0_rollo_gastezimmer_energie\", \"sensor.gastezimmer_plug_tx_gastezimmer_leistung\", \"sensor.gastezimmer_plug_tx_gastezimmer_energie\", \"sensor.gaestezimmer_decke_power\", \"sensor.gaestezimmer_decke_energy\", \"sensor.stehlampe_gaestezimmer_power\", \"sensor.stehlampe_gaestezimmer_energy\", \"switch.gastezimmer_plug_tx_gastezimmer\", \"sensor.hue_motion_sensor_2_temperatur\", \"sensor.hue_motion_sensor_4_temperatur\", \"light.flur\", \"light.dekolampe\", \"light.flur_1\", \"light.flur_2\", \"vacuum.s8_maxv_ultra\", \"sensor.s8_maxv_ultra_batterie\", \"sensor.s8_maxv_ultra_status\", \"sensor.s8_maxv_ultra_staubsauger_fehler\", \"sensor.dekolampe_power\", \"sensor.dekolampe_energy\", \"sensor.flur_1_power\", \"sensor.flur_1_energy\", \"sensor.flur_2_power\", \"sensor.flur_2_energy\", \"sensor.flur_beleuchtungsstarke\", \"sensor.hue_motion_sensor_2_beleuchtungsstarke\", \"sensor.hue_motion_sensor_4_beleuchtungsstarke\", \"light.gaste_wc\", \"light.toilette\", \"cover.shelly2pmg3_8cbfea97b428_rollo_gaste_wc\", \"sensor.stecker_waschmaschine_leistung\", \"sensor.stecker_waschetrockner_leistung\", \"sensor.shelly2pmg3_8cbfea97b428_rollo_gaste_wc_leistung\", \"sensor.shelly2pmg3_8cbfea97b428_rollo_gaste_wc_energie\", \"sensor.stecker_waschetrockner_energie\", \"sensor.stecker_waschmaschine_energie\", \"sensor.toilette_power\", \"sensor.toilette_energy\", \"switch.stecker_waschetrockner\", \"switch.stecker_waschmaschine\", \"sensor.abstellkammer_temperatur\", \"light.abstellkammer_2\", \"light.abstellkammer\", \"sensor.shellyplugmg3_089272576804_leistung\", \"sensor.shellyplugmg3_089272576804_energie\", \"sensor.abstellkammer_power\", \"sensor.abstellkammer_energy\", \"switch.shellyplugmg3_089272576804\", \"sensor.abstellkammer_beleuchtungsstarke\", \"sensor.weather_station_bad_temperatur\", \"sensor.weather_station_bad_kohlendioxid\", \"sensor.weather_station_bad_luftfeuchtigkeit\", \"cover.shelly2pmg3_8cbfea9cc4f4_rollo_bad\", \"media_player.homepod_bad\", \"sensor.shelly2pmg3_8cbfea9cc4f4_rollo_bad_leistung\", \"sensor.shelly2pmg3_8cbfea9cc4f4_rollo_bad_energie\", \"sensor.homepod_bad_power\", \"sensor.homepod_bad_energy\", \"sensor.weather_station_aussen_temperatur\", \"sensor.weather_station_aussen_luftfeuchtigkeit\", \"light.terrasse_scheinwerfer\", \"sensor.shellyoutdoorsg3_48f6eeb5d230_leistung\", \"sensor.shellyoutdoorsg3_48f6eeb5d230_energie\", \"switch.shellyoutdoorsg3_48f6eeb5d230\", \"switch.terrasse_terrasse_led\", \"sensor.weather_station_aussen_temperatur_trend\", \"sensor.weather_station_windmesser_windrichtung\", \"sensor.weather_station_windmesser_windgeschwindigkeit\", \"sensor.weather_station_regenmesser_niederschlagsmenge\", \"sensor.weather_station_regenmesser_niederschlagsmenge_letzte_stunde\", \"sensor.weather_station_regenmesser_niederschlagsmenge_heute\", \"sensor.terrasse_terrasse_battery\"].filter(id=>states[id]?.state==='unavailable'); if(bad.length)lines.push('⚠ '+bad.length+' Geräte/Messwerte nicht erreichbar'); return lines.length ? lines.join(' · ') : 'Keine offenen Kühlschranktüren oder gemeldeten Ausfälle'; ]]]",
+              "show_label": true,
+              "icon": "mdi:information-outline",
+              "triggers_update": [
+                "sensor.weather_station_temperatur",
+                "sensor.weather_station_kohlendioxid",
+                "sensor.weather_station_luftfeuchtigkeit",
+                "light.wohnzimmer_weisslicht",
+                "light.wohnzimmer_farblicht",
+                "light.hue_filament_bulb_3",
+                "light.hue_filament_bulb_2",
+                "light.hue_filament_bulb_1",
+                "light.hue_play_gradient_lightstrip_1",
+                "light.hue_color_floor_1",
+                "light.wohnzimmer",
+                "cover.wohnzimmerfenster_rollo",
+                "media_player.wohnzimmer",
+                "media_player.tv_65_wohnzimmer",
+                "media_player.tv",
+                "sensor.wohnzimmerfenster_rollo_leistung",
+                "sensor.wohnzimmerfenster_rollo_energie",
+                "sensor.shellypstripg4_d885ace4e950_output_0_leistung",
+                "sensor.shellypstripg4_d885ace4e950_output_1_leistung",
+                "sensor.shellypstripg4_d885ace4e950_output_2_leistung",
+                "sensor.shellypstripg4_d885ace4e950_output_3_leistung",
+                "sensor.shellypstripg4_d885ace4e950_output_0_energie",
+                "sensor.shellypstripg4_d885ace4e950_output_1_energie",
+                "sensor.shellypstripg4_d885ace4e950_output_2_energie",
+                "sensor.shellypstripg4_d885ace4e950_output_3_energie",
+                "sensor.hue_filament_bulb_1_power",
+                "sensor.hue_filament_bulb_1_energy",
+                "sensor.hue_filament_bulb_2_power",
+                "sensor.hue_filament_bulb_2_energy",
+                "sensor.hue_filament_bulb_3_power",
+                "sensor.hue_filament_bulb_3_energy",
+                "sensor.hue_color_floor_1_power",
+                "sensor.hue_color_floor_1_energy",
+                "switch.shellypstripg4_d885ace4e950_output_0",
+                "switch.shellypstripg4_d885ace4e950_output_1",
+                "switch.shellypstripg4_d885ace4e950_output_2",
+                "switch.shellypstripg4_d885ace4e950_output_3",
+                "sensor.weather_station_atmospharischer_druck",
+                "sensor.weather_station_larm",
+                "sensor.hue_motion_sensor_3_temperatur",
+                "light.kueche_weisslicht",
+                "light.kueche_farblicht",
+                "light.theke_4",
+                "light.theke_1",
+                "light.theke_3",
+                "light.kuche_decke",
+                "light.hue_color_lamp_1",
+                "light.kuche",
+                "sensor.kaffeevollautomat_betriebszustand",
+                "sensor.kuhlschrank_kuhlschranktemperatur",
+                "sensor.kuhlschrank_gefrierschranktemperatur",
+                "sensor.kuhlschrank_energie",
+                "sensor.kuhlschrank_leistung",
+                "sensor.shellyplugmg3_0892724df770_leistung",
+                "sensor.shellyplugmg3_0892724df770_energie",
+                "sensor.shellyplugmg3_70af09e33520_leistung",
+                "sensor.shellyplugmg3_70af09e33520_energie",
+                "sensor.hue_color_lamp_1_power",
+                "sensor.hue_color_lamp_1_energy",
+                "sensor.theke_1_power",
+                "sensor.theke_1_energy",
+                "sensor.theke_3_power",
+                "sensor.theke_3_energy",
+                "sensor.theke_4_power",
+                "sensor.theke_4_energy",
+                "sensor.kuche_decke_power",
+                "sensor.kuche_decke_energy",
+                "switch.kuhlschrank_eiswurfel",
+                "switch.kuhlschrank_ice_bites",
+                "switch.shellyplugmg3_0892724df770",
+                "switch.kaffeevollautomat_einschalter",
+                "switch.kaffeevollautomat_kindersicherung",
+                "switch.kuche_kaffeevollautomat_mehrere_getranke",
+                "switch.shellyplugmg3_70af09e33520",
+                "sensor.kuhlschrank_wasserfilterverbrauch",
+                "sensor.hue_motion_sensor_3_beleuchtungsstarke",
+                "sensor.kuche_kuche_beleuchtungsstarke",
+                "sensor.kaffeevollautomat_programm_endzeit",
+                "sensor.kaffeevollautomat_programm_fortschritt",
+                "light.esszimmer_weisslicht",
+                "light.esszimmer_farblicht",
+                "light.hue_play_2",
+                "light.hue_play_3",
+                "light.esszimmertisch",
+                "light.hue_play_1",
+                "light.esszimmer",
+                "cover.terrassentur_rollo_rollo_terrassentur",
+                "media_player.homepod_esszimmer",
+                "sensor.terrassentur_rollo_rollo_terrassentur_leistung",
+                "sensor.terrassentur_rollo_rollo_terrassentur_energie",
+                "sensor.esszimmertisch_power",
+                "sensor.esszimmertisch_energy",
+                "sensor.hue_play_1_power",
+                "sensor.hue_play_1_energy",
+                "sensor.hue_play_2_power",
+                "sensor.hue_play_2_energy",
+                "sensor.hue_play_3_power",
+                "sensor.hue_play_3_energy",
+                "sensor.weather_station_schlafzimmer_temperatur",
+                "sensor.weather_station_schlafzimmer_kohlendioxid",
+                "sensor.weather_station_schlafzimmer_luftfeuchtigkeit",
+                "light.schlafzimmer_weisslicht",
+                "light.schlafzimmer_farblicht",
+                "light.schlafzimmer_decke",
+                "light.schlafzimmer",
+                "light.stehlampe_schlafzimmer",
+                "cover.rollo_schlafzimmer",
+                "media_player.schlafzimmer",
+                "sensor.rollo_schlafzimmer_leistung",
+                "sensor.rollo_schlafzimmer_energie",
+                "sensor.schlafzimmer_schlafzimmer_tv_leistung",
+                "sensor.schlafzimmer_schlafzimmer_tv_energie",
+                "sensor.schlafzimmer_decke_power",
+                "sensor.schlafzimmer_decke_energy",
+                "sensor.stehlampe_schlafzimmer_power",
+                "sensor.stehlampe_schlafzimmer_energy",
+                "switch.schlafzimmer_schlafzimmer_tv",
+                "sensor.weather_station_gastezimmer_temperatur",
+                "sensor.weather_station_gastezimmer_kohlendioxid",
+                "sensor.weather_station_gastezimmer_luftfeuchtigkeit",
+                "light.gastezimmer_2",
+                "light.gaestezimmer_decke",
+                "light.stehlampe_gaestezimmer",
+                "cover.shelly2pmg3_8cbfea9a6bb0_rollo_gastezimmer",
+                "media_player.apple_tv_gaeste",
+                "sensor.shelly2pmg3_8cbfea9a6bb0_rollo_gastezimmer_leistung",
+                "sensor.shelly2pmg3_8cbfea9a6bb0_rollo_gastezimmer_energie",
+                "sensor.gastezimmer_plug_tx_gastezimmer_leistung",
+                "sensor.gastezimmer_plug_tx_gastezimmer_energie",
+                "sensor.gaestezimmer_decke_power",
+                "sensor.gaestezimmer_decke_energy",
+                "sensor.stehlampe_gaestezimmer_power",
+                "sensor.stehlampe_gaestezimmer_energy",
+                "switch.gastezimmer_plug_tx_gastezimmer",
+                "sensor.hue_motion_sensor_2_temperatur",
+                "sensor.hue_motion_sensor_4_temperatur",
+                "light.flur",
+                "light.dekolampe",
+                "light.flur_1",
+                "light.flur_2",
+                "vacuum.s8_maxv_ultra",
+                "sensor.s8_maxv_ultra_batterie",
+                "sensor.s8_maxv_ultra_status",
+                "sensor.s8_maxv_ultra_staubsauger_fehler",
+                "sensor.dekolampe_power",
+                "sensor.dekolampe_energy",
+                "sensor.flur_1_power",
+                "sensor.flur_1_energy",
+                "sensor.flur_2_power",
+                "sensor.flur_2_energy",
+                "sensor.flur_beleuchtungsstarke",
+                "sensor.hue_motion_sensor_2_beleuchtungsstarke",
+                "sensor.hue_motion_sensor_4_beleuchtungsstarke",
+                "light.gaste_wc",
+                "light.toilette",
+                "cover.shelly2pmg3_8cbfea97b428_rollo_gaste_wc",
+                "sensor.stecker_waschmaschine_leistung",
+                "sensor.stecker_waschetrockner_leistung",
+                "sensor.shelly2pmg3_8cbfea97b428_rollo_gaste_wc_leistung",
+                "sensor.shelly2pmg3_8cbfea97b428_rollo_gaste_wc_energie",
+                "sensor.stecker_waschetrockner_energie",
+                "sensor.stecker_waschmaschine_energie",
+                "sensor.toilette_power",
+                "sensor.toilette_energy",
+                "switch.stecker_waschetrockner",
+                "switch.stecker_waschmaschine",
+                "sensor.abstellkammer_temperatur",
+                "light.abstellkammer_2",
+                "light.abstellkammer",
+                "sensor.shellyplugmg3_089272576804_leistung",
+                "sensor.shellyplugmg3_089272576804_energie",
+                "sensor.abstellkammer_power",
+                "sensor.abstellkammer_energy",
+                "switch.shellyplugmg3_089272576804",
+                "sensor.abstellkammer_beleuchtungsstarke",
+                "sensor.weather_station_bad_temperatur",
+                "sensor.weather_station_bad_kohlendioxid",
+                "sensor.weather_station_bad_luftfeuchtigkeit",
+                "cover.shelly2pmg3_8cbfea9cc4f4_rollo_bad",
+                "media_player.homepod_bad",
+                "sensor.shelly2pmg3_8cbfea9cc4f4_rollo_bad_leistung",
+                "sensor.shelly2pmg3_8cbfea9cc4f4_rollo_bad_energie",
+                "sensor.homepod_bad_power",
+                "sensor.homepod_bad_energy",
+                "sensor.weather_station_aussen_temperatur",
+                "sensor.weather_station_aussen_luftfeuchtigkeit",
+                "light.terrasse_scheinwerfer",
+                "sensor.shellyoutdoorsg3_48f6eeb5d230_leistung",
+                "sensor.shellyoutdoorsg3_48f6eeb5d230_energie",
+                "switch.shellyoutdoorsg3_48f6eeb5d230",
+                "switch.terrasse_terrasse_led",
+                "sensor.weather_station_aussen_temperatur_trend",
+                "sensor.weather_station_windmesser_windrichtung",
+                "sensor.weather_station_windmesser_windgeschwindigkeit",
+                "sensor.weather_station_regenmesser_niederschlagsmenge",
+                "sensor.weather_station_regenmesser_niederschlagsmenge_letzte_stunde",
+                "sensor.weather_station_regenmesser_niederschlagsmenge_heute",
+                "sensor.terrasse_terrasse_battery",
+                "binary_sensor.kuhlschrank_kuhlschranktur",
+                "binary_sensor.kuhlschrank_gefrierschranktur",
+                "binary_sensor.kuhlschrank_coolselect_tur",
+                "input_boolean.trockner_lauf_aktiv",
+                "automation.trockner_lauf_fertig"
+              ],
+              "tap_action": {
+                "action": "navigate",
+                "navigation_path": "/dashboard-haus/haussteuerung"
+              },
+              "styles": {
+                "card": [
+                  {
+                    "min-height": "64px"
+                  },
+                  {
+                    "padding": "10px 12px"
+                  },
+                  {
+                    "border-radius": "14px"
+                  }
+                ],
+                "grid": [
+                  {
+                    "grid-template-areas": "'i n' 'i l'"
+                  },
+                  {
+                    "grid-template-columns": "30px 1fr"
+                  }
+                ],
+                "icon": [
+                  {
+                    "width": "22px"
+                  }
+                ],
+                "name": [
+                  {
+                    "justify-self": "start"
+                  },
+                  {
+                    "font-size": "13px"
+                  }
+                ],
+                "label": [
+                  {
+                    "white-space": "normal"
+                  },
+                  {
+                    "text-align": "left"
+                  },
+                  {
+                    "justify-self": "start"
+                  },
+                  {
+                    "font-size": "12px"
+                  }
+                ]
+              }
+            },
+            {
+              "type": "heading",
+              "heading": "Regenradar",
+              "icon": "mdi:radar"
+            },
+            {
+              "type": "custom:weather-radar-card",
+              "data_source": "DWD",
+              "past_minutes": 30,
+              "forecast_minutes": 120,
+              "frame_stride_minutes": 5,
+              "frame_delay": 650,
+              "restart_delay": 1400,
+              "smooth_animation": true,
+              "motion_compensation": true,
+              "radar_opacity": 0.9,
+              "zoom_level": 8,
+              "center_latitude": 50.7899532,
+              "center_longitude": 8.7686572,
+              "map_style": "OSM",
+              "markers": [
+                {
+                  "entity": "zone.home",
+                  "icon": "mdi:home-map-marker",
+                  "color": "#2f5aa8"
+                }
+              ],
+              "show_color_bar": true,
+              "show_progress_bar": true,
+              "progress_bar_touch_height": 36,
+              "show_playback": true,
+              "show_recenter": true,
+              "show_zoom": false,
+              "show_scale": false,
+              "extra_labels": true,
+              "disable_scroll": true,
+              "show_lightning": true,
+              "lightning_max_age_minutes": 30,
+              "lightning_pulse": true,
+              "height": "255px",
+              "grid_options": {
+                "columns": 12,
+                "rows": 3
+              }
+            },
+            {
+              "type": "heading",
+              "heading": "Hausmodus",
+              "icon": "mdi:home-switch-outline"
+            },
+            {
+              "type": "grid",
+              "columns": 2,
+              "square": false,
+              "cards": [
+                {
+                  "type": "custom:button-card",
+                  "name": "Haus verlassen",
+                  "icon": "mdi:exit-run",
+                  "show_state": false,
+                  "styles": {
+                    "card": [
+                      {
+                        "height": "62px"
+                      },
+                      {
+                        "border-radius": "16px"
+                      },
+                      {
+                        "padding": "7px 11px"
+                      },
+                      {
+                        "border": "1px solid var(--divider-color)"
+                      },
+                      {
+                        "background": "linear-gradient(135deg, color-mix(in srgb, var(--card-background-color) 95%, #dd725f 5%), var(--card-background-color))"
+                      }
+                    ],
+                    "grid": [
+                      {
+                        "grid-template-areas": "'i n'"
+                      },
+                      {
+                        "grid-template-columns": "36px 1fr"
+                      }
+                    ],
+                    "icon": [
+                      {
+                        "width": "21px"
+                      },
+                      {
+                        "color": "#dd725f"
+                      }
+                    ],
+                    "name": [
+                      {
+                        "justify-self": "start"
+                      },
+                      {
+                        "font-size": "14px"
+                      }
+                    ],
+                    "img_cell": [
+                      {
+                        "width": "34px"
+                      },
+                      {
+                        "height": "34px"
+                      },
+                      {
+                        "border-radius": "11px"
+                      },
+                      {
+                        "background": "color-mix(in srgb, #dd725f 16%, transparent)"
+                      }
+                    ]
+                  },
+                  "tap_action": {
+                    "action": "perform-action",
+                    "perform_action": "script.turn_on",
+                    "target": {
+                      "entity_id": "script.ipad_haus_verlassen"
+                    },
+                    "confirmation": {
+                      "text": "Lichtzustand speichern und alle Lichter außer dem Flur ausschalten?"
+                    }
+                  }
+                },
+                {
+                  "type": "custom:button-card",
+                  "name": "Wieder da",
+                  "icon": "mdi:home-import-outline",
+                  "show_state": false,
+                  "styles": {
+                    "card": [
+                      {
+                        "height": "62px"
+                      },
+                      {
+                        "border-radius": "16px"
+                      },
+                      {
+                        "padding": "7px 11px"
+                      },
+                      {
+                        "border": "1px solid var(--divider-color)"
+                      },
+                      {
+                        "background": "linear-gradient(135deg, color-mix(in srgb, var(--card-background-color) 95%, #45a877 5%), var(--card-background-color))"
+                      }
+                    ],
+                    "grid": [
+                      {
+                        "grid-template-areas": "'i n'"
+                      },
+                      {
+                        "grid-template-columns": "36px 1fr"
+                      }
+                    ],
+                    "icon": [
+                      {
+                        "width": "21px"
+                      },
+                      {
+                        "color": "#45a877"
+                      }
+                    ],
+                    "name": [
+                      {
+                        "justify-self": "start"
+                      },
+                      {
+                        "font-size": "14px"
+                      }
+                    ],
+                    "img_cell": [
+                      {
+                        "width": "34px"
+                      },
+                      {
+                        "height": "34px"
+                      },
+                      {
+                        "border-radius": "11px"
+                      },
+                      {
+                        "background": "color-mix(in srgb, #45a877 16%, transparent)"
+                      }
+                    ]
+                  },
+                  "tap_action": {
+                    "action": "perform-action",
+                    "perform_action": "script.turn_on",
+                    "target": {
+                      "entity_id": "script.ipad_wieder_da"
+                    }
+                  }
+                }
+              ]
+            },
+            {
+              "type": "heading",
+              "heading": "Rollos",
+              "icon": "mdi:window-shutter-settings"
+            },
+            {
+              "type": "grid",
+              "columns": 2,
+              "square": false,
+              "cards": [
+                {
+                  "type": "custom:button-card",
+                  "name": "Alle öffnen",
+                  "icon": "mdi:window-shutter-open",
+                  "styles": {
+                    "card": [
+                      {
+                        "height": "62px"
+                      },
+                      {
+                        "border-radius": "16px"
+                      },
+                      {
+                        "padding": "7px 11px"
+                      },
+                      {
+                        "border": "1px solid var(--divider-color)"
+                      },
+                      {
+                        "background": "linear-gradient(135deg, color-mix(in srgb, var(--card-background-color) 95%, #4f91c8 5%), var(--card-background-color))"
+                      }
+                    ],
+                    "grid": [
+                      {
+                        "grid-template-areas": "'i n'"
+                      },
+                      {
+                        "grid-template-columns": "36px 1fr"
+                      }
+                    ],
+                    "icon": [
+                      {
+                        "width": "21px"
+                      },
+                      {
+                        "color": "#4f91c8"
+                      }
+                    ],
+                    "name": [
+                      {
+                        "justify-self": "start"
+                      },
+                      {
+                        "font-size": "14px"
+                      }
+                    ],
+                    "img_cell": [
+                      {
+                        "width": "34px"
+                      },
+                      {
+                        "height": "34px"
+                      },
+                      {
+                        "border-radius": "11px"
+                      },
+                      {
+                        "background": "color-mix(in srgb, #4f91c8 16%, transparent)"
+                      }
+                    ]
+                  },
+                  "tap_action": {
+                    "action": "perform-action",
+                    "perform_action": "script.turn_on",
+                    "target": {
+                      "entity_id": "script.rollos_alle_oeffnen_schlafzimmer_87"
+                    }
+                  }
+                },
+                {
+                  "type": "custom:button-card",
+                  "name": "Alle schließen",
+                  "icon": "mdi:window-shutter",
+                  "styles": {
+                    "card": [
+                      {
+                        "height": "62px"
+                      },
+                      {
+                        "border-radius": "16px"
+                      },
+                      {
+                        "padding": "7px 11px"
+                      },
+                      {
+                        "border": "1px solid var(--divider-color)"
+                      },
+                      {
+                        "background": "linear-gradient(135deg, color-mix(in srgb, var(--card-background-color) 95%, #8568c5 5%), var(--card-background-color))"
+                      }
+                    ],
+                    "grid": [
+                      {
+                        "grid-template-areas": "'i n'"
+                      },
+                      {
+                        "grid-template-columns": "36px 1fr"
+                      }
+                    ],
+                    "icon": [
+                      {
+                        "width": "21px"
+                      },
+                      {
+                        "color": "#8568c5"
+                      }
+                    ],
+                    "name": [
+                      {
+                        "justify-self": "start"
+                      },
+                      {
+                        "font-size": "14px"
+                      }
+                    ],
+                    "img_cell": [
+                      {
+                        "width": "34px"
+                      },
+                      {
+                        "height": "34px"
+                      },
+                      {
+                        "border-radius": "11px"
+                      },
+                      {
+                        "background": "color-mix(in srgb, #8568c5 16%, transparent)"
+                      }
+                    ]
+                  },
+                  "tap_action": {
+                    "action": "perform-action",
+                    "perform_action": "script.turn_on",
+                    "target": {
+                      "entity_id": "script.rollos_alle_schliesen_30_komfortposition"
+                    },
+                    "confirmation": {
+                      "text": "Alle Rollos in die Komfortposition fahren?"
+                    }
+                  }
+                }
+              ]
+            },
+            {
+              "type": "heading",
+              "heading": "Erfasste Geräte · kein Hausgesamtverbrauch",
+              "icon": "mdi:view-dashboard-outline"
+            },
+            {
+              "type": "grid",
+              "columns": 1,
+              "square": false,
+              "cards": [
+                {
+                  "type": "custom:haus-power-card",
+                  "entity": "sensor.gesamtleistung_aktuell",
+                  "consumers": [
+                    [
+                      "Kaffee",
+                      "sensor.shellyplugmg3_0892724df770_leistung"
+                    ],
+                    [
+                      "Spülen",
+                      "sensor.shellyplugmg3_70af09e33520_leistung"
+                    ],
+                    [
+                      "TV SZ",
+                      "sensor.schlafzimmer_schlafzimmer_tv_leistung"
+                    ],
+                    [
+                      "Waschen",
+                      "sensor.stecker_waschmaschine_leistung"
+                    ],
+                    [
+                      "Trockner",
+                      "sensor.stecker_waschetrockner_leistung"
+                    ],
+                    [
+                      "TV/Yamaha",
+                      "sensor.shellypstripg4_d885ace4e950_output_0_leistung"
+                    ],
+                    [
+                      "Playstation",
+                      "sensor.shellypstripg4_d885ace4e950_output_1_leistung"
+                    ],
+                    [
+                      "Backlight",
+                      "sensor.shellypstripg4_d885ace4e950_output_2_leistung"
+                    ],
+                    [
+                      "Ei",
+                      "sensor.shellypstripg4_d885ace4e950_output_3_leistung"
+                    ],
+                    [
+                      "Outdoor",
+                      "sensor.shellyoutdoorsg3_48f6eeb5d230_leistung"
+                    ],
+                    [
+                      "Rollo WZ",
+                      "sensor.wohnzimmerfenster_rollo_leistung"
+                    ],
+                    [
+                      "Rollo Terrasse",
+                      "sensor.terrassentur_rollo_rollo_terrassentur_leistung"
+                    ],
+                    [
+                      "Rollo SZ",
+                      "sensor.rollo_schlafzimmer_leistung"
+                    ],
+                    [
+                      "Rollo Gäste",
+                      "sensor.shelly2pmg3_8cbfea9a6bb0_rollo_gastezimmer_leistung"
+                    ],
+                    [
+                      "Rollo WC",
+                      "sensor.shelly2pmg3_8cbfea97b428_rollo_gaste_wc_leistung"
+                    ],
+                    [
+                      "Rollo Bad",
+                      "sensor.shelly2pmg3_8cbfea9cc4f4_rollo_bad_leistung"
+                    ],
+                    [
+                      "TV Gäste",
+                      "sensor.gastezimmer_plug_tx_gastezimmer_leistung"
+                    ],
+                    [
+                      "QNAP",
+                      "sensor.shellyplugmg3_089272576804_leistung"
+                    ],
+                    [
+                      "Licht",
+                      "sensor.lichtverbrauch_power"
+                    ]
+                  ],
+                  "max": 6000,
+                  "green": 500,
+                  "red": 2500,
+                  "height": 190,
+                  "max_consumers": 7,
+                  "price_per_kwh": 0.25
+                }
+              ]
+            },
+            {
+              "type": "grid",
+              "columns": 3,
+              "square": false,
+              "cards": [
+                {
+                  "type": "custom:button-card",
+                  "name": "Haussteuerung",
+                  "icon": "mdi:home-automation",
+                  "styles": {
+                    "card": [
+                      {
+                        "height": "52px"
+                      },
+                      {
+                        "border-radius": "16px"
+                      },
+                      {
+                        "padding": "7px 11px"
+                      },
+                      {
+                        "border": "1px solid var(--divider-color)"
+                      },
+                      {
+                        "background": "linear-gradient(135deg, color-mix(in srgb, var(--card-background-color) 95%, #4f91c8 5%), var(--card-background-color))"
+                      }
+                    ],
+                    "grid": [
+                      {
+                        "grid-template-areas": "'i n'"
+                      },
+                      {
+                        "grid-template-columns": "32px 1fr"
+                      }
+                    ],
+                    "icon": [
+                      {
+                        "width": "21px"
+                      },
+                      {
+                        "color": "#4f91c8"
+                      }
+                    ],
+                    "name": [
+                      {
+                        "justify-self": "start"
+                      },
+                      {
+                        "font-size": "13px"
+                      }
+                    ],
+                    "img_cell": [
+                      {
+                        "width": "34px"
+                      },
+                      {
+                        "height": "34px"
+                      },
+                      {
+                        "border-radius": "11px"
+                      },
+                      {
+                        "background": "color-mix(in srgb, #4f91c8 16%, transparent)"
+                      }
+                    ]
+                  },
+                  "tap_action": {
+                    "action": "navigate",
+                    "navigation_path": "/dashboard-haus/haussteuerung"
+                  }
+                },
+                {
+                  "type": "custom:button-card",
+                  "name": "Wetterdetails",
+                  "icon": "mdi:weather-cloudy-clock",
+                  "styles": {
+                    "card": [
+                      {
+                        "height": "52px"
+                      },
+                      {
+                        "border-radius": "16px"
+                      },
+                      {
+                        "padding": "7px 11px"
+                      },
+                      {
+                        "border": "1px solid var(--divider-color)"
+                      },
+                      {
+                        "background": "linear-gradient(135deg, color-mix(in srgb, var(--card-background-color) 95%, #36a39a 5%), var(--card-background-color))"
+                      }
+                    ],
+                    "grid": [
+                      {
+                        "grid-template-areas": "'i n'"
+                      },
+                      {
+                        "grid-template-columns": "32px 1fr"
+                      }
+                    ],
+                    "icon": [
+                      {
+                        "width": "21px"
+                      },
+                      {
+                        "color": "#36a39a"
+                      }
+                    ],
+                    "name": [
+                      {
+                        "justify-self": "start"
+                      },
+                      {
+                        "font-size": "13px"
+                      }
+                    ],
+                    "img_cell": [
+                      {
+                        "width": "34px"
+                      },
+                      {
+                        "height": "34px"
+                      },
+                      {
+                        "border-radius": "11px"
+                      },
+                      {
+                        "background": "color-mix(in srgb, #36a39a 16%, transparent)"
+                      }
+                    ]
+                  },
+                  "tap_action": {
+                    "action": "navigate",
+                    "navigation_path": "/dashboard-wetter/wetter"
+                  }
+                },
+                {
+                  "type": "custom:button-card",
+                  "name": "Energie",
+                  "icon": "mdi:lightning-bolt",
+                  "styles": {
+                    "card": [
+                      {
+                        "height": "52px"
+                      },
+                      {
+                        "border-radius": "16px"
+                      },
+                      {
+                        "padding": "7px 11px"
+                      },
+                      {
+                        "border": "1px solid var(--divider-color)"
+                      },
+                      {
+                        "background": "linear-gradient(135deg, color-mix(in srgb, var(--card-background-color) 95%, #e0a52f 5%), var(--card-background-color))"
+                      }
+                    ],
+                    "grid": [
+                      {
+                        "grid-template-areas": "'i n'"
+                      },
+                      {
+                        "grid-template-columns": "32px 1fr"
+                      }
+                    ],
+                    "icon": [
+                      {
+                        "width": "21px"
+                      },
+                      {
+                        "color": "#e0a52f"
+                      }
+                    ],
+                    "name": [
+                      {
+                        "justify-self": "start"
+                      },
+                      {
+                        "font-size": "13px"
+                      }
+                    ],
+                    "img_cell": [
+                      {
+                        "width": "34px"
+                      },
+                      {
+                        "height": "34px"
+                      },
+                      {
+                        "border-radius": "11px"
+                      },
+                      {
+                        "background": "color-mix(in srgb, #e0a52f 16%, transparent)"
+                      }
+                    ]
+                  },
+                  "tap_action": {
+                    "action": "navigate",
+                    "navigation_path": "/dashboard-energie2/verbrauch"
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

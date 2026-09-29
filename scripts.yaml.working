@@ -1,0 +1,95 @@
+apple_tv_gaste_ruhezustand_in_1h:
+  alias: 'Apple TV Gäste: Ruhezustand in 1h'
+  mode: restart
+  sequence:
+  - delay: 01:00:00
+  - action: media_player.turn_off
+    target:
+      entity_id: media_player.apple_tv_gaeste
+  description: ''
+alles_aus_haus:
+  alias: Alles aus Haus
+  sequence:
+  - target:
+      entity_id:
+      - light.wohnzimmer
+      - light.kuche
+      - light.schlafzimmer
+      - light.gastezimmer
+      - light.bad
+      - light.toilette
+    action: light.turn_off
+  - target:
+      entity_id:
+      - media_player.apple_tv_wohnzimmer
+      - media_player.apple_tv_schlafzimmer
+      - media_player.apple_tv_gastezimmer
+    action: media_player.turn_off
+  mode: single
+  description: ''
+rollos_alle_schliesen_30_komfortposition:
+  alias: Rollos - Alle schließen (30 % Komfortposition)
+  description: Schließt Bad und Gäste-WC vollständig; Wohnzimmer, Terrasse und beide
+    Schlafzimmer bleiben zu 30 % geöffnet.
+  icon: mdi:blinds-horizontal-closed
+  sequence:
+  - action: cover.close_cover
+    target:
+      entity_id:
+      - cover.shelly2pmg3_8cbfea97b428_rollo_gaste_wc
+      - cover.shelly2pmg3_8cbfea9cc4f4_rollo_bad
+  - action: cover.set_cover_position
+    target:
+      entity_id:
+      - cover.wohnzimmerfenster_rollo
+      - cover.terrassentur_rollo_rollo_terrassentur
+      - cover.rollo_schlafzimmer
+      - cover.shelly2pmg3_8cbfea9a6bb0_rollo_gastezimmer
+    data:
+      position: 30
+  mode: single
+kaffeevollautomat_ausgewahltes_getrank_starten:
+  alias: Kaffeevollautomat - Ausgewähltes Getränk starten
+  description: Startet das zuvor am Dashboard ausgewählte Getränk nur bei verbundener,
+    bereiter Maschine und freigegebenem Fernstart.
+  icon: mdi:coffee-to-go-outline
+  mode: single
+  sequence:
+  - condition: state
+    entity_id: binary_sensor.kaffeevollautomat_konnektivitat
+    state: 'on'
+  - condition: state
+    entity_id: binary_sensor.kaffeevollautomat_fernstart
+    state: 'on'
+  - condition: state
+    entity_id: sensor.kaffeevollautomat_betriebszustand
+    state: ready
+  - condition: template
+    value_template: >-
+      {{ states('select.kaffeevollautomat_ausgewahltes_programm')
+         not in ['unknown', 'unavailable', 'none', ''] }}
+  - action: home_connect.set_program_and_options
+    data:
+      device_id: 1c7036dadf412fffe224608f8a1c92e5
+      affects_to: active_program
+      program: "{{ states('select.kaffeevollautomat_ausgewahltes_programm') }}"
+rollos_alle_oeffnen_schlafzimmer_87:
+  alias: Rollos - Alle öffnen (Schlafzimmer 87 %)
+  description: Öffnet alle Rollos vollständig und begrenzt das Schlafzimmerrollo
+    auf 87 Prozent.
+  icon: mdi:window-shutter-open
+  mode: restart
+  sequence:
+  - action: cover.open_cover
+    target:
+      entity_id:
+      - cover.wohnzimmerfenster_rollo
+      - cover.terrassentur_rollo_rollo_terrassentur
+      - cover.shelly2pmg3_8cbfea9a6bb0_rollo_gastezimmer
+      - cover.shelly2pmg3_8cbfea97b428_rollo_gaste_wc
+      - cover.shelly2pmg3_8cbfea9cc4f4_rollo_bad
+  - action: cover.set_cover_position
+    target:
+      entity_id: cover.rollo_schlafzimmer
+    data:
+      position: 87

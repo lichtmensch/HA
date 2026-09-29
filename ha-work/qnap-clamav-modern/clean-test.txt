@@ -1,0 +1,1 @@
+ClamAV container installation test. This file is harmless.

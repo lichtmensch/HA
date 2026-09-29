@@ -1,0 +1,33 @@
+version: "2.3"
+services:
+  mongo:
+    image: mongo:3.6
+    container_name: unifi-mongo-211
+    restart: unless-stopped
+    volumes:
+      - /share/DataVol1/Container/unifi/mongo/db:/data/db
+      - /share/DataVol1/Container/unifi/mongo/configdb:/data/configdb
+    networks:
+      - unifi
+
+  controller:
+    image: jacobalberty/unifi:latest
+    container_name: unifi-controller-211
+    depends_on:
+      - mongo
+    init: true
+    restart: unless-stopped
+    environment:
+      TZ: Europe/Berlin
+      SYSTEM_IP: 192.168.188.211
+      DB_URI: mongodb://mongo/unifi
+      STATDB_URI: mongodb://mongo/unifi_stat
+      DB_NAME: unifi
+    volumes:
+      - /share/DataVol1/Container/unifi/controller:/unifi
+    networks:
+      - unifi
+
+networks:
+  unifi:
+    driver: bridge

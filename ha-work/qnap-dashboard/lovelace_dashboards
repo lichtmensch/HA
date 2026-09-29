@@ -1,0 +1,116 @@
+{
+  "version": 1,
+  "minor_version": 1,
+  "key": "lovelace_dashboards",
+  "data": {
+    "items": [
+      {
+        "id": "dashboard_fritzbox",
+        "show_in_sidebar": false,
+        "title": "Fritzbox",
+        "require_admin": false,
+        "mode": "storage",
+        "url_path": "dashboard-fritzbox"
+      },
+      {
+        "id": "dashboard_basic",
+        "show_in_sidebar": false,
+        "icon": "mdi:roller-shade",
+        "title": "Rollos",
+        "require_admin": false,
+        "mode": "storage",
+        "url_path": "dashboard-basic"
+      },
+      {
+        "id": "ipad_basic",
+        "show_in_sidebar": false,
+        "icon": "mdi:home",
+        "title": "Ipad Basic",
+        "require_admin": false,
+        "mode": "storage",
+        "url_path": "ipad-basic"
+      },
+      {
+        "id": "dashboard_energie2",
+        "url_path": "dashboard-energie2",
+        "title": "Energie",
+        "icon": "mdi:lightning-bolt-circle",
+        "show_in_sidebar": true,
+        "require_admin": false,
+        "mode": "storage"
+      },
+      {
+        "id": "dashboard_licht",
+        "url_path": "dashboard-licht",
+        "title": "Licht",
+        "icon": "mdi:lightbulb",
+        "show_in_sidebar": true,
+        "require_admin": false,
+        "mode": "storage"
+      },
+      {
+        "id": "dashboard_wetter",
+        "url_path": "dashboard-wetter",
+        "title": "Wetter",
+        "icon": "mdi:weather-partly-cloudy",
+        "show_in_sidebar": true,
+        "require_admin": false,
+        "mode": "storage"
+      },
+      {
+        "id": "dashboard_qnap",
+        "url_path": "dashboard-qnap",
+        "title": "QNAP",
+        "icon": "mdi:nas",
+        "show_in_sidebar": true,
+        "require_admin": false,
+        "mode": "storage"
+      },
+      {
+        "id": "dashboard_zuhause",
+        "url_path": "dashboard-zuhause",
+        "title": "Zuhause",
+        "icon": "mdi:home",
+        "show_in_sidebar": true,
+        "require_admin": false,
+        "mode": "storage"
+      },
+      {
+        "id": "dashboard_gutenacht",
+        "url_path": "dashboard-gutenacht",
+        "title": "Gute Nacht",
+        "icon": "mdi:moon-waning-crescent",
+        "show_in_sidebar": false,
+        "require_admin": false,
+        "mode": "storage"
+      },
+      {
+        "id": "dashboard_verlauf",
+        "url_path": "dashboard-verlauf",
+        "title": "Verlauf",
+        "icon": "mdi:chart-line",
+        "show_in_sidebar": false,
+        "require_admin": false,
+        "mode": "storage"
+      },
+      {
+        "id": "dashboard_bmw",
+        "show_in_sidebar": true,
+        "icon": "mdi:car-electric",
+        "title": "BMW iX1",
+        "require_admin": false,
+        "mode": "storage",
+        "url_path": "dashboard-bmw"
+      },
+      {
+        "id": "dashboard_haus",
+        "show_in_sidebar": true,
+        "icon": "mdi:home",
+        "title": "Haussteuerung",
+        "require_admin": false,
+        "mode": "storage",
+        "url_path": "dashboard-haus"
+      }
+    ]
+  }
+}

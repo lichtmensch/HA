@@ -1,0 +1,110 @@
+[
+  {
+    "room": "Wohnzimmer",
+    "lamps": 4,
+    "power": [
+      "sensor.hue_filament_bulb_1_power",
+      "sensor.hue_filament_bulb_2_power",
+      "sensor.hue_filament_bulb_3_power",
+      "sensor.hue_color_floor_1_power"
+    ],
+    "energy": [
+      "sensor.hue_filament_bulb_1_energy",
+      "sensor.hue_filament_bulb_2_energy",
+      "sensor.hue_filament_bulb_3_energy",
+      "sensor.hue_color_floor_1_energy"
+    ]
+  },
+  {
+    "room": "Küche",
+    "lamps": 5,
+    "power": [
+      "sensor.hue_color_lamp_1_power",
+      "sensor.theke_1_power",
+      "sensor.theke_3_power",
+      "sensor.theke_4_power",
+      "sensor.kuche_decke_power"
+    ],
+    "energy": [
+      "sensor.hue_color_lamp_1_energy",
+      "sensor.theke_1_energy",
+      "sensor.theke_3_energy",
+      "sensor.theke_4_energy",
+      "sensor.kuche_decke_energy"
+    ]
+  },
+  {
+    "room": "Esszimmer",
+    "lamps": 4,
+    "power": [
+      "sensor.esszimmertisch_power",
+      "sensor.hue_play_1_power",
+      "sensor.hue_play_2_power",
+      "sensor.hue_play_3_power"
+    ],
+    "energy": [
+      "sensor.esszimmertisch_energy",
+      "sensor.hue_play_1_energy",
+      "sensor.hue_play_2_energy",
+      "sensor.hue_play_3_energy"
+    ]
+  },
+  {
+    "room": "Schlafzimmer",
+    "lamps": 2,
+    "power": [
+      "sensor.schlafzimmer_decke_power",
+      "sensor.stehlampe_schlafzimmer_power"
+    ],
+    "energy": [
+      "sensor.schlafzimmer_decke_energy",
+      "sensor.stehlampe_schlafzimmer_energy"
+    ]
+  },
+  {
+    "room": "Gästezimmer",
+    "lamps": 2,
+    "power": [
+      "sensor.gaestezimmer_decke_power",
+      "sensor.stehlampe_gaestezimmer_power"
+    ],
+    "energy": [
+      "sensor.gaestezimmer_decke_energy",
+      "sensor.stehlampe_gaestezimmer_energy"
+    ]
+  },
+  {
+    "room": "Flur",
+    "lamps": 3,
+    "power": [
+      "sensor.dekolampe_power",
+      "sensor.flur_1_power",
+      "sensor.flur_2_power"
+    ],
+    "energy": [
+      "sensor.dekolampe_energy",
+      "sensor.flur_1_energy",
+      "sensor.flur_2_energy"
+    ]
+  },
+  {
+    "room": "Gäste WC",
+    "lamps": 1,
+    "power": [
+      "sensor.toilette_power"
+    ],
+    "energy": [
+      "sensor.toilette_energy"
+    ]
+  },
+  {
+    "room": "Abstellkammer",
+    "lamps": 1,
+    "power": [
+      "sensor.abstellkammer_power"
+    ],
+    "energy": [
+      "sensor.abstellkammer_energy"
+    ]
+  }
+]

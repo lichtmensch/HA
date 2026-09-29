@@ -1,0 +1,125 @@
+# Persistent bounded model. Only this queued script writes the JSON helper.
+# Missing/uninitialized helper means correction=0, not an early/late bias.
+input_text:
+  bad_heizung_lernstand:
+    name: "Bad Heizung Lernstand"
+    max: 255
+    icon: mdi:brain
+
+script:
+  bad_heizung_lernereignis:
+    alias: "Bad – Vorheizzeit lernen"
+    mode: queued
+    max: 20
+    sequence:
+      - variables:
+          model: "{{ states('input_text.bad_heizung_lernstand') | from_json({}) }}"
+          heute: "{{ now().strftime('%Y-%m-%d') }}"
+          minute: "{{ now().hour * 60 + now().minute }}"
+          zeit: "{{ as_timestamp(now()) | int }}"
+          quelle_ok: >-
+            {% set s = states.sensor.weather_station_bad_temperatur %}
+            {{ is_state('binary_sensor.weather_station_bad_connectivity', 'on')
+               and is_number(s.state) and 5 <= s.state | float <= 35
+               and 0 <= as_timestamp(now()) - as_timestamp(s.last_reported, 0) < 1200 }}
+      - variables:
+          neues_model: >-
+            {% set d = model %}
+            {% if d and d.get('target') != 22.5 %}
+              {# New target: retain today's record, but never learn from a mixed-target session. #}
+              {{ dict(d, target=22.5, correction=0, samples=0, invalid=true,
+                      learned=heute, result='retargeted') }}
+            {% elif ereignis == 'start' and d.get('day') != heute and now().weekday() < 5 and 270 <= minute | int < 420 %}
+              {% set valid = start_gueltig | default(false) and quelle_ok
+                 and starttemperatur | float(99) < 22.5 and minute | int < 360 %}
+              {{ dict(target=22.5, correction=d.get('correction',0), samples=d.get('samples',0),
+                      day=heute, start=zeit, temp=starttemperatur | float(0),
+                      lead=vorlauf | int(0), reached=0, invalid=not valid,
+                      learned=d.get('learned',''), result='running') }}
+            {% elif ereignis != 'start' and d.get('day') == heute and d.get('learned') != heute %}
+              {% set ns = namespace(d=d) %}
+              {% if ereignis == 'restart' or manuell | default(false) %}
+                {% set ns.d = dict(ns.d, invalid=true) %}
+              {% endif %}
+              {% if 270 <= minute | int < 420 %}
+                {% set control_bad = states('climate.heizkorper_bad_thermostat') in ['unknown','unavailable']
+                     or (zeit | int - d.get('start',0) | int > 60 and
+                         (not is_state('climate.heizkorper_bad_thermostat','heat')
+                          or state_attr('climate.heizkorper_bad_thermostat','temperature') != 22.5
+                          or not is_state('switch.heizkorper_bad_externer_temperatursensor','on'))) %}
+                {% if not quelle_ok or control_bad %}
+                  {% set ns.d = dict(ns.d, invalid=true) %}
+                {% endif %}
+                {% if quelle_ok and d.get('reached',0) == 0 and states('sensor.weather_station_bad_temperatur') | float(0) >= 22.5 %}
+                  {% set ns.d = dict(ns.d, reached=zeit) %}
+                {% endif %}
+              {% elif minute | int >= 420 %}
+                {% set correction = d.get('correction',0) | int %}
+                {% set step = 0 %}
+                {% set result = 'skipped' %}
+                {% if not ns.d.get('invalid',true) %}
+                  {% set error = ((d.get('reached',0) | int - as_timestamp(today_at('06:00'))) / 60)
+                      if d.get('reached',0) | int > 0 else 60 %}
+                  {% if error > 5 and d.get('lead',90) | int < 90 %}{% set step = 5 %}
+                  {% elif error < -10 %}{% set step = -5 %}{% endif %}
+                  {% set correction = [60, [-30, correction + step] | max] | min %}
+                  {% set result = 'earlier' if step > 0 else 'later' if step < 0 else 'unchanged' %}
+                {% endif %}
+                {% set ns.d = dict(ns.d, correction=correction, learned=heute, result=result,
+                     samples=d.get('samples',0) | int + (0 if ns.d.get('invalid',true) else 1)) %}
+              {% endif %}
+              {{ ns.d }}
+            {% else %}{{ d }}{% endif %}
+      - condition: template
+        value_template: "{{ neues_model != model }}"
+      - action: input_text.set_value
+        target:
+          entity_id: input_text.bad_heizung_lernstand
+        data:
+          value: "{{ neues_model | to_json }}"
+      - if:
+          - condition: template
+            value_template: "{{ neues_model.get('learned') == heute and model.get('learned') != heute }}"
+        then:
+          - action: logbook.log
+            data:
+              name: "Bad Vorheizlernen"
+              entity_id: input_text.bad_heizung_lernstand
+              message: >-
+                Tagesauswertung: {{ neues_model.get('result') }};
+                Korrektur {{ neues_model.get('correction',0) }} min;
+                gültige Morgenläufe {{ neues_model.get('samples',0) }}.
+
+automation:
+  - id: bad_heizung_lernbeobachtung_20260928
+    alias: "Bad – Morgenverlauf auswerten"
+    mode: queued
+    max: 20
+    triggers:
+      - trigger: time_pattern
+        minutes: "/1"
+      - trigger: time
+        at: "07:00:00"
+      - trigger: homeassistant
+        event: start
+        id: restart
+      - trigger: event
+        event_type: automation_reloaded
+        id: restart
+      - trigger: state
+        entity_id:
+          - sensor.weather_station_bad_temperatur
+          - binary_sensor.weather_station_bad_connectivity
+          - climate.heizkorper_bad_thermostat
+          - switch.heizkorper_bad_externer_temperatursensor
+          - number.heizkorper_bad_lokaler_temperatur_offset
+          - button.heizkorper_bad_boost_modus
+          - button.heizkorper_bad_timer_modus
+    actions:
+      - action: script.bad_heizung_lernereignis
+        data:
+          ereignis: "{{ 'restart' if trigger.id == 'restart' else 'check' }}"
+          manuell: >-
+            {{ trigger.platform == 'state' and trigger.to_state is not none
+               and trigger.to_state.context.user_id is not none
+               and trigger.entity_id not in ['sensor.weather_station_bad_temperatur','binary_sensor.weather_station_bad_connectivity'] }}

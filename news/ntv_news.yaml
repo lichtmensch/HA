@@ -1,0 +1,86 @@
+# Official n-tv top-news RSS feed. Only the dashboard displays the headlines.
+rest:
+  - resource: https://www.n-tv.de/rss
+    scan_interval: 900
+    timeout: 20
+    sensor:
+      - name: NTV Nachrichten
+        unique_id: ntv_nachrichten_rss_v1
+        icon: mdi:newspaper-variant-outline
+        device_class: timestamp
+        value_template: "{{ now().isoformat() }}"
+        json_attributes_path: "$.rss.channel.item[0]"
+        json_attributes:
+          - title
+          - link
+          - pubDate
+      - name: NTV Nachricht 2
+        unique_id: ntv_nachricht_2_rss_v1
+        icon: mdi:newspaper-variant-outline
+        device_class: timestamp
+        value_template: "{{ now().isoformat() }}"
+        json_attributes_path: "$.rss.channel.item[1]"
+        json_attributes:
+          - title
+          - link
+          - pubDate
+      - name: NTV Nachricht 3
+        unique_id: ntv_nachricht_3_rss_v1
+        icon: mdi:newspaper-variant-outline
+        device_class: timestamp
+        value_template: "{{ now().isoformat() }}"
+        json_attributes_path: "$.rss.channel.item[2]"
+        json_attributes:
+          - title
+          - link
+          - pubDate
+      - name: NTV Nachricht 4
+        unique_id: ntv_nachricht_4_rss_v1
+        icon: mdi:newspaper-variant-outline
+        device_class: timestamp
+        value_template: "{{ now().isoformat() }}"
+        json_attributes_path: "$.rss.channel.item[3]"
+        json_attributes:
+          - title
+          - link
+          - pubDate
+      - name: NTV Nachricht 5
+        unique_id: ntv_nachricht_5_rss_v1
+        icon: mdi:newspaper-variant-outline
+        device_class: timestamp
+        value_template: "{{ now().isoformat() }}"
+        json_attributes_path: "$.rss.channel.item[4]"
+        json_attributes:
+          - title
+          - link
+          - pubDate
+      - name: NTV Nachricht 6
+        unique_id: ntv_nachricht_6_rss_v1
+        icon: mdi:newspaper-variant-outline
+        device_class: timestamp
+        value_template: "{{ now().isoformat() }}"
+        json_attributes_path: "$.rss.channel.item[5]"
+        json_attributes:
+          - title
+          - link
+          - pubDate
+      - name: NTV Nachricht 7
+        unique_id: ntv_nachricht_7_rss_v1
+        icon: mdi:newspaper-variant-outline
+        device_class: timestamp
+        value_template: "{{ now().isoformat() }}"
+        json_attributes_path: "$.rss.channel.item[6]"
+        json_attributes:
+          - title
+          - link
+          - pubDate
+      - name: NTV Nachricht 8
+        unique_id: ntv_nachricht_8_rss_v1
+        icon: mdi:newspaper-variant-outline
+        device_class: timestamp
+        value_template: "{{ now().isoformat() }}"
+        json_attributes_path: "$.rss.channel.item[7]"
+        json_attributes:
+          - title
+          - link
+          - pubDate

@@ -1,0 +1,1724 @@
+- id: '1771557943974'
+  alias: Flur - Licht Motion nach Tageszeit
+  description: Schaltet Dekolampe, Flur 1 und Flur 2 bei Bewegung je nach Tageszeit.
+    Der Nachlauf startet erst, wenn beide Flur-Bewegungsmelder wieder frei sind.
+  triggers:
+  - entity_id:
+    - binary_sensor.hue_motion_sensor_2_bewegung
+    - binary_sensor.hue_motion_sensor_4_bewegung
+    to: 'on'
+    trigger: state
+  conditions: []
+  actions:
+  - variables:
+      motion_sensors:
+      - binary_sensor.hue_motion_sensor_2_bewegung
+      - binary_sensor.hue_motion_sensor_4_bewegung
+      periode: "{% set t = now().strftime('%H:%M') %} {% if '07:01' <= t <= '09:00'
+        %}\n  morgens\n{% elif '09:01' <= t <= '20:00' %}\n  tag\n{% elif '20:01'
+        <= t <= '23:59' %}\n  abends\n{% else %}\n  nacht\n{% endif %}"
+      transition_seconds: "{% set p = periode | trim %} {% if p == 'nacht' %}\n  2\n{%
+        elif p == 'tag' %}\n  0.5\n{% else %}\n  1\n{% endif %}"
+  - choose:
+    - conditions:
+      - condition: template
+        value_template: '{{ periode | trim == ''nacht'' }}'
+      sequence:
+      - action: light.turn_on
+        target:
+          entity_id:
+          - light.dekolampe
+        data:
+          brightness_pct: 30
+          transition: '{{ transition_seconds | float }}'
+      - wait_template: "{{ expand(motion_sensors)\n   | selectattr('state', 'eq',
+          'on')\n   | list\n   | count == 0 }}"
+        continue_on_timeout: false
+      - delay:
+          seconds: 30
+      - condition: template
+        value_template: "{{ expand(motion_sensors)\n   | selectattr('state', 'eq',
+          'on')\n   | list\n   | count == 0 }}"
+      - action: light.turn_off
+        target:
+          entity_id:
+          - light.dekolampe
+        data:
+          transition: '{{ transition_seconds | float }}'
+    default:
+    - choose:
+      - conditions:
+        - condition: template
+          value_template: '{{ periode | trim == ''morgens'' }}'
+        sequence:
+        - action: light.turn_on
+          target:
+            entity_id:
+            - light.dekolampe
+            - light.flur_1
+            - light.flur_2
+          data:
+            brightness_pct: 65
+            transition: '{{ transition_seconds | float }}'
+      - conditions:
+        - condition: template
+          value_template: '{{ periode | trim == ''tag'' }}'
+        sequence:
+        - action: light.turn_on
+          target:
+            entity_id:
+            - light.dekolampe
+            - light.flur_1
+            - light.flur_2
+          data:
+            brightness_pct: 90
+            transition: '{{ transition_seconds | float }}'
+      default:
+      - action: light.turn_on
+        target:
+          entity_id:
+          - light.dekolampe
+          - light.flur_1
+          - light.flur_2
+        data:
+          brightness_pct: 45
+          transition: '{{ transition_seconds | float }}'
+    - wait_template: "{{ expand(motion_sensors)\n   | selectattr('state', 'eq', 'on')\n
+        \  | list\n   | count == 0 }}"
+      continue_on_timeout: false
+    - delay:
+        minutes: 1
+    - condition: template
+      value_template: "{{ expand(motion_sensors)\n   | selectattr('state', 'eq', 'on')\n
+        \  | list\n   | count == 0 }}"
+    - action: light.turn_off
+      target:
+        entity_id:
+        - light.dekolampe
+        - light.flur_1
+        - light.flur_2
+      data:
+        transition: '{{ transition_seconds | float }}'
+  mode: restart
+- id: '1771732921087'
+  alias: Hue Dimmer Remote Kueche
+  description: ''
+  triggers:
+  - entity_id:
+    - event.hue_dimmer_switch_kuche_taste_1
+    - event.hue_dimmer_switch_kuche_taste_2
+    - event.hue_dimmer_switch_kuche_taste_3
+    - event.hue_dimmer_switch_kuche_taste_4
+    trigger: state
+  actions:
+  - choose:
+    - conditions:
+      - condition: template
+        value_template: '{{ trigger.entity_id.endswith(''taste_1'') }}'
+      sequence:
+      - choose:
+        - conditions:
+          - condition: time
+            after: 06:00:00
+            before: 09:30:00
+          sequence:
+          - action: light.turn_on
+            target:
+              entity_id: '{{ light_target }}'
+            data:
+              brightness_pct: '{{ b_morning }}'
+              color_temp_kelvin: '{{ k_warm }}'
+              transition: '{{ tr_on }}'
+        - conditions:
+          - condition: time
+            after: 09:30:00
+            before: '20:00:00'
+          sequence:
+          - action: light.turn_on
+            target:
+              entity_id: '{{ light_target }}'
+            data:
+              brightness_pct: '{{ b_day }}'
+              color_temp_kelvin: '{{ k_day }}'
+              transition: '{{ tr_on }}'
+        - conditions:
+          - condition: time
+            after: '20:00:00'
+            before: '23:30:00'
+          sequence:
+          - action: light.turn_on
+            target:
+              entity_id: '{{ light_target }}'
+            data:
+              brightness_pct: '{{ b_evening }}'
+              color_temp_kelvin: '{{ k_warm }}'
+              transition: '{{ tr_on }}'
+        default:
+        - action: light.turn_on
+          target:
+            entity_id: '{{ light_target }}'
+          data:
+            brightness_pct: '{{ b_night }}'
+            hs_color: '{{ hs_night }}'
+            transition: '{{ tr_on }}'
+    - conditions:
+      - condition: template
+        value_template: '{{ trigger.entity_id.endswith(''taste_2'') and trigger.to_state.attributes.event_type == ''short_release'' }}'
+      sequence:
+      - action: light.turn_on
+        target:
+          entity_id: '{{ light_target }}'
+        data:
+          brightness_step_pct: '{{ step_pct }}'
+          transition: '{{ tr_step }}'
+    - conditions:
+      - condition: template
+        value_template: '{{ trigger.entity_id.endswith(''taste_3'') and trigger.to_state.attributes.event_type == ''short_release'' }}'
+      sequence:
+      - action: light.turn_on
+        target:
+          entity_id: '{{ light_target }}'
+        data:
+          brightness_step_pct: '{{ 0 - step_pct }}'
+          transition: '{{ tr_step }}'
+    - conditions:
+      - condition: template
+        value_template: '{{ trigger.entity_id.endswith(''taste_4'') }}'
+      sequence:
+      - action: light.turn_off
+        target:
+          entity_id: '{{ light_target }}'
+        data:
+          transition: '{{ tr_off }}'
+  mode: restart
+  variables:
+    light_target: light.kuche_2
+    b_morning: 60
+    b_day: 100
+    b_evening: 75
+    b_night: 10
+    k_warm: 2300
+    k_day: 6000
+    k_clean: 6000
+    hs_night:
+    - 220
+    - 90
+    tr_on: 2
+    tr_off: 3
+    tr_step: 1
+    step_pct: 10
+- id: '1771742860013'
+  alias: Hue Dimmer Wohnzimmer - Decke + Orange + Küche/Esszimmer Aus
+  description: ''
+  triggers:
+  - trigger: state
+    entity_id:
+    - event.hue_dimmer_switch_wohnzimmer_taste_1
+    - event.hue_dimmer_switch_wohnzimmer_taste_2
+    - event.hue_dimmer_switch_wohnzimmer_taste_3
+    - event.hue_dimmer_switch_wohnzimmer_taste_4
+  conditions: []
+  actions:
+  - choose:
+    - conditions:
+      - condition: template
+        value_template: '{{ trigger.entity_id == ''event.hue_dimmer_switch_wohnzimmer_taste_1''
+          }}
+
+          '
+      - condition: template
+        value_template: "{{ trigger.to_state.attributes.event_type in\n   ['short_release','short_press','press','release']
+          }}\n"
+      sequence:
+      - action: light.turn_on
+        target:
+          entity_id: '{{ decke_lampen }}'
+        data:
+          brightness_pct: 4
+          color_temp_kelvin: 2200
+          transition: '{{ transition_s }}'
+      - action: light.turn_on
+        target:
+          entity_id:
+          - light.hue_play_gradient_lightstrip_1
+          - light.hue_color_floor_1
+        data:
+          brightness_pct: 100
+          hs_color: '{{ deep_orange_hs }}'
+          transition: '{{ transition_s }}'
+    - conditions:
+      - condition: template
+        value_template: '{{ trigger.entity_id == ''event.hue_dimmer_switch_wohnzimmer_taste_1''
+          }}
+
+          '
+      - condition: template
+        value_template: "{{ trigger.to_state.attributes.event_type in\n   ['long_release','long_press','hold','repeat']
+          }}\n"
+      sequence:
+      - action: light.turn_on
+        target:
+          entity_id: '{{ decke_lampen }}'
+        data:
+          brightness_pct: 100
+          color_temp_kelvin: '{{ warmweiss_kelvin }}'
+          transition: '{{ transition_s }}'
+      - action: light.turn_on
+        target:
+          entity_id:
+          - light.hue_play_gradient_lightstrip_1
+          - light.hue_color_floor_1
+        data:
+          brightness_pct: 100
+          color_temp_kelvin: '{{ warmweiss_kelvin }}'
+          transition: '{{ transition_s }}'
+    - conditions:
+      - condition: template
+        value_template: '{{ trigger.entity_id == ''event.hue_dimmer_switch_wohnzimmer_taste_2''
+          }}
+
+          '
+      - condition: template
+        value_template: "{{ trigger.to_state.attributes.event_type in\n   ['short_release','short_press','press','release']
+          }}\n"
+      sequence:
+      - action: light.turn_on
+        target:
+          entity_id: '{{ dimm_lampen }}'
+        data:
+          brightness_step_pct: 10
+          transition: '{{ dim_transition_s }}'
+    - conditions:
+      - condition: template
+        value_template: '{{ trigger.entity_id == ''event.hue_dimmer_switch_wohnzimmer_taste_3''
+          }}
+
+          '
+      - condition: template
+        value_template: "{{ trigger.to_state.attributes.event_type in\n   ['short_release','short_press','press','release']
+          }}\n"
+      sequence:
+      - action: light.turn_on
+        target:
+          entity_id: '{{ dimm_lampen }}'
+        data:
+          brightness_step_pct: -10
+          transition: '{{ dim_transition_s }}'
+    - conditions:
+      - condition: template
+        value_template: '{{ trigger.entity_id == ''event.hue_dimmer_switch_wohnzimmer_taste_4''
+          }}
+
+          '
+      - condition: template
+        value_template: "{{ trigger.to_state.attributes.event_type in\n   ['short_release','short_press','press','release']
+          }}\n"
+      sequence:
+      - action: light.turn_off
+        target:
+          entity_id:
+          - light.hue_filament_bulb_1
+          - light.hue_filament_bulb_2
+          - light.hue_filament_bulb_3
+          - light.hue_play_gradient_lightstrip_1
+          - light.hue_color_floor_1
+        data:
+          transition: '{{ off_transition_s }}'
+    - conditions:
+      - condition: template
+        value_template: '{{ trigger.entity_id == ''event.hue_dimmer_switch_wohnzimmer_taste_4''
+          }}
+
+          '
+      - condition: template
+        value_template: "{{ trigger.to_state.attributes.event_type in\n   ['long_release','long_press','hold','repeat']
+          }}\n"
+      sequence:
+      - action: light.turn_off
+        target:
+          entity_id:
+          - light.kuche
+          - light.esszimmer
+        data:
+          transition: '{{ off_transition_s }}'
+  mode: single
+  variables:
+    transition_s: 1.5
+    dim_transition_s: 0.4
+    off_transition_s: 0.8
+    warmweiss_kelvin: 2700
+    deep_orange_hs:
+    - 20
+    - 100
+    decke_lampen:
+    - light.hue_filament_bulb_1
+    - light.hue_filament_bulb_2
+    - light.hue_filament_bulb_3
+    dimm_lampen:
+    - light.hue_filament_bulb_1
+    - light.hue_filament_bulb_2
+    - light.hue_filament_bulb_3
+    - light.hue_play_gradient_lightstrip_1
+    - light.hue_color_floor_1
+- id: '1771745540570'
+  alias: Rollos - Sonnenzeiten + Wochenplan
+  description: Abends schließen/teilweise; morgens + Zeitplan öffnen
+  triggers:
+  - trigger: sun
+    event: sunset
+    offset: 00:30:00
+    id: sunset_30
+  - trigger: sun
+    event: sunrise
+    offset: 00:30:00
+    id: sunrise_30_weekday
+  - trigger: sun
+    event: sunrise
+    offset: 01:00:00
+    id: sunrise_60_weekend
+  - trigger: time
+    at: 07:00:00
+    id: weekday_0700
+  - trigger: time
+    at: 08:30:00
+    id: weekend_0830
+  - trigger: time
+    at: '10:00:00'
+    id: weekday_1000
+  - trigger: time
+    at: '11:00:00'
+    id: weekend_1100
+  conditions: []
+  actions:
+  - choose:
+    - conditions:
+      - condition: trigger
+        id: sunset_30
+      sequence:
+      - parallel:
+        - sequence:
+          - action: script.rollo_position_sicher_anfahren
+            data:
+              rollo: cover.shelly2pmg3_8cbfea9cc4f4_rollo_bad
+              zielposition: 0
+        - sequence:
+          - action: script.rollo_position_sicher_anfahren
+            data:
+              rollo: cover.shelly2pmg3_8cbfea97b428_rollo_gaste_wc
+              zielposition: 0
+        - sequence:
+          - action: script.rollo_position_sicher_anfahren
+            data:
+              rollo: cover.wohnzimmerfenster_rollo
+              zielposition: 40
+        - sequence:
+          - action: script.rollo_position_sicher_anfahren
+            data:
+              rollo: cover.shelly2pmg3_8cbfea9a6bb0_rollo_gastezimmer
+              zielposition: 25
+        - sequence:
+          - action: script.rollo_position_sicher_anfahren
+            data:
+              rollo: cover.rollo_schlafzimmer
+              zielposition: 25
+        - sequence:
+          - action: script.rollo_position_sicher_anfahren
+            data:
+              rollo: cover.terrassentur_rollo_rollo_terrassentur
+              zielposition: 25
+    - conditions:
+      - condition: trigger
+        id:
+        - sunrise_30_weekday
+        - weekday_0700
+      - condition: template
+        value_template: '{{ now().weekday() < 5 and now().strftime(''%H:%M'') >= ''07:00'' }}'
+      - condition: sun
+        after: sunrise
+        after_offset: 00:30:00
+      sequence:
+      - parallel:
+        - sequence:
+          - action: script.rollo_position_sicher_anfahren
+            data:
+              rollo: cover.shelly2pmg3_8cbfea9cc4f4_rollo_bad
+              zielposition: 100
+        - sequence:
+          - action: script.rollo_position_sicher_anfahren
+            data:
+              rollo: cover.shelly2pmg3_8cbfea97b428_rollo_gaste_wc
+              zielposition: 100
+        - sequence:
+          - action: script.rollo_position_sicher_anfahren
+            data:
+              rollo: cover.wohnzimmerfenster_rollo
+              zielposition: 100
+        - sequence:
+          - action: script.rollo_position_sicher_anfahren
+            data:
+              rollo: cover.terrassentur_rollo_rollo_terrassentur
+              zielposition: 100
+    - conditions:
+      - condition: trigger
+        id:
+        - sunrise_60_weekend
+        - weekend_0830
+      - condition: template
+        value_template: '{{ now().weekday() >= 5 and now().strftime(''%H:%M'') >= ''08:30'' }}'
+      - condition: sun
+        after: sunrise
+        after_offset: 01:00:00
+      sequence:
+      - parallel:
+        - sequence:
+          - action: script.rollo_position_sicher_anfahren
+            data:
+              rollo: cover.shelly2pmg3_8cbfea9cc4f4_rollo_bad
+              zielposition: 100
+        - sequence:
+          - action: script.rollo_position_sicher_anfahren
+            data:
+              rollo: cover.shelly2pmg3_8cbfea97b428_rollo_gaste_wc
+              zielposition: 100
+        - sequence:
+          - action: script.rollo_position_sicher_anfahren
+            data:
+              rollo: cover.wohnzimmerfenster_rollo
+              zielposition: 100
+        - sequence:
+          - action: script.rollo_position_sicher_anfahren
+            data:
+              rollo: cover.terrassentur_rollo_rollo_terrassentur
+              zielposition: 100
+    - conditions:
+      - condition: trigger
+        id: weekday_1000
+      - condition: template
+        value_template: '{{ now().weekday() < 5 }}'
+      sequence:
+      - parallel:
+        - sequence:
+          - action: script.rollo_position_sicher_anfahren
+            data:
+              rollo: cover.rollo_schlafzimmer
+              zielposition: 87
+        - sequence:
+          - action: script.rollo_position_sicher_anfahren
+            data:
+              rollo: cover.shelly2pmg3_8cbfea9a6bb0_rollo_gastezimmer
+              zielposition: 100
+    - conditions:
+      - condition: trigger
+        id: weekend_1100
+      - condition: template
+        value_template: '{{ now().weekday() >= 5 }}'
+      sequence:
+      - parallel:
+        - sequence:
+          - action: script.rollo_position_sicher_anfahren
+            data:
+              rollo: cover.rollo_schlafzimmer
+              zielposition: 87
+        - sequence:
+          - action: script.rollo_position_sicher_anfahren
+            data:
+              rollo: cover.shelly2pmg3_8cbfea9a6bb0_rollo_gastezimmer
+              zielposition: 100
+- id: '1771746410073'
+  alias: Rollos - Sonnenschutz Westseite intelligent
+  description: Faehrt die Westrollos auf 40 %, wenn Westsonne und Waermebedarf zusammentreffen.
+    Beruecksichtigt Raumtemperaturen, Tagesprognose, den Sonnensensor am Westfenster,
+    Regen und Wind. Direkte Sonne muss mindestens drei Minuten anliegen. Manuelle
+    Eingriffe bleiben geschuetzt.
+  triggers:
+  - trigger: state
+    entity_id:
+    - sun.sun
+    - sensor.weather_station_aussen_temperatur
+    - sensor.weather_station_temperatur
+    - sensor.weather_station_schlafzimmer_temperatur
+    - sensor.weather_station_gastezimmer_temperatur
+    - sensor.wetter_heute_temperatur_max
+    - sensor.weather_station_windmesser_windgeschwindigkeit
+    - sensor.weather_station_windmesser_boenstarke
+    - sensor.weather_station_regenmesser_niederschlagsmenge_letzte_stunde
+    - weather.forecast_home
+  - trigger: state
+    entity_id: binary_sensor.westfenster_direkte_sonne
+    to: 'on'
+  - trigger: time_pattern
+    minutes: /5
+  conditions:
+  - condition: state
+    entity_id: input_boolean.rollo_west_manuell_override
+    state: 'off'
+  - condition: state
+    entity_id: input_boolean.rollo_west_sonnenschutz_aktiv
+    state: 'off'
+  - condition: state
+    entity_id: binary_sensor.westfenster_direkte_sonne
+    state: 'on'
+  - condition: numeric_state
+    entity_id: sensor.hue_motion_sensor_3_beleuchtungsstarke
+    above: 2499
+  - condition: template
+    value_template: "{% set outside = states('sensor.weather_station_aussen_temperatur')
+      | float(-99) %} {% set living = states('sensor.weather_station_temperatur')
+      | float(-99) %} {% set bedroom = states('sensor.weather_station_schlafzimmer_temperatur')
+      | float(-99) %} {% set guest = states('sensor.weather_station_gastezimmer_temperatur')
+      | float(-99) %} {% set forecast_max = states('sensor.wetter_heute_temperatur_max')
+      | float(-99) %} {% set wind = states('sensor.weather_station_windmesser_windgeschwindigkeit')
+      | float(0) %} {% set gust = states('sensor.weather_station_windmesser_boenstarke')
+      | float(0) %} {% set rain = states('sensor.weather_station_regenmesser_niederschlagsmenge_letzte_stunde')
+      | float(0) %} {% set elevation = state_attr('sun.sun', 'elevation') | float(-90)
+      %} {% set azimuth = state_attr('sun.sun', 'azimuth') | float(0) %} {{ outside
+      > 22\n  and (living >= 24 or bedroom >= 24 or guest >= 24 or forecast_max >=
+      26)\n  and elevation > 10 and 240 < azimuth < 300\n  and rain <= 0.1 and wind
+      < 30 and gust < 45 }}"
+  actions:
+  - parallel:
+    - sequence:
+      - action: script.rollo_position_sicher_anfahren
+        data:
+          rollo: cover.wohnzimmerfenster_rollo
+          zielposition: 40
+    - sequence:
+      - action: script.rollo_position_sicher_anfahren
+        data:
+          rollo: cover.rollo_schlafzimmer
+          zielposition: 40
+    - sequence:
+      - action: script.rollo_position_sicher_anfahren
+        data:
+          rollo: cover.shelly2pmg3_8cbfea97b428_rollo_gaste_wc
+          zielposition: 40
+    - sequence:
+      - action: script.rollo_position_sicher_anfahren
+        data:
+          rollo: cover.terrassentur_rollo_rollo_terrassentur
+          zielposition: 40
+  - delay: 00:00:05
+  - wait_template: "{{ not is_state('cover.wohnzimmerfenster_rollo', 'opening')\n
+      \ and not is_state('cover.wohnzimmerfenster_rollo', 'closing')\n  and not is_state('cover.rollo_schlafzimmer',
+      'opening')\n  and not is_state('cover.rollo_schlafzimmer', 'closing')\n  and
+      not is_state('cover.shelly2pmg3_8cbfea97b428_rollo_gaste_wc', 'opening')\n  and
+      not is_state('cover.shelly2pmg3_8cbfea97b428_rollo_gaste_wc', 'closing')\n  and
+      not is_state('cover.terrassentur_rollo_rollo_terrassentur', 'opening')\n  and
+      not is_state('cover.terrassentur_rollo_rollo_terrassentur', 'closing') }}"
+    timeout: 00:02:00
+    continue_on_timeout: true
+  - delay: 00:00:10
+  - action: input_boolean.turn_on
+    target:
+      entity_id: input_boolean.rollo_west_sonnenschutz_aktiv
+  mode: single
+- id: '1788540000001'
+  alias: Rollos - Sonnenschutz Westseite automatisch beenden
+  description: Oeffnet nur automatisch beschattete Westrollos wieder, wenn die Westsonne
+    mindestens 20 Minuten ausbleibt, die Westsonne vorbei ist, es deutlich abgekuehlt
+    hat oder starker Wind auftritt. Ein manueller Override verhindert jede automatische
+    Korrektur.
+  triggers:
+  - trigger: state
+    entity_id:
+    - sun.sun
+    - sensor.weather_station_aussen_temperatur
+    - sensor.weather_station_windmesser_windgeschwindigkeit
+    - sensor.weather_station_windmesser_boenstarke
+  - trigger: state
+    entity_id: binary_sensor.westfenster_direkte_sonne
+    to: 'off'
+  - trigger: time_pattern
+    minutes: /5
+  conditions:
+  - condition: state
+    entity_id: input_boolean.rollo_west_sonnenschutz_aktiv
+    state: 'on'
+  - condition: state
+    entity_id: input_boolean.rollo_west_manuell_override
+    state: 'off'
+  - condition: template
+    value_template: "{% set outside = states('sensor.weather_station_aussen_temperatur')
+      | float(99) %} {% set wind = states('sensor.weather_station_windmesser_windgeschwindigkeit')
+      | float(0) %} {% set gust = states('sensor.weather_station_windmesser_boenstarke')
+      | float(0) %} {% set elevation = state_attr('sun.sun', 'elevation') | float(-90)
+      %} {% set azimuth = state_attr('sun.sun', 'azimuth') | float(360) %} {{ elevation
+      <= 5 or azimuth >= 305 or outside <= 20.5\n  or wind >= 30 or gust >= 45\n  or
+      is_state('binary_sensor.westfenster_direkte_sonne', 'off') }}"
+  actions:
+  - action: input_boolean.turn_off
+    target:
+      entity_id: input_boolean.rollo_west_sonnenschutz_aktiv
+  - parallel:
+    - sequence:
+      - action: script.rollo_position_sicher_anfahren
+        data:
+          rollo: cover.wohnzimmerfenster_rollo
+          zielposition: 100
+    - sequence:
+      - action: script.rollo_position_sicher_anfahren
+        data:
+          rollo: cover.rollo_schlafzimmer
+          zielposition: 100
+    - sequence:
+      - action: script.rollo_position_sicher_anfahren
+        data:
+          rollo: cover.shelly2pmg3_8cbfea97b428_rollo_gaste_wc
+          zielposition: 100
+    - sequence:
+      - action: script.rollo_position_sicher_anfahren
+        data:
+          rollo: cover.terrassentur_rollo_rollo_terrassentur
+          zielposition: 100
+  mode: single
+- id: '1772142255363'
+  alias: Gästezimmer - Decke Erreichbarkeit steuert Dimmer-Profil (ohne Konflikt)
+  description: 'Nutzt ausschließlich die Erreichbarkeit der Deckenlampe als Trigger.
+    - Wenn Decke nicht erreichbar (stromlos/unavailable/unknown) -> Gruppe aus. -
+    Wenn Decke wieder erreichbar -> setze Zeitprofil (nur wenn Decke ON ist).
+
+    '
+  triggers:
+  - entity_id: light.gaestezimmer_decke
+    to: unavailable
+    for: 00:00:05
+    id: not_reachable
+    trigger: state
+  - entity_id: light.gaestezimmer_decke
+    to: unknown
+    for: 00:00:05
+    id: not_reachable
+    trigger: state
+  - entity_id: light.gaestezimmer_decke
+    from: unavailable
+    for: 00:00:02
+    id: reachable
+    trigger: state
+  - entity_id: light.gaestezimmer_decke
+    from: unknown
+    for: 00:00:02
+    id: reachable
+    trigger: state
+  conditions: []
+  actions:
+  - choose:
+    - conditions:
+      - condition: trigger
+        id: not_reachable
+      sequence:
+      - action: light.turn_off
+        data:
+          entity_id: '{{ light_group }}'
+          transition: '{{ off_transition }}'
+    - conditions:
+      - condition: trigger
+        id: reachable
+      - condition: state
+        entity_id: light.gaestezimmer_decke
+        state: 'on'
+      sequence:
+      - choose:
+        - conditions:
+          - condition: time
+            after: 00:30:00
+            before: 07:00:00
+          sequence:
+          - action: light.turn_on
+            data:
+              entity_id: '{{ light_group }}'
+              brightness_pct: '{{ night_brightness }}'
+              color_temp_kelvin: '{{ night_kelvin }}'
+              transition: '{{ night_transition }}'
+        - conditions:
+          - condition: time
+            after: 07:00:00
+            before: 09:30:00
+          sequence:
+          - action: light.turn_on
+            data:
+              entity_id: '{{ light_group }}'
+              brightness_pct: '{{ morning_brightness }}'
+              color_temp_kelvin: '{{ morning_kelvin }}'
+              transition: '{{ morning_transition }}'
+        - conditions:
+          - condition: time
+            after: 09:30:00
+            before: '17:30:00'
+          sequence:
+          - action: light.turn_on
+            data:
+              entity_id: '{{ light_group }}'
+              brightness_pct: '{{ day_brightness }}'
+              color_temp_kelvin: '{{ day_kelvin }}'
+              transition: '{{ day_transition }}'
+        - conditions:
+          - condition: time
+            after: '17:30:00'
+            before: '22:00:00'
+          sequence:
+          - action: light.turn_on
+            data:
+              entity_id: '{{ light_group }}'
+              brightness_pct: '{{ evening_brightness }}'
+              color_temp_kelvin: '{{ evening_kelvin }}'
+              transition: '{{ evening_transition }}'
+        - conditions:
+          - condition: time
+            after: '22:00:00'
+            before: 00:30:00
+          sequence:
+          - action: light.turn_on
+            data:
+              entity_id: '{{ light_group }}'
+              brightness_pct: '{{ late_brightness }}'
+              color_temp_kelvin: '{{ late_kelvin }}'
+              transition: '{{ late_transition }}'
+  variables:
+    light_group: light.gastezimmer_2
+    morning_brightness: 60
+    morning_kelvin: 3800
+    morning_transition: 2
+    day_brightness: 100
+    day_kelvin: 6000
+    day_transition: 1
+    evening_brightness: 75
+    evening_kelvin: 3300
+    evening_transition: 2
+    late_brightness: 30
+    late_kelvin: 2400
+    late_transition: 3
+    night_brightness: 1
+    night_kelvin: 2400
+    night_transition: 2
+    off_transition: 3
+  mode: restart
+- id: '1772158332905'
+  alias: Hue Dimmer Gästezimmer
+  description: Hue Dimmer steuert Gästezimmer Licht synchron mit Zeitfenstern + 10%-Dimmsteps
+    + langer Druck auf Taste 1 = hell an
+  triggers:
+  - device_id: 8baa1ac4f2e5c94557f04b7a140b20be
+    domain: hue
+    type: short_release
+    subtype: 1
+    id: 'on'
+    trigger: device
+  - device_id: 8baa1ac4f2e5c94557f04b7a140b20be
+    domain: hue
+    type: long_press
+    subtype: 1
+    id: on_long
+    trigger: device
+  - device_id: 8baa1ac4f2e5c94557f04b7a140b20be
+    domain: hue
+    type: initial_press
+    subtype: 4
+    id: 'off'
+    trigger: device
+  - device_id: 8baa1ac4f2e5c94557f04b7a140b20be
+    domain: hue
+    type: short_release
+    subtype: 2
+    id: up
+    trigger: device
+  - device_id: 8baa1ac4f2e5c94557f04b7a140b20be
+    domain: hue
+    type: short_release
+    subtype: 3
+    id: down
+    trigger: device
+  actions:
+  - choose:
+    - conditions:
+      - condition: trigger
+        id: 'on'
+      sequence:
+      - choose:
+        - conditions:
+          - condition: time
+            after: '23:30:00'
+            before: 07:00:00
+          sequence:
+          - action: light.turn_on
+            data:
+              entity_id: '{{ light_group }}'
+              brightness_pct: '{{ night_brightness }}'
+              color_temp_kelvin: '{{ night_kelvin }}'
+              transition: '{{ night_transition }}'
+        - conditions:
+          - condition: time
+            after: 07:00:00
+            before: 09:30:00
+          sequence:
+          - action: light.turn_on
+            data:
+              entity_id: '{{ light_group }}'
+              brightness_pct: '{{ morning_brightness }}'
+              color_temp_kelvin: '{{ morning_kelvin }}'
+              transition: '{{ morning_transition }}'
+        - conditions:
+          - condition: time
+            after: 09:30:00
+            before: '17:30:00'
+          sequence:
+          - action: light.turn_on
+            data:
+              entity_id: '{{ light_group }}'
+              brightness_pct: '{{ day_brightness }}'
+              color_temp_kelvin: '{{ day_kelvin }}'
+              transition: '{{ day_transition }}'
+        - conditions:
+          - condition: time
+            after: '17:30:00'
+            before: '20:30:00'
+          sequence:
+          - action: light.turn_on
+            data:
+              entity_id: '{{ light_group }}'
+              brightness_pct: '{{ evening_brightness }}'
+              color_temp_kelvin: '{{ evening_kelvin }}'
+              transition: '{{ evening_transition }}'
+        - conditions:
+          - condition: time
+            after: '20:30:00'
+            before: '23:30:00'
+          sequence:
+          - action: light.turn_on
+            data:
+              entity_id: '{{ light_group }}'
+              brightness_pct: '{{ late_brightness }}'
+              color_temp_kelvin: '{{ late_kelvin }}'
+              transition: '{{ late_transition }}'
+    - conditions:
+      - condition: trigger
+        id: on_long
+      sequence:
+      - action: light.turn_on
+        data:
+          entity_id: '{{ light_group }}'
+          brightness_pct: 100
+          color_temp_kelvin: 4000
+          transition: 2
+    - conditions:
+      - condition: trigger
+        id: 'off'
+      sequence:
+      - action: light.turn_off
+        data:
+          entity_id: '{{ light_group }}'
+          transition: '{{ off_transition }}'
+    - conditions:
+      - condition: trigger
+        id: up
+      sequence:
+      - action: light.turn_on
+        target:
+          entity_id: '{{ light_group }}'
+        data:
+          brightness_step_pct: '{{ step_pct }}'
+          transition: '{{ step_transition }}'
+    - conditions:
+      - condition: trigger
+        id: down
+      sequence:
+      - action: light.turn_on
+        target:
+          entity_id: '{{ light_group }}'
+        data:
+          brightness_step_pct: '{{ 0 - step_pct }}'
+          transition: '{{ step_transition }}'
+  variables:
+    light_group: light.gastezimmer_2
+    morning_brightness: 60
+    morning_kelvin: 3800
+    morning_transition: 2
+    day_brightness: 100
+    day_kelvin: 6000
+    day_transition: 1
+    evening_brightness: 75
+    evening_kelvin: 3300
+    evening_transition: 2
+    late_brightness: 5
+    late_kelvin: 2400
+    late_transition: 3
+    night_brightness: 1
+    night_kelvin: 2400
+    night_transition: 2
+    off_transition: 1
+    step_pct: 10
+    step_transition: 0.4
+  mode: restart
+- id: '1772754085800'
+  alias: Abstellkammer Licht Bewegung
+  description: Licht 1 Minute bei Bewegung
+  triggers:
+  - trigger: state
+    entity_id: binary_sensor.abstellkammer_bewegung
+    to: 'on'
+  actions:
+  - action: light.turn_on
+    target:
+      entity_id: light.abstellkammer
+    data:
+      brightness_pct: 90
+  - wait_for_trigger:
+    - trigger: state
+      entity_id: binary_sensor.abstellkammer_bewegung
+      to: 'off'
+      for: 00:01:00
+  - action: light.turn_off
+    target:
+      entity_id: light.abstellkammer
+  mode: restart
+- id: '1772940145421'
+  alias: Hue Gruppe Gäste WC korrigieren
+  description: Setzt die Hue Gruppe auf OFF wenn die Lampe stromlos wird
+  triggers:
+  - entity_id: light.toilette
+    to: unavailable
+    trigger: state
+  actions:
+  - target:
+      entity_id: light.gaste_wc
+    action: homeassistant.turn_off
+  mode: single
+- id: '1773104281445'
+  alias: System - Batterie kritisch
+  description: Meldet echte, nicht wiederaufladbare Hausgeräte-Batterien einmalig
+    beim Unterschreiten von 5%
+  triggers:
+  - event_type: state_changed
+    trigger: event
+  conditions:
+  - condition: template
+    value_template: "{% set e = trigger.event.data.entity_id | default('') | lower
+      %} {% set old = trigger.event.data.old_state %} {% set new = trigger.event.data.new_state
+      %} {% set excluded = 'iphone' in e or 'ipad' in e or 'watch' in e\n  or 'macbook'
+      in e or 'wby' in e or 'ix1' in e\n  or 'state_of_charge' in e or 'robotic_vacuum'
+      in e or 's8_maxv' in e %}\n{% if not new or not e.startswith('sensor.') or excluded
+      %}\n  false\n{% else %}\n  {% set unit = state_attr(e, 'unit_of_measurement')
+      %}\n  {% set device_class = state_attr(e, 'device_class') %}\n  {% set new_value
+      = new.state | float(-1) %}\n  {% set old_value = old.state | float(101) if old
+      else 101 %}\n  {{ device_class == 'battery' and unit == '%' and new_value >=
+      0\n    and new_value <= 5 and old_value > 5 }}\n{% endif %}"
+  actions:
+  - action: notify.mobile_app_timos_iphone15_pro_max
+    data:
+      title: Batterie kritisch
+      message: '{{ trigger.event.data.new_state.name }} hat nur noch {{ trigger.event.data.new_state.state
+        | int }} % Batterie.'
+      data:
+        tag: ha_battery_critical_{{ trigger.event.data.entity_id }}
+        group: home_assistant_system
+  mode: queued
+  max: 10
+- id: '1773105110856'
+  alias: System - Shelly Rollo Fehlerwarnung
+  description: Meldet generisch Fehler bei Shelly Rollos
+  triggers:
+  - event_type: state_changed
+    trigger: event
+  conditions:
+  - condition: template
+    value_template: "{% set e = trigger.event.data.entity_id | default('') %} {% set
+      ns = trigger.event.data.new_state %} {% if not ns %}\n  false\n{% else %}\n
+      \ {{\n    ns.state == 'on'\n    and e.startswith('binary_sensor.')\n    and
+      (\n      'uberhitzung' in e\n      or 'uberlast' in e\n      or 'uberspannung'
+      in e\n      or 'uberstrom' in e\n      or 'neustart_erforderlich' in e\n    )\n
+      \   and (\n      'rollo' in e\n      or 'wohnzimmerfenster' in e\n      or 'terrassentur'
+      in e\n      or 'shelly2pmg3_' in e\n    )\n  }}\n{% endif %}\n"
+  actions:
+  - data:
+      title: Home Assistant – Shelly Fehler
+      message: '{{ trigger.event.data.new_state.name }} wurde ausgelöst ({{ trigger.event.data.entity_id
+        }}).
+
+        '
+    action: notify.mobile_app_timos_iphone15_pro_max
+  - data:
+      title: Shelly Fehler
+      message: '{{ trigger.event.data.new_state.name }} hat einen Fehler gemeldet.
+        Entity: {{ trigger.event.data.entity_id }}
+
+        '
+    action: persistent_notification.create
+  mode: queued
+  max: 20
+- id: '1773105691813'
+  alias: System - Kühlschrank Tür offen Warnung
+  description: Warnt, wenn eine Kühlschranktür länger als 15 Minuten offen ist
+  triggers:
+  - entity_id:
+    - binary_sensor.kuhlschrank_kuhlschranktur
+    - binary_sensor.kuhlschrank_gefrierschranktur
+    - binary_sensor.kuhlschrank_coolselect_tur
+    to: 'on'
+    for:
+      minutes: 15
+    trigger: state
+  actions:
+  - data:
+      title: Home Assistant – Kühlschrank
+      message: 'Achtung: {{ trigger.to_state.name }} ist seit 15 Minuten offen.
+
+        '
+    action: notify.mobile_app_timos_iphone15_pro_max
+  - data:
+      title: Kühlschrank-Tür offen
+      message: 'Achtung: {{ trigger.to_state.name }} ist seit 15 Minuten offen.
+
+        '
+    action: persistent_notification.create
+  mode: single
+- id: '1773106433748'
+  alias: System - Wetterwarnung Wind und Regen
+  description: Meldet starken Wind, starke Böen oder Regen
+  triggers:
+  - entity_id: sensor.weather_station_windmesser_windgeschwindigkeit
+    above: 30
+    id: wind
+    trigger: numeric_state
+  - entity_id: sensor.weather_station_windmesser_boenstarke
+    above: 45
+    id: boe
+    trigger: numeric_state
+  - entity_id: sensor.weather_station_regenmesser_niederschlagsmenge_letzte_stunde
+    above: 0.6
+    id: regen
+    trigger: numeric_state
+  actions:
+  - choose:
+    - conditions:
+      - condition: trigger
+        id: wind
+      sequence:
+      - data:
+          title: Home Assistant – Wetterwarnung
+          message: 'Achtung: Windgeschwindigkeit ist hoch ({{ states(''sensor.weather_station_windmesser_windgeschwindigkeit'')
+            }}).
+
+            '
+        action: notify.mobile_app_timos_iphone15_pro_max
+      - data:
+          title: Wetterwarnung Wind
+          message: 'Achtung: Windgeschwindigkeit ist hoch ({{ states(''sensor.weather_station_windmesser_windgeschwindigkeit'')
+            }}).
+
+            '
+        action: persistent_notification.create
+    - conditions:
+      - condition: trigger
+        id: boe
+      sequence:
+      - data:
+          title: Home Assistant – Wetterwarnung
+          message: 'Achtung: Starke Böen erkannt ({{ states(''sensor.weather_station_windmesser_boenstarke'')
+            }}).
+
+            '
+        action: notify.mobile_app_timos_iphone15_pro_max
+      - data:
+          title: Wetterwarnung Böen
+          message: 'Achtung: Starke Böen erkannt ({{ states(''sensor.weather_station_windmesser_boenstarke'')
+            }}).
+
+            '
+        action: persistent_notification.create
+    - conditions:
+      - condition: trigger
+        id: regen
+      sequence:
+      - data:
+          title: Home Assistant – Wetterwarnung
+          message: 'Es regnet. Letzte Stunde: {{ states(''sensor.weather_station_regenmesser_niederschlagsmenge_letzte_stunde'')
+            }}.
+
+            '
+        action: notify.mobile_app_timos_iphone15_pro_max
+      - data:
+          title: Wetterwarnung Regen
+          message: 'Es regnet. Letzte Stunde: {{ states(''sensor.weather_station_regenmesser_niederschlagsmenge_letzte_stunde'')
+            }}.
+
+            '
+        action: persistent_notification.create
+  mode: single
+- id: '1773106634183'
+  alias: System - Intelligente Wochenübersicht
+  description: Meldet sonntags nur bei Handlungsbedarf Hausgeräte-Batterien bis 10%,
+    Updates oder aktive Shelly-Fehler
+  triggers:
+  - at: '10:00:00'
+    trigger: time
+  conditions:
+  - condition: time
+    weekday:
+    - sun
+  actions:
+  - variables:
+      low_batteries: "{% set ns = namespace(items=[]) %} {% for s in states.sensor
+        %}\n  {% set e = s.entity_id | lower %}\n  {% set excluded = 'iphone' in e
+        or 'ipad' in e or 'watch' in e\n    or 'macbook' in e or 'wby' in e or 'ix1'
+        in e\n    or 'state_of_charge' in e or 'robotic_vacuum' in e or 's8_maxv'
+        in e %}\n  {% if state_attr(e, 'device_class') == 'battery'\n    and state_attr(e,
+        'unit_of_measurement') == '%'\n    and not excluded and s.state not in ['unknown',
+        'unavailable', 'none', ''] %}\n    {% set value = s.state | int(-1) %}\n    {%
+        if value >= 0 and value <= 10 %}\n      {% set ns.items = ns.items + [s.name
+        ~ ' (' ~ value ~ ' %)'] %}\n    {% endif %}\n  {% endif %}\n{% endfor %} {{
+        ns.items }}"
+      available_updates: "{% set ns = namespace(items=[]) %} {% for u in states.update
+        %}\n  {% if u.state == 'on' %}\n    {% set installed = state_attr(u.entity_id,
+        'installed_version') | default('unbekannt', true) %}\n    {% set latest =
+        state_attr(u.entity_id, 'latest_version') | default('unbekannt', true) %}\n
+        \   {% set ns.items = ns.items + [u.name ~ ' (' ~ installed ~ ' → ' ~ latest
+        ~ ')'] %}\n  {% endif %}\n{% endfor %} {{ ns.items }}"
+      shelly_errors: "{% set ns = namespace(items=[]) %} {% for s in states.binary_sensor
+        %}\n  {% set e = s.entity_id | lower %}\n  {% if s.state == 'on'\n    and
+        ('uberhitzung' in e or 'uberlast' in e or 'uberspannung' in e\n      or 'uberstrom'
+        in e or 'neustart_erforderlich' in e)\n    and ('rollo' in e or 'wohnzimmerfenster'
+        in e or 'terrassentur' in e\n      or 'shelly2pmg3_' in e) %}\n    {% set
+        ns.items = ns.items + [s.name] %}\n  {% endif %}\n{% endfor %} {{ ns.items
+        }}"
+  - condition: template
+    value_template: "{{ low_batteries | count > 0 or available_updates | count > 0\n
+      \ or shelly_errors | count > 0 }}"
+  - action: notify.mobile_app_timos_iphone15_pro_max
+    data:
+      title: Home Assistant – Wochenübersicht
+      message: "{% if low_batteries | count > 0 %}\U0001F50B Batterien: {{ low_batteries
+        | join(', ') }} {% endif %}{% if available_updates | count > 0 %}↻ Updates:
+        {{ available_updates | join(', ') }} {% endif %}{% if shelly_errors | count
+        > 0 %}⚠ Shelly-Fehler: {{ shelly_errors | join(', ') }}{% endif %}"
+      data:
+        tag: ha_weekly_system_status
+        group: home_assistant_system
+  mode: single
+- id: '1773108731795'
+  alias: System - FRITZ Internet Auslastung Warnung
+  description: Warnt bei dauerhaft hoher Download- oder Upload-Auslastung
+  triggers:
+  - entity_id: sensor.fritzboxtimo_download_durchsatz
+    above: 250
+    for:
+      minutes: 10
+    id: download
+    trigger: numeric_state
+  - entity_id: sensor.fritzboxtimo_upload_durchsatz
+    above: 130
+    for:
+      minutes: 10
+    id: upload
+    trigger: numeric_state
+  actions:
+  - choose:
+    - conditions:
+      - condition: trigger
+        id: download
+      sequence:
+      - data:
+          title: Home Assistant – FRITZ!Box
+          message: 'Download seit 10 Minuten hoch ausgelastet: {{ states(''sensor.fritzboxtimo_download_durchsatz'')
+            }} Mbit/s
+
+            '
+        action: notify.mobile_app_timos_iphone15_pro_max
+      - data:
+          title: FRITZ!Box Download-Auslastung
+          message: 'Download seit 10 Minuten hoch ausgelastet: {{ states(''sensor.fritzboxtimo_download_durchsatz'')
+            }} Mbit/s
+
+            '
+        action: persistent_notification.create
+    - conditions:
+      - condition: trigger
+        id: upload
+      sequence:
+      - data:
+          title: Home Assistant – FRITZ!Box
+          message: 'Upload seit 10 Minuten hoch ausgelastet: {{ states(''sensor.fritzboxtimo_upload_durchsatz'')
+            }} Mbit/s
+
+            '
+        action: notify.mobile_app_timos_iphone15_pro_max
+      - data:
+          title: FRITZ!Box Upload-Auslastung
+          message: 'Upload seit 10 Minuten hoch ausgelastet: {{ states(''sensor.fritzboxtimo_upload_durchsatz'')
+            }} Mbit/s
+
+            '
+        action: persistent_notification.create
+  mode: single
+- id: '1774301056882'
+  alias: Regen letzte Stunde setzen
+  description: ''
+  triggers:
+  - entity_id: sensor.weather_station_regenmesser_niederschlagsmenge
+    above: 0
+    trigger: numeric_state
+  conditions: []
+  actions:
+  - target:
+      entity_id: input_boolean.regen_letzte_stunde
+    action: input_boolean.turn_on
+  - target:
+      entity_id: timer.regen_letzte_stunde
+    data:
+      duration: 01:00:00
+    action: timer.start
+  mode: restart
+- id: '1774301100950'
+  alias: Regen letzte Stunde zurücksetzen
+  description: ''
+  triggers:
+  - event_type: timer.finished
+    event_data:
+      entity_id: timer.regen_letzte_stunde
+    trigger: event
+  conditions: []
+  actions:
+  - target:
+      entity_id: input_boolean.regen_letzte_stunde
+    action: input_boolean.turn_off
+  mode: single
+- id: '1776028412783'
+  alias: System - Host Neustart
+  description: ''
+  triggers: []
+  actions:
+  - action: hassio.host_reboot
+  mode: single
+- id: '1777075854205'
+  alias: Trockner - Lauf gestartet
+  description: Erkennt einen echten Trocknerlauf erst nach zwei Minuten stabiler Last.
+  triggers:
+  - trigger: numeric_state
+    entity_id: sensor.stecker_waschetrockner_leistung
+    above: 150
+    for: 00:02:00
+  conditions:
+  - condition: state
+    entity_id: input_boolean.trockner_lauf_aktiv
+    state: 'off'
+  actions:
+  - action: input_boolean.turn_on
+    target:
+      entity_id: input_boolean.trockner_lauf_aktiv
+  mode: single
+- id: '1777075900378'
+  alias: Trockner - Lauf fertig
+  description: Meldet erst nach mindestens 30 Minuten Laufzeit und zehn Minuten unter
+    10 W.
+  triggers:
+  - trigger: numeric_state
+    entity_id: sensor.stecker_waschetrockner_leistung
+    below: 10
+    for: 00:10:00
+  conditions:
+  - condition: state
+    entity_id: input_boolean.trockner_lauf_aktiv
+    state: 'on'
+  - condition: template
+    value_template: "{{ (as_timestamp(now())\n  - as_timestamp(states.input_boolean.trockner_lauf_aktiv.last_changed))\n
+      \ >= 1800 }}"
+  actions:
+  - action: notify.mobile_app_timos_iphone15_pro_max
+    data:
+      title: "\U0001F9FA Trockner fertig"
+      message: Wäsche ist trocken und kann ausgeräumt werden.
+      data:
+        push:
+          sound:
+            name: default
+            critical: 0
+            volume: 0.5
+  - action: input_boolean.turn_off
+    target:
+      entity_id: input_boolean.trockner_lauf_aktiv
+  mode: single
+- id: '1788891000001'
+  alias: Spülmaschine - Lauf gestartet
+  description: Erkennt einen echten Spülgang nach zwei Minuten stabiler Arbeitslast.
+  triggers:
+  - trigger: numeric_state
+    entity_id: sensor.shellyplugmg3_70af09e33520_leistung
+    above: 15
+    for: 00:02:00
+  conditions:
+  - condition: state
+    entity_id: input_boolean.spuelmaschine_lauf_aktiv
+    state: 'off'
+  actions:
+  - action: input_boolean.turn_on
+    target:
+      entity_id: input_boolean.spuelmaschine_lauf_aktiv
+  mode: single
+- id: '1788891000002'
+  alias: Spülmaschine - Lauf fertig
+  description: Meldet erst nach mindestens 45 Minuten Laufzeit und 15 Minuten unter
+    3 W.
+  triggers:
+  - trigger: numeric_state
+    entity_id: sensor.shellyplugmg3_70af09e33520_leistung
+    below: 3
+    for: 00:15:00
+  conditions:
+  - condition: state
+    entity_id: input_boolean.spuelmaschine_lauf_aktiv
+    state: 'on'
+  - condition: template
+    value_template: "{{ (as_timestamp(now())\n  - as_timestamp(states.input_boolean.spuelmaschine_lauf_aktiv.last_changed))\n
+      \ >= 2700 }}"
+  actions:
+  - action: notify.mobile_app_timos_iphone15_pro_max
+    data:
+      title: "\U0001F37D️ Spülmaschine fertig"
+      message: Das Spülprogramm ist beendet und kann ausgeräumt werden.
+      data:
+        push:
+          sound:
+            name: default
+            critical: 0
+            volume: 0.5
+  - action: input_boolean.turn_off
+    target:
+      entity_id: input_boolean.spuelmaschine_lauf_aktiv
+  mode: single
+- id: '1779520623391'
+  alias: Rollo West - Manuellen Override setzen
+  description: Setzt das Override-Flag wenn ein Rollo West manuell bewegt wird
+  triggers:
+  - trigger: state
+    entity_id:
+    - cover.wohnzimmerfenster_rollo
+    - cover.rollo_schlafzimmer
+    - cover.shelly2pmg3_8cbfea97b428_rollo_gaste_wc
+    - cover.terrassentur_rollo_rollo_terrassentur
+  conditions:
+  - condition: state
+    entity_id: input_boolean.rollo_west_manuell_override
+    state: 'off'
+  - condition: state
+    entity_id: input_boolean.rollo_west_sonnenschutz_aktiv
+    state: 'on'
+  - condition: template
+    value_template: "{{ (as_timestamp(now())\n  - as_timestamp(states.input_boolean.rollo_west_sonnenschutz_aktiv.last_changed))\n
+      \ > 45 }}"
+  actions:
+  - action: input_boolean.turn_on
+    target:
+      entity_id: input_boolean.rollo_west_manuell_override
+  mode: single
+- id: '1779520707924'
+  alias: Rollo West - Override täglich zurücksetzen
+  description: Setzt das Override-Flag täglich um Mitternacht zurück
+  triggers:
+  - trigger: time
+    at: 00:00:00
+  conditions: []
+  actions:
+  - action: input_boolean.turn_off
+    target:
+      entity_id: input_boolean.rollo_west_manuell_override
+  - action: input_boolean.turn_off
+    target:
+      entity_id: input_boolean.rollo_west_sonnenschutz_aktiv
+  mode: single
+- id: '1785008192931'
+  alias: Küche - Licht Motion nach Tageszeit
+  initial_state: false
+  description: Schaltet die Küchenlampen bei Bewegung je nach Tageszeit mit passender
+    Lichtfarbe. Der Nachlauf startet, sobald der Küchen-Bewegungsmelder wieder frei
+    ist.
+  triggers:
+  - entity_id: binary_sensor.hue_motion_sensor_3_bewegung
+    to: 'on'
+    trigger: state
+  conditions:
+  - condition: numeric_state
+    entity_id: sensor.hue_motion_sensor_3_beleuchtungsstarke
+    below: 30
+  actions:
+  - variables:
+      motion_sensors:
+      - binary_sensor.hue_motion_sensor_3_bewegung
+      periode: "{% set t = now().strftime('%H:%M') %} {% if '07:01' <= t <= '09:00'
+        %}\n  morgens\n{% elif '09:01' <= t <= '20:00' %}\n  tag\n{% elif '20:01'
+        <= t <= '23:59' %}\n  abends\n{% else %}\n  nacht\n{% endif %}"
+      transition_seconds: "{% set p = periode | trim %} {% if p == 'nacht' %}\n  2\n{%
+        elif p == 'tag' %}\n  0.5\n{% else %}\n  1\n{% endif %}"
+  - choose:
+    - conditions:
+      - condition: template
+        value_template: '{{ periode | trim == ''nacht'' }}'
+      sequence:
+      - action: light.turn_on
+        target:
+          entity_id: light.kuche_2
+        data:
+          brightness_pct: 30
+          hs_color:
+          - 220
+          - 90
+          transition: '{{ transition_seconds | float }}'
+      - wait_template: "{{ expand(motion_sensors)\n   | selectattr('state', 'eq',
+          'on')\n   | list\n   | count == 0 }}"
+        continue_on_timeout: false
+      - delay:
+          seconds: 30
+      - condition: template
+        value_template: "{{ expand(motion_sensors)\n   | selectattr('state', 'eq',
+          'on')\n   | list\n   | count == 0 }}"
+      - action: light.turn_off
+        target:
+          entity_id: light.kuche_2
+        data:
+          transition: '{{ transition_seconds | float }}'
+    default:
+    - choose:
+      - conditions:
+        - condition: template
+          value_template: '{{ periode | trim == ''morgens'' }}'
+        sequence:
+        - action: light.turn_on
+          target:
+            entity_id: light.kuche_2
+          data:
+            brightness_pct: 65
+            color_temp_kelvin: 3200
+            transition: '{{ transition_seconds | float }}'
+      - conditions:
+        - condition: template
+          value_template: '{{ periode | trim == ''tag'' }}'
+        sequence:
+        - action: light.turn_on
+          target:
+            entity_id: light.kuche_2
+          data:
+            brightness_pct: 90
+            color_temp_kelvin: 4000
+            transition: '{{ transition_seconds | float }}'
+      default:
+      - action: light.turn_on
+        target:
+          entity_id: light.kuche_2
+        data:
+          brightness_pct: 45
+          color_temp_kelvin: 2300
+          transition: '{{ transition_seconds | float }}'
+    - wait_template: "{{ expand(motion_sensors)\n   | selectattr('state', 'eq', 'on')\n
+        \  | list\n   | count == 0 }}"
+      continue_on_timeout: false
+    - delay:
+        minutes: 1
+    - condition: template
+      value_template: "{{ expand(motion_sensors)\n   | selectattr('state', 'eq', 'on')\n
+        \  | list\n   | count == 0 }}"
+    - action: light.turn_off
+      target:
+        entity_id: light.kuche_2
+      data:
+        transition: '{{ transition_seconds | float }}'
+  mode: restart
+- id: '1785008784986'
+  alias: Küche - Bewegungslicht manueller Vorrang
+  description: Deaktiviert die Küchen-Bewegungsautomation bei manuellem Einschalten
+    über Taste 1. Taste 4 stoppt einen laufenden Nachlauf, setzt ihn zurück und aktiviert
+    die Bewegungsautomation nach dem manuellen Ausschalten wieder.
+  triggers:
+  - entity_id:
+    - event.hue_dimmer_switch_kuche_taste_1
+    - event.hue_dimmer_switch_kuche_taste_4
+    trigger: state
+  conditions: []
+  actions:
+  - choose:
+    - conditions:
+      - condition: template
+        value_template: '{{ trigger.entity_id.endswith(''taste_1'') }}'
+      sequence:
+      - action: automation.turn_off
+        target:
+          entity_id: automation.kuche_licht_motion_nach_tageszeit_2
+        data:
+          stop_actions: true
+    - conditions:
+      - condition: template
+        value_template: '{{ trigger.entity_id.endswith(''taste_4'') }}'
+      sequence:
+      - action: automation.turn_off
+        target:
+          entity_id: automation.kuche_licht_motion_nach_tageszeit_2
+        data:
+          stop_actions: true
+      - action: automation.turn_on
+        target:
+          entity_id: automation.kuche_licht_motion_nach_tageszeit_2
+  mode: restart
+- id: '1785351803641'
+  alias: Terrasse - Personenalarm bei Abwesenheit
+  description: Sendet Timo und Selina eine Push-Nachricht, wenn beide nicht zu Hause
+    sind und auf der Terrasse eine Person erkannt wird.
+  triggers:
+  - trigger: state
+    entity_id: binary_sensor.terrasse_person
+    to: 'on'
+  conditions:
+  - condition: template
+    value_template: '{{ states(''person.timo_weinhold'') not in [''home'', ''unknown'',
+      ''unavailable''] and states(''person.selina'') not in [''home'', ''unknown'',
+      ''unavailable''] }}'
+  actions:
+  - action: persistent_notification.create
+    data:
+      title: Person auf der Terrasse
+      message: Während eurer Abwesenheit wurde auf der Terrasse eine Person erkannt.
+        [Kamerabild öffnen](/api/camera_proxy/camera.192_168_188_108_2)
+      notification_id: terrasse_personenalarm_abwesenheit
+  - action: notify.mobile_app_timos_iphone15_pro_max
+    data:
+      title: Person auf der Terrasse
+      message: Auf der Terrasse wurde eine Person erkannt.
+      data:
+        image: /api/camera_proxy/camera.192_168_188_108_2
+  - action: notify.mobile_app_seli_iphone
+    data:
+      title: Person auf der Terrasse
+      message: Auf der Terrasse wurde eine Person erkannt.
+      data:
+        image: /api/camera_proxy/camera.192_168_188_108_2
+  mode: single
+- id: '1785352407181'
+  alias: Terrasse - Kritischer Nachtalarm
+  description: Sendet Timo zwischen 01:00 und 05:00 Uhr einen kritischen iPhone-Alarm,
+    wenn auf der Terrasse eine Person erkannt wird.
+  triggers:
+  - trigger: state
+    entity_id: binary_sensor.terrasse_person
+    to: 'on'
+  conditions:
+  - condition: time
+    after: 01:00:00
+    before: 05:00:00
+  actions:
+  - action: persistent_notification.create
+    data:
+      title: 'KRITISCH: Person auf der Terrasse'
+      message: Zwischen 01:00 und 05:00 Uhr wurde eine Person auf der Terrasse erkannt.
+        [Kamerabild öffnen](/api/camera_proxy/camera.192_168_188_108_2)
+      notification_id: terrasse_kritischer_nachtalarm
+  - action: notify.mobile_app_timos_iphone15_pro_max
+    data:
+      title: 'KRITISCH: Person auf der Terrasse'
+      message: Zwischen 01:00 und 05:00 Uhr wurde eine Person auf der Terrasse erkannt.
+      data:
+        image: /api/camera_proxy/camera.192_168_188_108_2
+        push:
+          sound:
+            name: default
+            critical: 1
+            volume: 1
+  mode: single
+- id: '1788928206468'
+  alias: iPad Local - Helligkeit
+  description: Hält iPad Local bei 40 Prozent und setzt nur bei aktivem Bildschirmschoner
+    auf 0 Prozent.
+  triggers:
+  - trigger: state
+    entity_id: binary_sensor.ipad_local_kiosk_screensaver
+    to: 'off'
+  - trigger: state
+    entity_id: binary_sensor.ipad_local_kiosk_screensaver
+    to: 'on'
+  - trigger: homeassistant
+    event: start
+  conditions: []
+  actions:
+  - action: notify.mobile_app_ipad_local
+    data:
+      message: kiosk_set_brightness
+      data:
+        level: '{{ 0 if is_state(''binary_sensor.ipad_local_kiosk_screensaver'', ''on'')
+          else 40 }}'
+  mode: restart
+- id: hue_langdruck_rollos_wohnzimmer_terrasse_20260926
+  alias: Hue Dimmer - Wohnzimmer und Terrasse per Langdruck
+  description: Taste 2 lange = beide Rollos ganz auf, Taste 3 lange = Abendpositionen Wohnzimmer 40 Prozent und Terrasse 25 Prozent; auf den Schaltern Wohnzimmer, Küche und Kühlschrank.
+  triggers:
+  - trigger: state
+    entity_id:
+    - event.hue_dimmer_switch_wohnzimmer_taste_2
+    - event.hue_dimmer_switch_wohnzimmer_taste_3
+    - event.hue_dimmer_switch_kuche_taste_2
+    - event.hue_dimmer_switch_kuche_taste_3
+    - event.hue_dimmer_switch_kuhlschrank_taste_2
+    - event.hue_dimmer_switch_kuhlschrank_taste_3
+  conditions:
+  - condition: template
+    value_template: "{{ trigger.to_state is not none and trigger.to_state.attributes.event_type == 'long_press' }}"
+  actions:
+  - parallel:
+    - sequence:
+      - action: script.rollo_position_sicher_anfahren
+        data:
+          rollo: cover.wohnzimmerfenster_rollo
+          zielposition: "{{ 100 if trigger.entity_id.endswith('_taste_2') else 40 }}"
+    - sequence:
+      - action: script.rollo_position_sicher_anfahren
+        data:
+          rollo: cover.terrassentur_rollo_rollo_terrassentur
+          zielposition: "{{ 100 if trigger.entity_id.endswith('_taste_2') else 25 }}"
+  mode: single
+- id: hue_langdruck_rollo_schlafzimmer_20260926
+  alias: Hue Dimmer - Schlafzimmer-Rollo per Langdruck
+  description: Taste 2 lange = wie in der Morgenroutine auf 87 Prozent, Taste 3 lange = ganz zu.
+  triggers:
+  - trigger: state
+    entity_id:
+    - event.schlafzimmer_bett_taste_2
+    - event.schlafzimmer_bett_taste_3
+  conditions:
+  - condition: template
+    value_template: "{{ trigger.to_state is not none and trigger.to_state.attributes.event_type == 'long_press' }}"
+  actions:
+  - action: script.rollo_position_sicher_anfahren
+    data:
+      rollo: cover.rollo_schlafzimmer
+      zielposition: "{{ 87 if trigger.entity_id.endswith('_taste_2') else 0 }}"
+  mode: single
+- id: hue_kurzdruck_dimmen_schlafzimmer_20260926
+  alias: Hue Dimmer - Schlafzimmer kurz dimmen
+  description: Kurzer Druck auf Taste 2 oder 3 dimmt das Schlafzimmer; langer Druck bleibt für das Rollo reserviert.
+  triggers:
+  - trigger: state
+    entity_id:
+    - event.schlafzimmer_bett_taste_2
+    - event.schlafzimmer_bett_taste_3
+  conditions:
+  - condition: template
+    value_template: "{{ trigger.to_state is not none and trigger.to_state.attributes.event_type == 'short_release' }}"
+  actions:
+  - action: light.turn_on
+    target:
+      entity_id: light.schlafzimmer
+    data:
+      brightness_step: "{{ 25 if trigger.entity_id.endswith('_taste_2') else -25 }}"
+      transition: 0.4
+  mode: queued
+  max: 5
+- id: hue_langdruck_rollo_gastezimmer_20260926
+  alias: Hue Dimmer - Gästezimmer-Rollo per Langdruck
+  description: Taste 2 lange = ganz auf, Taste 3 lange = ganz zu.
+  triggers:
+  - trigger: state
+    entity_id:
+    - event.hue_dimmer_switch_gastezimmer_taste_2
+    - event.hue_dimmer_switch_gastezimmer_taste_3
+  conditions:
+  - condition: template
+    value_template: "{{ trigger.to_state is not none and trigger.to_state.attributes.event_type == 'long_press' }}"
+  actions:
+  - action: script.rollo_position_sicher_anfahren
+    data:
+      rollo: cover.shelly2pmg3_8cbfea9a6bb0_rollo_gastezimmer
+      zielposition: "{{ 100 if trigger.entity_id.endswith('_taste_2') else 0 }}"
+  mode: single
