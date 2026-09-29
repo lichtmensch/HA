@@ -1,0 +1,227 @@
+{
+  "version": 1,
+  "minor_version": 1,
+  "key": "lovelace.dashboard_bmw",
+  "data": {
+    "config": {
+      "views": [
+        {
+          "title": "BMW iX1",
+          "path": "bmw",
+          "icon": "mdi:car-electric",
+          "type": "sections",
+          "max_columns": 4,
+          "sections": [
+            {
+              "type": "grid",
+              "cards": [
+                {
+                  "type": "heading",
+                  "heading": "Fahrzeug"
+                },
+                {
+                  "type": "heading",
+                  "heading": "Fahrzeug",
+                  "icon": "mdi:car-electric"
+                },
+                {
+                  "type": "gauge",
+                  "entity": "sensor.wby61ef0205y05981_state_of_charge_predicted_on_integration_side",
+                  "name": "Ladezustand",
+                  "min": 0,
+                  "max": 100,
+                  "severity": {
+                    "green": 50,
+                    "yellow": 25,
+                    "red": 0
+                  }
+                },
+                {
+                  "type": "tile",
+                  "entity": "sensor.ix1_xdrive30_range_ev_remaining_range",
+                  "name": "Reichweite",
+                  "icon": "mdi:map-marker-distance"
+                },
+                {
+                  "type": "tile",
+                  "entity": "sensor.ix1_xdrive30_vehicle_mileage",
+                  "name": "Kilometerstand",
+                  "icon": "mdi:counter"
+                },
+                {
+                  "type": "map",
+                  "entities": [
+                    {
+                      "entity": "device_tracker.ix1_xdrive30_location",
+                      "name": "Fahrzeug"
+                    }
+                  ],
+                  "hours_to_show": 24
+                }
+              ]
+            },
+            {
+              "type": "grid",
+              "cards": [
+                {
+                  "type": "heading",
+                  "heading": "Laden"
+                },
+                {
+                  "type": "heading",
+                  "heading": "Laden",
+                  "icon": "mdi:ev-station"
+                },
+                {
+                  "type": "tile",
+                  "entity": "sensor.wby61ef0205y05981_charging_ev_charging_state",
+                  "name": "Ladestatus"
+                },
+                {
+                  "type": "tile",
+                  "entity": "sensor.ix1_xdrive30_charging_port_plug_state",
+                  "name": "Ladestecker"
+                },
+                {
+                  "type": "tile",
+                  "entity": "sensor.ix1_xdrive30_battery_ev_charging_power",
+                  "name": "Ladeleistung"
+                },
+                {
+                  "type": "tile",
+                  "entity": "sensor.ix1_xdrive30_charging_ev_time_to_full_charge",
+                  "name": "Zeit bis voll"
+                },
+                {
+                  "type": "tile",
+                  "entity": "sensor.wby61ef0205y05981_battery_ev_target_state_of_charge",
+                  "name": "Ladeziel"
+                },
+                {
+                  "type": "tile",
+                  "entity": "sensor.wby61ef0205y05981_predicted_charge_speed",
+                  "name": "Ladegeschwindigkeit"
+                },
+                {
+                  "type": "tile",
+                  "entity": "sensor.ix1_xdrive30_charging_ev_energy_to_full_charge",
+                  "name": "Energie bis voll"
+                },
+                {
+                  "type": "tile",
+                  "entity": "sensor.ix1_xdrive30_charging_ev_charging_mode",
+                  "name": "Lademodus"
+                }
+              ]
+            },
+            {
+              "type": "grid",
+              "cards": [
+                {
+                  "type": "heading",
+                  "heading": "Reifen"
+                },
+                {
+                  "type": "heading",
+                  "heading": "Reifendruck",
+                  "icon": "mdi:car-tire-alert"
+                },
+                {
+                  "type": "entities",
+                  "entities": [
+                    {
+                      "entity": "sensor.ix1_xdrive30_tire_pressure_front_left",
+                      "name": "Vorne links"
+                    },
+                    {
+                      "entity": "sensor.ix1_xdrive30_tire_pressure_front_right",
+                      "name": "Vorne rechts"
+                    },
+                    {
+                      "entity": "sensor.ix1_xdrive30_tire_pressure_rear_left",
+                      "name": "Hinten links"
+                    },
+                    {
+                      "entity": "sensor.ix1_xdrive30_tire_pressure_rear_right",
+                      "name": "Hinten rechts"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "grid",
+              "cards": [
+                {
+                  "type": "heading",
+                  "heading": "Fahrzeugstatus"
+                },
+                {
+                  "type": "heading",
+                  "heading": "Türen und Fenster",
+                  "icon": "mdi:car-door"
+                },
+                {
+                  "type": "entities",
+                  "entities": [
+                    {
+                      "entity": "binary_sensor.ix1_xdrive30_door_state_front_driver",
+                      "name": "Tür vorne links"
+                    },
+                    {
+                      "entity": "binary_sensor.ix1_xdrive30_door_state_front_passenger",
+                      "name": "Tür vorne rechts"
+                    },
+                    {
+                      "entity": "binary_sensor.ix1_xdrive30_door_state_rear_driver",
+                      "name": "Tür hinten links"
+                    },
+                    {
+                      "entity": "binary_sensor.ix1_xdrive30_door_state_rear_passenger",
+                      "name": "Tür hinten rechts"
+                    },
+                    {
+                      "entity": "binary_sensor.ix1_xdrive30_tailgate_door_state",
+                      "name": "Heckklappe"
+                    },
+                    {
+                      "entity": "sensor.ix1_xdrive30_window_state_front_driver",
+                      "name": "Fenster vorne links"
+                    },
+                    {
+                      "entity": "sensor.ix1_xdrive30_window_state_front_passenger",
+                      "name": "Fenster vorne rechts"
+                    },
+                    {
+                      "entity": "sensor.ix1_xdrive30_window_state_rear_driver",
+                      "name": "Fenster hinten links"
+                    },
+                    {
+                      "entity": "sensor.ix1_xdrive30_window_state_rear_passenger",
+                      "name": "Fenster hinten rechts"
+                    }
+                  ]
+                },
+                {
+                  "type": "heading",
+                  "heading": "Klimatisierung",
+                  "icon": "mdi:car-seat-cooler"
+                },
+                {
+                  "type": "tile",
+                  "entity": "sensor.ix1_xdrive30_preconditioning_state",
+                  "name": "Vorklimatisierung"
+                },
+                {
+                  "type": "tile",
+                  "entity": "sensor.ix1_xdrive30_preconditioning_remaining_time",
+                  "name": "Restzeit"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

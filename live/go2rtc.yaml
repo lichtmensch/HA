@@ -1,0 +1,9 @@
+streams:
+  terrasse_homekit:
+    - "ffmpeg:rtsp://192.168.188.108:8554/Terrasse#timeout=20#video=h264#raw=-vf crop=2560:1440:1280:0,scale=1920:1080 -r 15 -b:v 4M -maxrate 5M -bufsize 8M"
+
+ffmpeg:
+  h264: "-codec:v libx264 -g:v 30 -preset:v superfast -tune:v zerolatency -profile:v main -level:v 4.1 -pix_fmt:v yuv420p"
+
+rtsp:
+  listen: ":8556"

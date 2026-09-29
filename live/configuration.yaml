@@ -1,0 +1,130 @@
+
+# Loads default set of integrations. Do not remove.
+default_config:
+
+# Blitzortung erzeugt kurzfristige Geo-Entitaeten. Die Radar-Karte zeigt sie
+# weiterhin live, sie muessen aber nicht dauerhaft in der Datenbank landen.
+recorder:
+  exclude:
+    domains:
+      - geo_location
+
+# Load frontend themes from the themes folder
+frontend:
+  themes: !include_dir_merge_named themes
+
+automation: !include automations.yaml
+script: !include scripts.yaml
+scene: !include scenes.yaml
+
+input_boolean:
+  spuelmaschine_lauf_aktiv:
+    name: Spülmaschine Lauf aktiv
+    icon: mdi:dishwasher
+
+homeassistant:
+  internal_url: "https://lichtmensch.duckdns.org"
+  external_url: "https://lichtmensch.duckdns.org"
+  packages: !include_dir_named packages
+  customize:
+    device_tracker.ix1_xdrive30_location:
+      friendly_name: BMW iX1
+      icon: mdi:car-electric
+      entity_picture: /local/bmw-ix1-marker.svg
+    sensor.gastezimmer_tv_energie_jaehrlich:
+      friendly_name: Plug TV Gästezimmer Jahresverbrauch
+      unit_of_measurement: "kWh"
+      device_class: energy
+    sensor.spuelmaschine_energie_jaehrlich:
+      friendly_name: Spülmaschine Jahresverbrauch
+      unit_of_measurement: "kWh"
+      device_class: energy
+    sensor.schlafzimmer_tv_energie_jaehrlich:
+      friendly_name: Schlafzimmer TV Jahresverbrauch
+      unit_of_measurement: "kWh"
+      device_class: energy
+    sensor.qnap_energie_jaehrlich:
+      friendly_name: QNAP Jahresverbrauch
+      unit_of_measurement: "kWh"
+      device_class: energy
+    sensor.lichtverbrauch_energie_jaehrlich:
+      friendly_name: Lichtverbrauch Jahresverbrauch
+      unit_of_measurement: "kWh"
+      device_class: energy
+template:
+  - triggers:
+      - trigger: homeassistant
+        event: start
+      - trigger: time_pattern
+        minutes: "/15"
+    actions:
+      - action: weather.get_forecasts
+        target:
+          entity_id: weather.forecast_home
+        data:
+          type: daily
+        response_variable: daily_forecast
+      - action: weather.get_forecasts
+        target:
+          entity_id: weather.forecast_home
+        data:
+          type: hourly
+        response_variable: hourly_forecast
+    sensor:
+      - name: Wetter heute Bedingung
+        unique_id: wetter_heute_bedingung
+        state: >
+          {{ states('weather.forecast_home') }}
+
+      - name: Wetter heute Temperatur min
+        unique_id: wetter_heute_temperatur_min
+        unit_of_measurement: "°C"
+        state: >
+          {{ daily_forecast['weather.forecast_home'].forecast[0].templow }}
+
+      - name: Wetter heute Temperatur max
+        unique_id: wetter_heute_temperatur_max
+        unit_of_measurement: "°C"
+        state: >
+          {{ daily_forecast['weather.forecast_home'].forecast[0].temperature }}
+
+      - name: Regenwahrscheinlichkeit heute
+        unique_id: regenwahrscheinlichkeit_heute
+        unit_of_measurement: "%"
+        state: >
+          {% set p = daily_forecast['weather.forecast_home'].forecast[0].precipitation_probability %}
+          {{ 0 if p is none else p }}
+
+      - name: Regenwahrscheinlichkeit naechste Stunde
+        unique_id: regenwahrscheinlichkeit_naechste_stunde
+        unit_of_measurement: "%"
+        state: >
+          {% set p = hourly_forecast['weather.forecast_home'].forecast[0].precipitation_probability %}
+          {{ 0 if p is none else p }}
+
+      - name: Regen heute gefallen
+        unique_id: regen_heute_gefallen
+        unit_of_measurement: "mm"
+        state: >
+          {{ states('sensor.weather_station_regenmesser_niederschlagsmenge') }}
+
+  - binary_sensor:
+      - name: Westfenster direkte Sonne
+        unique_id: westfenster_direkte_sonne
+        availability: >
+          {{ states('sensor.hue_motion_sensor_3_beleuchtungsstarke')
+             not in ['unknown', 'unavailable'] }}
+        state: >
+          {% set lux = states('sensor.hue_motion_sensor_3_beleuchtungsstarke')
+             | float(0) %}
+          {% if this.state == 'on' %}
+            {{ lux > 700 }}
+          {% else %}
+            {{ lux >= 2500 }}
+          {% endif %}
+        delay_on:
+          minutes: 3
+        delay_off:
+          minutes: 20
+
+utility_meter: !include utility_meter.yaml

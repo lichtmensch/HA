@@ -1,0 +1,149 @@
+# Bathroom radiator only; floor heating remains manually controlled.
+# Europe/Berlin (Home Assistant local time). No temperature offset applied.
+automation:
+  - id: bad_heizkoerper_werktags_netatmo_20260928
+    alias: "Bad – Morgenwärme 22,5 °C mit Netatmo"
+    description: >-
+      Mo–Fr dynamischer Vorlauf zwischen 04:30 und 06:00, Ziel 22,5 °C um 06:00,
+      Halten bis 07:00, sonst aus mit Geräte-Frostschutz.
+      Netatmo nur bei Verbindung, plausiblem Wert und HA-Meldung jünger als
+      20 Minuten. Sonst interner Sensor. Prüfung jede Minute und nach Neustart.
+      Vorlauf: 22 °C=20 min, 21,5=40, 21=60, <=20,5=90; dazwischen interpoliert.
+      Ohne Netatmo Ersatzstart 05:00 mit internem Sensor. Gelernte Vorlaufkorrektur
+      aus gültigen Morgenläufen, maximal 5 Minuten Änderung pro Tag.
+    mode: single
+    max_exceeded: silent
+    triggers:
+      - trigger: time
+        at: "04:30:00"
+      - trigger: time
+        at: "06:00:00"
+      - trigger: time
+        at: "07:00:00"
+      - trigger: time_pattern
+        minutes: "/1"
+      - trigger: homeassistant
+        event: start
+      - trigger: event
+        event_type: automation_reloaded
+      - trigger: state
+        entity_id: binary_sensor.weather_station_bad_connectivity
+      - trigger: state
+        entity_id: sensor.weather_station_bad_temperatur
+    conditions:
+      - condition: template
+        value_template: >-
+          {{ states('climate.heizkorper_bad_thermostat') not in ['unknown', 'unavailable'] }}
+    actions:
+      - variables:
+          netatmo_ok: >-
+            {% set s = states.sensor.weather_station_bad_temperatur %}
+            {{ is_state('binary_sensor.weather_station_bad_connectivity', 'on')
+               and is_number(s.state) and 5 <= s.state | float <= 35
+               and 0 <= as_timestamp(now()) - as_timestamp(s.last_reported, 0) < 1200 }}
+          raumtemperatur: "{{ states('sensor.weather_station_bad_temperatur') | float(0) | round(1) }}"
+      - variables:
+          basis_vorlauf: >-
+            {% set t = raumtemperatur | float %}
+            {% if not netatmo_ok %}60
+            {% elif t >= 22.5 %}0
+            {% elif t <= 20.5 %}90
+            {% elif t < 21 %}{{ (60 + (21 - t) * 60) | round(0, 'ceil') | int }}
+            {% else %}{{ ((22.5 - t) * 40) | round(0, 'ceil') | int }}{% endif %}
+      - variables:
+          vorlauf_minuten: >-
+            {% set model = states('input_text.bad_heizung_lernstand') | from_json({}) %}
+            {% if not netatmo_ok %}60
+            {% elif raumtemperatur | float >= 22.5 %}0
+            {% else %}
+              {% set correction = model.get('correction', 0) | int if model.get('target') == 22.5 else 0 %}
+              {{ [90, [1, basis_vorlauf | int + correction] | max] | min }}
+            {% endif %}
+      - variables:
+          heizzeit: >-
+            {% set minute = now().hour * 60 + now().minute %}
+            {{ now().weekday() < 5 and 270 <= minute < 420 and
+               (minute >= 360
+                or is_state('climate.heizkorper_bad_thermostat', 'heat')
+                or (vorlauf_minuten | int > 0 and minute >= 360 - vorlauf_minuten | int)) }}
+      - choose:
+          - conditions: "{{ heizzeit }}"
+            sequence:
+              - choose:
+                  - conditions: "{{ netatmo_ok }}"
+                    sequence:
+                      # Refresh even unchanged values; never feed external data outside heating hours.
+                      - action: number.set_value
+                        continue_on_error: true
+                        target:
+                          entity_id: number.heizkorper_bad_wert_des_externen_temperatursensors
+                        data:
+                          value: "{{ raumtemperatur }}"
+                      - wait_template: >-
+                          {{ is_number(states('number.heizkorper_bad_wert_des_externen_temperatursensors'))
+                             and (states('number.heizkorper_bad_wert_des_externen_temperatursensors') | float - raumtemperatur | float) | abs < 0.11 }}
+                        timeout: "00:00:10"
+                        continue_on_timeout: true
+                      - choose:
+                          - conditions: "{{ wait.completed }}"
+                            sequence:
+                              - if:
+                                  - condition: state
+                                    entity_id: switch.heizkorper_bad_externer_temperatursensor
+                                    state: "off"
+                                then:
+                                  - action: switch.turn_on
+                                    target:
+                                      entity_id: switch.heizkorper_bad_externer_temperatursensor
+                        default:
+                          - action: switch.turn_off
+                            target:
+                              entity_id: switch.heizkorper_bad_externer_temperatursensor
+                default:
+                  - if:
+                      - condition: template
+                        value_template: "{{ not is_state('switch.heizkorper_bad_externer_temperatursensor', 'off') }}"
+                    then:
+                      - action: switch.turn_off
+                        target:
+                          entity_id: switch.heizkorper_bad_externer_temperatursensor
+              - if:
+                  - condition: template
+                    value_template: >-
+                      {{ not is_state('climate.heizkorper_bad_thermostat', 'heat')
+                         or state_attr('climate.heizkorper_bad_thermostat', 'temperature') != 22.5 }}
+                then:
+                  - action: climate.set_temperature
+                    target:
+                      entity_id: climate.heizkorper_bad_thermostat
+                    data:
+                      hvac_mode: heat
+                      temperature: 22.5
+              - action: script.bad_heizung_lernereignis
+                continue_on_error: true
+                data:
+                  ereignis: start
+                  starttemperatur: "{{ raumtemperatur }}"
+                  start_gueltig: >-
+                    {{ netatmo_ok and is_state('switch.heizkorper_bad_externer_temperatursensor', 'on') }}
+                  vorlauf: "{{ vorlauf_minuten }}"
+        default:
+          - if:
+              - condition: template
+                value_template: "{{ not is_state('switch.heizkorper_bad_externer_temperatursensor', 'off') }}"
+            then:
+              - action: switch.turn_off
+                continue_on_error: true
+                target:
+                  entity_id: switch.heizkorper_bad_externer_temperatursensor
+          - if:
+              - condition: template
+                value_template: >-
+                  {{ not is_state('climate.heizkorper_bad_thermostat', 'off')
+                     or state_attr('climate.heizkorper_bad_thermostat', 'hvac_action') == 'heating' }}
+            then:
+              - action: climate.set_hvac_mode
+                target:
+                  entity_id: climate.heizkorper_bad_thermostat
+                data:
+                  hvac_mode: "off"

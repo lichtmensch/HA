@@ -1,0 +1,79 @@
+kaffeemaschine_energie_jaehrlich:
+  source: sensor.shellyplugmg3_0892724df770_energie
+  cycle: yearly
+
+spuelmaschine_energie_jaehrlich:
+  source: sensor.shellyplugmg3_70af09e33520_energie
+  cycle: yearly
+
+schlafzimmer_tv_energie_jaehrlich:
+  source: sensor.schlafzimmer_schlafzimmer_tv_energie
+  cycle: yearly
+
+waschmaschine_energie_jaehrlich:
+  source: sensor.stecker_waschmaschine_energie
+  cycle: yearly
+
+waschetrockner_energie_jaehrlich:
+  source: sensor.stecker_waschetrockner_energie
+  cycle: yearly
+
+kuhlschrank_energie_jaehrlich:
+  source: sensor.kuhlschrank_energie
+  cycle: yearly
+
+tv_yamaha_energie_jaehrlich:
+  source: sensor.shellypstripg4_d885ace4e950_output_0_energie
+  cycle: yearly
+
+playstation_energie_jaehrlich:
+  source: sensor.shellypstripg4_d885ace4e950_output_1_energie
+  cycle: yearly
+
+apple_tv_energie_jaehrlich:
+  source: sensor.shellypstripg4_d885ace4e950_output_2_energie
+  cycle: yearly
+
+ei_energie_jaehrlich:
+  source: sensor.shellypstripg4_d885ace4e950_output_3_energie
+  cycle: yearly
+
+gastezimmer_tv_energie_jaehrlich:
+  source: sensor.gastezimmer_plug_tx_gastezimmer_energie
+  cycle: yearly
+
+qnap_energie_jaehrlich:
+  source: sensor.shellyplugmg3_089272576804_energie
+  cycle: yearly
+
+lichtverbrauch_energie_jaehrlich:
+  source: sensor.lichtverbrauch_energy
+  cycle: yearly
+
+outdoor_plug_energie_jaehrlich:
+  source: sensor.shellyoutdoorsg3_48f6eeb5d230_energie
+  cycle: yearly
+
+rollo_wohnzimmer_energie_jaehrlich:
+  source: sensor.wohnzimmerfenster_rollo_energie
+  cycle: yearly
+
+rollo_terrasse_energie_jaehrlich:
+  source: sensor.terrassentur_rollo_rollo_terrassentur_energie
+  cycle: yearly
+
+rollo_schlafzimmer_energie_jaehrlich:
+  source: sensor.rollo_schlafzimmer_energie
+  cycle: yearly
+
+rollo_gastezimmer_energie_jaehrlich:
+  source: sensor.shelly2pmg3_8cbfea9a6bb0_rollo_gastezimmer_energie
+  cycle: yearly
+
+rollo_gaste_wc_energie_jaehrlich:
+  source: sensor.shelly2pmg3_8cbfea97b428_rollo_gaste_wc_energie
+  cycle: yearly
+
+rollo_bad_energie_jaehrlich:
+  source: sensor.shelly2pmg3_8cbfea9cc4f4_rollo_bad_energie
+  cycle: yearly

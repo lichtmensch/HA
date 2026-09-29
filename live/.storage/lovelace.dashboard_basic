@@ -1,0 +1,172 @@
+{
+  "version": 1,
+  "minor_version": 1,
+  "key": "lovelace.dashboard_basic",
+  "data": {
+    "config": {
+      "views": [
+        {
+          "title": "Rollos",
+          "path": "basic",
+          "icon": "mdi:roller-shade",
+          "type": "sections",
+          "sections": [
+            {
+              "type": "grid",
+              "cards": [
+                {
+                  "type": "heading",
+                  "heading": "🪟 Rollos"
+                },
+                {
+                  "type": "grid",
+                  "columns": 3,
+                  "square": false,
+                  "cards": [
+                    {
+                      "type": "tile",
+                      "entity": "cover.wohnzimmerfenster_rollo",
+                      "name": "🛋️ Wohnzimmer",
+                      "tap_action": {
+                        "action": "toggle"
+                      },
+                      "icon_tap_action": {
+                        "action": "more-info"
+                      },
+                      "features": [
+                        {
+                          "type": "cover-open-close"
+                        },
+                        {
+                          "type": "cover-position"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "tile",
+                      "entity": "cover.rollo_schlafzimmer",
+                      "name": "🛏️ Schlafzimmer",
+                      "tap_action": {
+                        "action": "toggle"
+                      },
+                      "icon_tap_action": {
+                        "action": "more-info"
+                      },
+                      "features": [
+                        {
+                          "type": "cover-open-close"
+                        },
+                        {
+                          "type": "cover-position"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "tile",
+                      "entity": "cover.shelly2pmg3_8cbfea9a6bb0_rollo_gastezimmer",
+                      "name": "🛏️ Gästezimmer",
+                      "tap_action": {
+                        "action": "toggle"
+                      },
+                      "icon_tap_action": {
+                        "action": "more-info"
+                      },
+                      "features": [
+                        {
+                          "type": "cover-open-close"
+                        },
+                        {
+                          "type": "cover-position"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "tile",
+                      "entity": "cover.shelly2pmg3_8cbfea9cc4f4_rollo_bad",
+                      "name": "🚿 Bad",
+                      "tap_action": {
+                        "action": "toggle"
+                      },
+                      "icon_tap_action": {
+                        "action": "more-info"
+                      },
+                      "features": [
+                        {
+                          "type": "cover-open-close"
+                        },
+                        {
+                          "type": "cover-position"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "tile",
+                      "entity": "cover.shelly2pmg3_8cbfea97b428_rollo_gaste_wc",
+                      "name": "🚽 Gäste WC",
+                      "tap_action": {
+                        "action": "toggle"
+                      },
+                      "icon_tap_action": {
+                        "action": "more-info"
+                      },
+                      "features": [
+                        {
+                          "type": "cover-open-close"
+                        },
+                        {
+                          "type": "cover-position"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "tile",
+                      "entity": "cover.terrassentur_rollo_rollo_terrassentur",
+                      "name": "🌿 Terrasse",
+                      "tap_action": {
+                        "action": "toggle"
+                      },
+                      "icon_tap_action": {
+                        "action": "more-info"
+                      },
+                      "features": [
+                        {
+                          "type": "cover-open-close"
+                        },
+                        {
+                          "type": "cover-position"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "grid",
+              "cards": [
+                {
+                  "type": "heading",
+                  "heading": "⚙️ Steuerung"
+                },
+                {
+                  "type": "button",
+                  "entity": "input_boolean.terrassentur_rollo_manuell_blockiert",
+                  "name": "Terrassentür Blockade",
+                  "icon": "mdi:roller-shade",
+                  "tap_action": {
+                    "action": "toggle"
+                  },
+                  "show_state": true,
+                  "grid_options": {
+                    "columns": 9,
+                    "rows": 3
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

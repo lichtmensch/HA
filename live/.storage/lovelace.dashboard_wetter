@@ -1,0 +1,779 @@
+{
+  "version": 1,
+  "minor_version": 1,
+  "key": "lovelace.dashboard_wetter",
+  "data": {
+    "config": {
+      "title": "Wetter",
+      "views": [
+        {
+          "title": "Wetter",
+          "path": "wetter",
+          "icon": "mdi:weather-partly-cloudy",
+          "type": "sections",
+          "max_columns": 2,
+          "sections": [
+            {
+              "type": "grid",
+              "cards": [
+                {
+                  "type": "custom:button-card",
+                  "name": "Zurück zur Hauptansicht",
+                  "icon": "mdi:arrow-left",
+                  "tap_action": {
+                    "action": "navigate",
+                    "navigation_path": "/ipad-basic/flur"
+                  },
+                  "styles": {
+                    "card": [
+                      {
+                        "height": "52px"
+                      },
+                      {
+                        "border-radius": "14px"
+                      },
+                      {
+                        "padding": "7px 14px"
+                      },
+                      {
+                        "border": "1px solid var(--divider-color)"
+                      },
+                      {
+                        "background": "linear-gradient(135deg, color-mix(in srgb, var(--card-background-color) 95%, #4f91c8 5%), var(--card-background-color))"
+                      }
+                    ],
+                    "grid": [
+                      {
+                        "grid-template-areas": "'i n'"
+                      },
+                      {
+                        "grid-template-columns": "34px 1fr"
+                      }
+                    ],
+                    "icon": [
+                      {
+                        "width": "23px"
+                      },
+                      {
+                        "color": "#4f91c8"
+                      }
+                    ],
+                    "name": [
+                      {
+                        "justify-self": "start"
+                      },
+                      {
+                        "font-size": "14px"
+                      },
+                      {
+                        "font-weight": "600"
+                      }
+                    ]
+                  }
+                },
+                {
+                  "type": "heading",
+                  "heading": "Wetter heute",
+                  "icon": "mdi:weather-partly-cloudy"
+                },
+                {
+                  "type": "grid",
+                  "columns": 2,
+                  "square": false,
+                  "cards": [
+                    {
+                      "type": "custom:button-card",
+                      "entity": "sensor.aussentemperatur_dashboard",
+                      "name": "Außentemperatur",
+                      "icon": "mdi:thermometer-lines",
+                      "show_state": true,
+                      "tap_action": {
+                        "action": "more-info"
+                      },
+                      "styles": {
+                        "card": [
+                          {
+                            "height": "64px"
+                          },
+                          {
+                            "padding": "7px 10px"
+                          },
+                          {
+                            "border-radius": "16px"
+                          },
+                          {
+                            "border": "1px solid color-mix(in srgb, var(--divider-color) 75%, #e58b38 25%)"
+                          },
+                          {
+                            "background": "linear-gradient(135deg, color-mix(in srgb, var(--card-background-color) 94%, #e58b38 6%), var(--card-background-color))"
+                          }
+                        ],
+                        "grid": [
+                          {
+                            "grid-template-areas": "'i n' 'i s'"
+                          },
+                          {
+                            "grid-template-columns": "44px 1fr"
+                          }
+                        ],
+                        "icon": [
+                          {
+                            "width": "23px"
+                          },
+                          {
+                            "color": "#e58b38"
+                          }
+                        ],
+                        "name": [
+                          {
+                            "justify-self": "start"
+                          },
+                          {
+                            "font-size": "13px"
+                          },
+                          {
+                            "color": "var(--secondary-text-color)"
+                          }
+                        ],
+                        "state": [
+                          {
+                            "justify-self": "start"
+                          },
+                          {
+                            "font-size": "23px"
+                          },
+                          {
+                            "font-weight": "600"
+                          }
+                        ],
+                        "img_cell": [
+                          {
+                            "width": "38px"
+                          },
+                          {
+                            "height": "38px"
+                          },
+                          {
+                            "border-radius": "12px"
+                          },
+                          {
+                            "background": "color-mix(in srgb, #e58b38 16%, transparent)"
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "type": "custom:button-card",
+                      "entity": "sensor.aussenluftfeuchtigkeit_dashboard",
+                      "name": "Luftfeuchtigkeit",
+                      "icon": "mdi:water-percent",
+                      "show_state": true,
+                      "tap_action": {
+                        "action": "more-info"
+                      },
+                      "styles": {
+                        "card": [
+                          {
+                            "height": "64px"
+                          },
+                          {
+                            "padding": "7px 10px"
+                          },
+                          {
+                            "border-radius": "16px"
+                          },
+                          {
+                            "border": "1px solid color-mix(in srgb, var(--divider-color) 75%, #32a9c7 25%)"
+                          },
+                          {
+                            "background": "linear-gradient(135deg, color-mix(in srgb, var(--card-background-color) 94%, #32a9c7 6%), var(--card-background-color))"
+                          }
+                        ],
+                        "grid": [
+                          {
+                            "grid-template-areas": "'i n' 'i s'"
+                          },
+                          {
+                            "grid-template-columns": "44px 1fr"
+                          }
+                        ],
+                        "icon": [
+                          {
+                            "width": "23px"
+                          },
+                          {
+                            "color": "#32a9c7"
+                          }
+                        ],
+                        "name": [
+                          {
+                            "justify-self": "start"
+                          },
+                          {
+                            "font-size": "13px"
+                          },
+                          {
+                            "color": "var(--secondary-text-color)"
+                          }
+                        ],
+                        "state": [
+                          {
+                            "justify-self": "start"
+                          },
+                          {
+                            "font-size": "23px"
+                          },
+                          {
+                            "font-weight": "600"
+                          }
+                        ],
+                        "img_cell": [
+                          {
+                            "width": "38px"
+                          },
+                          {
+                            "height": "38px"
+                          },
+                          {
+                            "border-radius": "12px"
+                          },
+                          {
+                            "background": "color-mix(in srgb, #32a9c7 16%, transparent)"
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "type": "custom:button-card",
+                      "entity": "sensor.regen_mit_6h_prognose",
+                      "name": "Regen",
+                      "icon": "mdi:weather-pouring",
+                      "show_state": true,
+                      "tap_action": {
+                        "action": "more-info"
+                      },
+                      "styles": {
+                        "card": [
+                          {
+                            "height": "64px"
+                          },
+                          {
+                            "padding": "7px 10px"
+                          },
+                          {
+                            "border-radius": "16px"
+                          },
+                          {
+                            "border": "1px solid color-mix(in srgb, var(--divider-color) 75%, #4f8fd3 25%)"
+                          },
+                          {
+                            "background": "linear-gradient(135deg, color-mix(in srgb, var(--card-background-color) 94%, #4f8fd3 6%), var(--card-background-color))"
+                          }
+                        ],
+                        "grid": [
+                          {
+                            "grid-template-areas": "'i n' 'i s'"
+                          },
+                          {
+                            "grid-template-columns": "44px 1fr"
+                          }
+                        ],
+                        "icon": [
+                          {
+                            "width": "23px"
+                          },
+                          {
+                            "color": "#4f8fd3"
+                          }
+                        ],
+                        "name": [
+                          {
+                            "justify-self": "start"
+                          },
+                          {
+                            "font-size": "13px"
+                          },
+                          {
+                            "color": "var(--secondary-text-color)"
+                          }
+                        ],
+                        "state": [
+                          {
+                            "justify-self": "start"
+                          },
+                          {
+                            "font-size": "15px"
+                          },
+                          {
+                            "font-weight": "600"
+                          },
+                          {
+                            "white-space": "normal"
+                          }
+                        ],
+                        "img_cell": [
+                          {
+                            "width": "38px"
+                          },
+                          {
+                            "height": "38px"
+                          },
+                          {
+                            "border-radius": "12px"
+                          },
+                          {
+                            "background": "color-mix(in srgb, #4f8fd3 16%, transparent)"
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "type": "custom:button-card",
+                      "entity": "sensor.wind_mit_himmelsrichtung",
+                      "name": "Wind",
+                      "icon": "mdi:weather-windy",
+                      "show_state": true,
+                      "tap_action": {
+                        "action": "more-info"
+                      },
+                      "styles": {
+                        "card": [
+                          {
+                            "height": "64px"
+                          },
+                          {
+                            "padding": "7px 10px"
+                          },
+                          {
+                            "border-radius": "16px"
+                          },
+                          {
+                            "border": "1px solid color-mix(in srgb, var(--divider-color) 75%, #36a39a 25%)"
+                          },
+                          {
+                            "background": "linear-gradient(135deg, color-mix(in srgb, var(--card-background-color) 94%, #36a39a 6%), var(--card-background-color))"
+                          }
+                        ],
+                        "grid": [
+                          {
+                            "grid-template-areas": "'i n' 'i s'"
+                          },
+                          {
+                            "grid-template-columns": "44px 1fr"
+                          }
+                        ],
+                        "icon": [
+                          {
+                            "width": "23px"
+                          },
+                          {
+                            "color": "#36a39a"
+                          }
+                        ],
+                        "name": [
+                          {
+                            "justify-self": "start"
+                          },
+                          {
+                            "font-size": "13px"
+                          },
+                          {
+                            "color": "var(--secondary-text-color)"
+                          }
+                        ],
+                        "state": [
+                          {
+                            "justify-self": "start"
+                          },
+                          {
+                            "font-size": "17px"
+                          },
+                          {
+                            "font-weight": "600"
+                          }
+                        ],
+                        "img_cell": [
+                          {
+                            "width": "38px"
+                          },
+                          {
+                            "height": "38px"
+                          },
+                          {
+                            "border-radius": "12px"
+                          },
+                          {
+                            "background": "color-mix(in srgb, #36a39a 16%, transparent)"
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                },
+                {
+                  "type": "custom:button-card",
+                  "entity": "sensor.wetter_heute_tageszeiten",
+                  "show_icon": false,
+                  "show_state": false,
+                  "show_label": true,
+                  "name": "[[[ const d = new Intl.DateTimeFormat('de-DE', {weekday:'long', day:'2-digit', month:'long'}).format(new Date()); return 'Heute · ' + d.charAt(0).toUpperCase() + d.slice(1); ]]]",
+                  "label": "[[[ const w = states['weather.forecast_home']; const names={sunny:'Sonnig',partlycloudy:'Teilweise bewölkt',cloudy:'Bewölkt',rainy:'Regen',pouring:'Starker Regen','clear-night':'Klare Nacht',fog:'Nebel',snowy:'Schnee','snowy-rainy':'Schneeregen',lightning:'Gewitter','lightning-rainy':'Gewitterregen',windy:'Windig'}; const t=w?.attributes?.temperature; return `${names[w?.state] || w?.state || '–'}${t !== undefined ? ' · '+Number(t).toLocaleString('de-DE',{maximumFractionDigits:1})+' °C' : ''}`; ]]]",
+                  "custom_fields": {
+                    "periods": "[[[ const items=entity?.attributes?.periods || []; const symbols={sunny:'☀️',partlycloudy:'🌤️',cloudy:'☁️',rainy:'🌧️',pouring:'🌧️','clear-night':'🌙',fog:'🌫️',snowy:'🌨️','snowy-rainy':'🌨️',lightning:'⛈️','lightning-rainy':'⛈️',windy:'🌬️'}; return `<div style=\"display:grid;grid-template-columns:repeat(4,1fr);width:100%;gap:0\">${items.map((p,i)=>`<div style=\"text-align:center;${i<3?'border-right:1px solid var(--divider-color);':''}\"><div style=\"font-size:13px;color:var(--secondary-text-color);margin-bottom:2px\">${p.label}</div><div style=\"font-size:28px;line-height:30px\">${symbols[p.condition]||'🌥️'}</div><div style=\"font-size:19px;font-weight:600;margin-top:1px\">${p.temperature!=null?Number(p.temperature).toLocaleString('de-DE',{maximumFractionDigits:1})+'°':'–'}</div><div style=\"font-size:11px;color:var(--secondary-text-color)\">${p.precipitation_probability!=null?'Regen '+Math.round(p.precipitation_probability)+' %':p.precipitation!=null?'Regen '+Number(p.precipitation).toLocaleString('de-DE',{maximumFractionDigits:1})+' mm':'Zeitraum vorbei'}</div></div>`).join('')}</div>`; ]]]"
+                  },
+                  "tap_action": {
+                    "action": "more-info"
+                  },
+                  "styles": {
+                    "card": [
+                      {
+                        "height": "140px"
+                      },
+                      {
+                        "padding": "9px 12px"
+                      },
+                      {
+                        "border-radius": "16px"
+                      }
+                    ],
+                    "grid": [
+                      {
+                        "grid-template-areas": "'n' 'l' 'periods'"
+                      },
+                      {
+                        "grid-template-rows": "24px 22px 1fr"
+                      }
+                    ],
+                    "name": [
+                      {
+                        "justify-self": "start"
+                      },
+                      {
+                        "font-size": "18px"
+                      },
+                      {
+                        "font-weight": "600"
+                      }
+                    ],
+                    "label": [
+                      {
+                        "justify-self": "start"
+                      },
+                      {
+                        "font-size": "13px"
+                      },
+                      {
+                        "color": "var(--secondary-text-color)"
+                      }
+                    ],
+                    "custom_fields": [
+                      {
+                        "periods": [
+                          {
+                            "width": "100%"
+                          },
+                          {
+                            "align-self": "end"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  "grid_options": {
+                    "columns": 12,
+                    "rows": 3
+                  }
+                },
+                {
+                  "type": "custom:button-card",
+                  "entity": "sensor.wetter_nachste_tage",
+                  "show_icon": false,
+                  "show_name": false,
+                  "show_state": false,
+                  "custom_fields": {
+                    "days": "[[[ const items=entity?.attributes?.days || []; const symbols={sunny:'☀️',partlycloudy:'🌤️',cloudy:'☁️',rainy:'🌧️',pouring:'🌧️','clear-night':'🌙',fog:'🌫️',snowy:'🌨️','snowy-rainy':'🌨️',lightning:'⛈️','lightning-rainy':'⛈️',windy:'🌬️'}; return `<div style=\"display:grid;grid-template-columns:repeat(5,1fr);width:100%\">${items.map(p=>{const d=new Date(p.datetime);const day=new Intl.DateTimeFormat('de-DE',{weekday:'short'}).format(d);return `<div style=\"text-align:center\"><div style=\"font-size:13px;color:var(--secondary-text-color)\">${day}</div><div style=\"font-size:24px;line-height:28px;margin:2px 0\">${symbols[p.condition]||'🌥️'}</div><div style=\"font-size:15px;font-weight:600\">${p.temperature!=null?Math.round(p.temperature)+'°':'–'}</div><div style=\"font-size:11px;color:var(--secondary-text-color)\">${p.templow!=null?Math.round(p.templow)+'°':'–'}</div></div>`}).join('')}</div>`; ]]]"
+                  },
+                  "tap_action": {
+                    "action": "more-info"
+                  },
+                  "styles": {
+                    "card": [
+                      {
+                        "height": "94px"
+                      },
+                      {
+                        "padding": "7px 10px"
+                      },
+                      {
+                        "border-radius": "16px"
+                      }
+                    ],
+                    "grid": [
+                      {
+                        "grid-template-areas": "'days'"
+                      }
+                    ],
+                    "custom_fields": [
+                      {
+                        "days": [
+                          {
+                            "width": "100%"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  "grid_options": {
+                    "columns": 12,
+                    "rows": 2
+                  }
+                }
+              ]
+            },
+            {
+              "type": "grid",
+              "cards": [
+                {
+                  "type": "heading",
+                  "heading": "Regenradar",
+                  "icon": "mdi:radar"
+                },
+                {
+                  "type": "custom:weather-radar-card",
+                  "data_source": "DWD",
+                  "past_minutes": 30,
+                  "forecast_minutes": 120,
+                  "frame_stride_minutes": 5,
+                  "frame_delay": 650,
+                  "restart_delay": 1400,
+                  "smooth_animation": true,
+                  "motion_compensation": true,
+                  "radar_opacity": 0.9,
+                  "zoom_level": 8,
+                  "center_latitude": 50.7899532,
+                  "center_longitude": 8.7686572,
+                  "map_style": "OSM",
+                  "markers": [
+                    {
+                      "entity": "zone.home",
+                      "icon": "mdi:home-map-marker",
+                      "color": "#2f5aa8"
+                    }
+                  ],
+                  "show_color_bar": true,
+                  "show_progress_bar": true,
+                  "progress_bar_touch_height": 36,
+                  "show_playback": true,
+                  "show_recenter": true,
+                  "show_zoom": false,
+                  "show_scale": false,
+                  "extra_labels": true,
+                  "disable_scroll": true,
+                  "show_lightning": true,
+                  "lightning_max_age_minutes": 30,
+                  "lightning_pulse": true,
+                  "height": "255px",
+                  "grid_options": {
+                    "columns": 12,
+                    "rows": 3
+                  }
+                },
+                {
+                  "type": "heading",
+                  "heading": "Weitere Messwerte",
+                  "icon": "mdi:gauge"
+                },
+                {
+                  "type": "grid",
+                  "columns": 2,
+                  "square": false,
+                  "cards": [
+                    {
+                      "type": "tile",
+                      "entity": "sensor.weather_station_regenmesser_niederschlagsmenge_letzte_stunde",
+                      "name": "Regen letzte Stunde",
+                      "icon": "mdi:clock-outline",
+                      "vertical": false,
+                      "features_position": "bottom",
+                      "color": "blue"
+                    },
+                    {
+                      "type": "tile",
+                      "entity": "sensor.weather_station_atmospharischer_druck",
+                      "name": "Luftdruck",
+                      "icon": "mdi:gauge",
+                      "vertical": false,
+                      "features_position": "bottom",
+                      "color": "teal"
+                    },
+                    {
+                      "type": "tile",
+                      "entity": "sensor.weather_station_aussen_temperatur_trend",
+                      "name": "Temperaturtrend",
+                      "icon": "mdi:chart-line",
+                      "vertical": false,
+                      "features_position": "bottom",
+                      "color": "orange"
+                    },
+                    {
+                      "type": "tile",
+                      "entity": "sensor.weather_station_larm",
+                      "name": "Lautstärke Wohnzimmer",
+                      "icon": "mdi:volume-medium",
+                      "vertical": false,
+                      "features_position": "bottom",
+                      "color": "grey"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "grid",
+              "cards": [
+                {
+                  "type": "heading",
+                  "heading": "Raumtemperaturen",
+                  "icon": "mdi:home-thermometer-outline"
+                },
+                {
+                  "type": "grid",
+                  "columns": 2,
+                  "square": false,
+                  "cards": [
+                    {
+                      "type": "tile",
+                      "entity": "sensor.weather_station_temperatur",
+                      "name": "Wohnzimmer",
+                      "icon": "mdi:sofa-outline",
+                      "vertical": false,
+                      "features_position": "bottom",
+                      "color": "orange"
+                    },
+                    {
+                      "type": "tile",
+                      "entity": "sensor.weather_station_schlafzimmer_temperatur",
+                      "name": "Schlafzimmer",
+                      "icon": "mdi:bed-outline",
+                      "vertical": false,
+                      "features_position": "bottom",
+                      "color": "orange"
+                    },
+                    {
+                      "type": "tile",
+                      "entity": "sensor.weather_station_gastezimmer_temperatur",
+                      "name": "Gästezimmer",
+                      "icon": "mdi:account-outline",
+                      "vertical": false,
+                      "features_position": "bottom",
+                      "color": "orange"
+                    },
+                    {
+                      "type": "tile",
+                      "entity": "sensor.weather_station_bad_temperatur",
+                      "name": "Bad",
+                      "icon": "mdi:shower-head",
+                      "vertical": false,
+                      "features_position": "bottom",
+                      "color": "orange"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "grid",
+              "cards": [
+                {
+                  "type": "heading",
+                  "heading": "Luftqualität",
+                  "icon": "mdi:air-filter"
+                },
+                {
+                  "type": "grid",
+                  "columns": 2,
+                  "square": false,
+                  "cards": [
+                    {
+                      "type": "tile",
+                      "entity": "sensor.weather_station_kohlendioxid",
+                      "name": "CO₂ Wohnzimmer",
+                      "icon": "mdi:molecule-co2",
+                      "vertical": false,
+                      "features_position": "bottom",
+                      "color": "teal"
+                    },
+                    {
+                      "type": "tile",
+                      "entity": "sensor.weather_station_schlafzimmer_kohlendioxid",
+                      "name": "CO₂ Schlafzimmer",
+                      "icon": "mdi:molecule-co2",
+                      "vertical": false,
+                      "features_position": "bottom",
+                      "color": "teal"
+                    },
+                    {
+                      "type": "tile",
+                      "entity": "sensor.weather_station_gastezimmer_kohlendioxid",
+                      "name": "CO₂ Gästezimmer",
+                      "icon": "mdi:molecule-co2",
+                      "vertical": false,
+                      "features_position": "bottom",
+                      "color": "teal"
+                    },
+                    {
+                      "type": "tile",
+                      "entity": "sensor.weather_station_bad_kohlendioxid",
+                      "name": "CO₂ Bad",
+                      "icon": "mdi:molecule-co2",
+                      "vertical": false,
+                      "features_position": "bottom",
+                      "color": "teal"
+                    },
+                    {
+                      "type": "tile",
+                      "entity": "sensor.weather_station_luftfeuchtigkeit",
+                      "name": "Feuchte Wohnzimmer",
+                      "icon": "mdi:water-percent",
+                      "vertical": false,
+                      "features_position": "bottom",
+                      "color": "blue"
+                    },
+                    {
+                      "type": "tile",
+                      "entity": "sensor.weather_station_schlafzimmer_luftfeuchtigkeit",
+                      "name": "Feuchte Schlafzimmer",
+                      "icon": "mdi:water-percent",
+                      "vertical": false,
+                      "features_position": "bottom",
+                      "color": "blue"
+                    },
+                    {
+                      "type": "tile",
+                      "entity": "sensor.weather_station_gastezimmer_luftfeuchtigkeit",
+                      "name": "Feuchte Gästezimmer",
+                      "icon": "mdi:water-percent",
+                      "vertical": false,
+                      "features_position": "bottom",
+                      "color": "blue"
+                    },
+                    {
+                      "type": "tile",
+                      "entity": "sensor.weather_station_bad_luftfeuchtigkeit",
+                      "name": "Feuchte Bad",
+                      "icon": "mdi:water-percent",
+                      "vertical": false,
+                      "features_position": "bottom",
+                      "color": "blue"
+                    }
+                  ]
+                }
+              ]
+            }
+          ],
+          "dense_section_placement": true
+        }
+      ]
+    }
+  }
+}

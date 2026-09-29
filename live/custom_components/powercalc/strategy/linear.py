@@ -1,0 +1,281 @@
+from decimal import Decimal
+import logging
+from typing import Any
+
+from homeassistant.components import fan, lawn_mower, light, media_player, vacuum
+from homeassistant.components.fan import ATTR_PERCENTAGE
+from homeassistant.components.light import ATTR_BRIGHTNESS
+from homeassistant.components.media_player import (
+    ATTR_MEDIA_VOLUME_LEVEL,
+    ATTR_MEDIA_VOLUME_MUTED,
+    STATE_PLAYING,
+)
+from homeassistant.components.sensor import SensorDeviceClass
+from homeassistant.const import CONF_ATTRIBUTE
+from homeassistant.core import HomeAssistant, State
+import homeassistant.helpers.config_validation as cv
+from homeassistant.helpers.event import TrackTemplate
+import voluptuous as vol
+
+from custom_components.powercalc.common import SourceEntity, create_source_entity
+from custom_components.powercalc.const import (
+    CONF_CALIBRATE,
+    CONF_GAMMA_CURVE,
+    CONF_MAX_POWER,
+    CONF_MIN_POWER,
+    CONF_POWER,
+    CONF_VALUE,
+)
+from custom_components.powercalc.errors import StrategyConfigurationError
+from custom_components.powercalc.helpers import get_related_entity_by_device_class
+
+from .strategy_interface import PowerCalculationStrategyInterface
+
+ALLOWED_DOMAINS = [fan.DOMAIN, light.DOMAIN, media_player.DOMAIN, vacuum.DOMAIN, lawn_mower.DOMAIN]
+CONFIG_SCHEMA = vol.Schema(
+    {
+        vol.Optional(CONF_CALIBRATE): vol.All(
+            cv.ensure_list,
+            [vol.Match("^[0-9]+ -> ([0-9]*[.])?[0-9]+$")],
+        ),
+        vol.Optional(CONF_MIN_POWER): vol.Coerce(float),
+        vol.Optional(CONF_MAX_POWER): vol.Coerce(float),
+        vol.Optional(CONF_GAMMA_CURVE): vol.Coerce(float),
+        vol.Optional(CONF_ATTRIBUTE): cv.string,
+    },
+)
+
+ENTITY_ATTRIBUTE_MAPPING = {
+    fan.DOMAIN: ATTR_PERCENTAGE,
+    light.DOMAIN: ATTR_BRIGHTNESS,
+    media_player.DOMAIN: ATTR_MEDIA_VOLUME_LEVEL,
+}
+
+_LOGGER = logging.getLogger(__name__)
+
+
+class LinearStrategy(PowerCalculationStrategyInterface):
+    def __init__(
+        self,
+        config: dict[str, Any],
+        hass: HomeAssistant,
+        source_entity: SourceEntity,
+        standby_power: float | None,
+    ) -> None:
+        self._config = config
+        self._hass = hass
+        self._source_entity: SourceEntity = source_entity
+        self._value_entity: SourceEntity | None = None
+        self._attribute: str | None = None
+        self._standby_power = standby_power
+        self._initialized: bool = False
+        self._missing_attribute_warned: bool = False
+        self._calibration: list[tuple[int, float]] | None = None
+
+    async def initialize(self) -> None:
+        """Initialize the strategy, called once on creation."""
+        self._value_entity = await self.get_value_entity()
+        self._calibration = self.create_calibrate_list()
+
+    async def calculate(self, entity_state: State) -> Decimal | None:
+        """Calculate the current power consumption."""
+        value_entity = self.get_initialized_value_entity()
+
+        if not self._initialized:
+            self._attribute = self.get_attribute(entity_state)
+            self._initialized = True
+
+        value = self.get_current_state_value(entity_state)
+        if value is None:
+            return None
+
+        min_calibrate = self.get_min_calibrate(value)
+        max_calibrate = self.get_max_calibrate(value)
+        min_value = min_calibrate[0]
+        max_value = max_calibrate[0]
+
+        _LOGGER.debug(
+            "%s: Linear mode state value: %d range(%d-%d)",
+            value_entity.entity_id,
+            value,
+            min_value,
+            max_value,
+        )
+
+        min_power = min_calibrate[1]
+        max_power = max_calibrate[1]
+
+        value_range = max_value - min_value
+        power_range = max_power - min_power
+
+        gamma_curve = self._config.get(CONF_GAMMA_CURVE) or 1
+
+        relative_value = (value - min_value) / value_range
+
+        power = power_range * relative_value**gamma_curve + min_power
+
+        return Decimal(power)
+
+    def is_enabled(self, entity_state: State) -> bool:
+        """Return if this strategy is enabled based on entity state."""
+        return not (self._source_entity.domain == media_player.DOMAIN and entity_state.state != STATE_PLAYING)
+
+    def get_min_calibrate(self, value: int) -> tuple[int, float]:
+        """Get closest lower value from calibration table."""
+        return min(self._calibration or (), key=lambda v: (v[0] > value, value - v[0]))
+
+    def get_max_calibrate(self, value: int) -> tuple[int, float]:
+        """Get closest higher value from calibration table."""
+        return max(self._calibration or (), key=lambda v: (v[0] > value, value - v[0]))
+
+    def create_calibrate_list(self) -> list[tuple[int, float]]:
+        """Build a table of calibration values."""
+        calibration_list: list[tuple[int, float]] = []
+
+        calibrate = self._config.get(CONF_CALIBRATE)
+        if isinstance(calibrate, dict):
+            calibrate = [f"{key} -> {value}" for key, value in calibrate.items()]
+        elif isinstance(calibrate, list) and calibrate and isinstance(calibrate[0], dict):
+            calibrate = [f"{item[CONF_VALUE]} -> {item[CONF_POWER]}" for item in calibrate]
+
+        if calibrate is None or len(calibrate) == 0:
+            full_range = self.get_entity_value_range()
+            min_value = full_range[0]
+            max_value = full_range[1]
+            min_power = self._config.get(CONF_MIN_POWER) or self._standby_power or 0
+            max_power = self._config.get(CONF_MAX_POWER)
+            if max_power is None:  # pragma: no cover
+                raise StrategyConfigurationError("Linear strategy must have max power defined")
+            calibration_list.append((min_value, float(min_power)))
+            calibration_list.append((max_value, float(max_power)))
+            return calibration_list
+
+        for line in calibrate:
+            parts = line.split(" -> ")
+            calibration_list.append((int(parts[0]), float(parts[1])))
+
+        return sorted(calibration_list, key=lambda tup: tup[0])
+
+    def get_entity_value_range(self) -> tuple[int, int]:
+        """Get the min/max range for a given entity domain."""
+        if self.get_initialized_value_entity().domain == light.DOMAIN:
+            return 0, 255
+
+        return 0, 100
+
+    def get_initialized_value_entity(self) -> SourceEntity:
+        """Return the initialized value entity."""
+        if self._value_entity is None:  # pragma: no cover
+            raise StrategyConfigurationError("Linear strategy has not been initialized")
+        return self._value_entity
+
+    def get_current_state_value(self, entity_state: State) -> int | None:
+        """Get the current entity state, i.e. selected brightness."""
+        if self._attribute:
+            return self.get_value_from_attribute(entity_state)
+
+        value_entity = self.get_initialized_value_entity()
+        if value_entity.entity_id != self._source_entity.entity_id:
+            # If the value entity is different from the source entity, we need to fetch the state of the value entity
+            entity_state = self._hass.states.get(value_entity.entity_id)
+            if not entity_state:
+                _LOGGER.error(
+                    "Value entity %s not found",
+                    value_entity.entity_id,
+                )
+                return None
+
+        try:
+            return int(float(entity_state.state))
+        except ValueError:
+            _LOGGER.error(
+                "Expecting state to be a number for entity: %s",
+                entity_state.entity_id,
+            )
+            return None
+
+    def get_value_from_attribute(self, entity_state: State) -> int | None:
+        if self._attribute is None:  # pragma: no cover
+            return None
+
+        value = entity_state.attributes.get(self._attribute)
+        if value is None:
+            if not self._missing_attribute_warned:
+                _LOGGER.warning(
+                    "No %s attribute for entity: %s",
+                    self._attribute,
+                    entity_state.entity_id,
+                )
+                self._missing_attribute_warned = True
+            return None
+        self._missing_attribute_warned = False
+        # Convert volume level to 0-100 range
+        if self._attribute == ATTR_MEDIA_VOLUME_LEVEL:
+            if entity_state.attributes.get(ATTR_MEDIA_VOLUME_MUTED) is True:
+                return 0
+            return int(float(value) * 100)
+
+        value = int(value)
+        if self._attribute == ATTR_BRIGHTNESS and value > 255:
+            value = 255
+        return value
+
+    def get_attribute(self, entity_state: State) -> str | None:
+        """Returns the attribute which contains the value for the linear calculation."""
+        if CONF_ATTRIBUTE in self._config:
+            return str(self._config.get(CONF_ATTRIBUTE))
+
+        entity_domain = entity_state.domain
+        return ENTITY_ATTRIBUTE_MAPPING.get(entity_domain)
+
+    async def validate_config(self) -> None:
+        """Validate correct setup of the strategy."""
+        if not self._config.get(CONF_CALIBRATE):
+            if self._source_entity.domain not in ALLOWED_DOMAINS:
+                raise StrategyConfigurationError(
+                    "Entity domain not supported for linear mode. "
+                    f"Must be one of: {','.join(ALLOWED_DOMAINS)}, or use the calibrate option",
+                    "linear_unsupported_domain",
+                )
+            if CONF_MAX_POWER not in self._config:
+                raise StrategyConfigurationError(
+                    "Linear strategy must have at least 'max power' or 'calibrate' defined",
+                    "linear_mandatory",
+                )
+
+        min_power = self._config.get(CONF_MIN_POWER)
+        max_power = self._config.get(CONF_MAX_POWER)
+        if min_power and max_power and min_power >= max_power:
+            raise StrategyConfigurationError(
+                "Max power cannot be lower than min power",
+                "linear_min_higher_as_max",
+            )
+
+    async def get_value_entity(self) -> SourceEntity:
+        """Set the value entity based on the current state."""
+        if (
+            self._source_entity.domain in (vacuum.DOMAIN, lawn_mower.DOMAIN)
+            and self._attribute is None
+            and self._source_entity.entity_entry
+        ):
+            # For vacuum cleaner and lawn mower, battery level is a separate entity
+            related_entity = get_related_entity_by_device_class(
+                self._hass,
+                self._source_entity,
+                SensorDeviceClass.BATTERY,
+            )
+            if not related_entity:
+                raise StrategyConfigurationError(
+                    "No battery entity found for vacuum cleaner",
+                    "linear_no_battery_entity",
+                )
+            return create_source_entity(related_entity, self._hass)
+
+        return self._value_entity or self._source_entity
+
+    def get_entities_to_track(self) -> list[str | TrackTemplate]:
+        """Return entities to track for this strategy."""
+        if self._value_entity and self._value_entity.entity_id != self._source_entity.entity_id:
+            return [self._value_entity.entity_id]
+
+        return []

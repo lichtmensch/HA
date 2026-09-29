@@ -1,0 +1,73 @@
+powercalc:
+  enable_analytics: false
+  create_standby_group: false
+  sensors:
+    - create_group: Lichtverbrauch
+      hide_members: true
+      entities:
+        - entity_id: light.abstellkammer
+          manufacturer: signify
+          model: LWA024
+        - entity_id: light.dekolampe
+          manufacturer: signify
+          model: LWB010
+        - entity_id: light.esszimmertisch
+          manufacturer: signify
+          model: LWA021
+        - entity_id: light.flur_1
+          manufacturer: signify
+          model: LWA024
+        - entity_id: light.flur_2
+          manufacturer: signify
+          model: LWA024
+        - entity_id: light.gaestezimmer_decke
+          manufacturer: signify
+          model: LWO003
+        - entity_id: light.hue_color_floor_1
+          manufacturer: signify
+          model: 915005871601
+        - entity_id: light.hue_color_lamp_1
+          manufacturer: signify
+          model: LCA006
+        - entity_id: light.hue_filament_bulb_1
+          manufacturer: signify
+          model: LWA021
+        - entity_id: light.hue_filament_bulb_2
+          manufacturer: signify
+          model: LWA021
+        - entity_id: light.hue_filament_bulb_3
+          manufacturer: signify
+          model: LWA021
+        - entity_id: light.hue_play_1
+          manufacturer: signify
+          model: LCT024
+        - entity_id: light.hue_play_2
+          manufacturer: signify
+          model: LCT024
+        - entity_id: light.hue_play_3
+          manufacturer: signify
+          model: LCT024
+        - entity_id: light.kuche_decke
+          manufacturer: signify
+          model: LWA024
+        - entity_id: light.schlafzimmer_decke
+          manufacturer: signify
+          model: LTA001
+        - entity_id: light.stehlampe_gaestezimmer
+          manufacturer: signify
+          model: LTA001
+        - entity_id: light.stehlampe_schlafzimmer
+          manufacturer: signify
+          model: LCT015
+        - entity_id: light.theke_1
+          manufacturer: signify
+          model: LCT007
+        - entity_id: light.theke_3
+          manufacturer: signify
+          model: LCT010
+        - entity_id: light.theke_4
+          manufacturer: signify
+          model: LCA006
+        - entity_id: light.toilette
+          manufacturer: signify
+          model: LWA024

@@ -1,0 +1,75 @@
+# Beobachtete Wechsel von offen nach erledigt, keine historische Rekonstruktion.
+template:
+  - triggers:
+      - trigger: time_pattern
+        minutes: "/1"
+      - trigger: state
+        entity_id:
+          - todo.timo_seli
+          - event.timo_seli_aktivitaten
+      - trigger: homeassistant
+        event: start
+    conditions:
+      - condition: template
+        value_template: "{{ states('todo.timo_seli') not in ['unavailable', 'unknown'] }}"
+    actions:
+      - action: todo.get_items
+        target:
+          entity_id: todo.timo_seli
+        data:
+          status:
+            - needs_action
+            - completed
+        response_variable: einkauf
+      - variables:
+          zeit: "{{ as_timestamp(now()) }}"
+          alt: "{{ state_attr('sensor.bring_timo_seli_kaufstatistik', 'artikel') or [] }}"
+          vorher_offen: "{{ state_attr('sensor.bring_timo_seli_kaufstatistik', 'vorher_offen') or [] }}"
+          jetzt_offen: >-
+            {% set ns = namespace(names=[]) %}
+            {% for p in einkauf['todo.timo_seli']['items'] if p.status == 'needs_action' %}
+              {% set ns.names = ns.names + [p.summary | trim | lower] %}
+            {% endfor %}
+            {{ ns.names | unique | list }}
+          neue_kaeufe: >-
+            {% set ns = namespace(items=[], keys=[]) %}
+            {% set luecke = zeit - (state_attr('sensor.bring_timo_seli_kaufstatistik', 'letzte_pruefung') | float(0)) %}
+            {% if state_attr('sensor.bring_timo_seli_kaufstatistik', 'initialisiert') and 0 <= luecke <= 300 and trigger.platform != 'homeassistant' %}
+              {% for p in einkauf['todo.timo_seli']['items'] if p.status == 'completed' %}
+                {% set key = p.summary | trim | lower %}
+                {% if key in vorher_offen and key not in jetzt_offen and key not in ns.keys %}
+                  {% set matches = alt | selectattr('key', 'eq', key) | list %}
+                  {% if not matches or zeit - (matches[0].letzter_kauf | float(0)) >= 600 %}
+                    {% set ns.items = ns.items + [dict(key=key, name=p.summary | trim)] %}
+                    {% set ns.keys = ns.keys + [key] %}
+                  {% endif %}
+                {% endif %}
+              {% endfor %}
+            {% endif %}
+            {{ ns.items }}
+          statistik: >-
+            {% set ns = namespace(rows=[]) %}
+            {% set neue_keys = neue_kaeufe | map(attribute='key') | list %}
+            {% set alte_keys = alt | map(attribute='key') | list %}
+            {% for p in alt %}
+              {% set gekauft = p.key in neue_keys %}
+              {% set ns.rows = ns.rows + [dict(key=p.key, name=p.name,
+                anzahl=(p.anzahl | int(0)) + (1 if gekauft else 0),
+                letzter_kauf=zeit if gekauft else p.letzter_kauf)] %}
+            {% endfor %}
+            {% for p in neue_kaeufe if p.key not in alte_keys %}
+              {% set ns.rows = ns.rows + [dict(key=p.key, name=p.name, anzahl=1, letzter_kauf=zeit)] %}
+            {% endfor %}
+            {{ ns.rows | sort(attribute='name') | sort(attribute='anzahl', reverse=true) | list }}
+    sensor:
+      - name: Bring Timo Seli Kaufstatistik
+        unique_id: bring_timo_seli_kaufstatistik_v1
+        icon: mdi:chart-bar
+        state: "{{ statistik | map(attribute='anzahl') | sum }}"
+        attributes:
+          artikel: "{{ statistik }}"
+          vorher_offen: "{{ jetzt_offen }}"
+          initialisiert: true
+          seit: "{{ this.attributes.get('seit', now().isoformat()) }}"
+          letzte_pruefung: "{{ zeit }}"
+          zaehlweise: Erkannte Wechsel von offen zu erledigt; gleicher Artikel höchstens einmal in 10 Minuten. Keine Rückrechnung, Lücken über 5 Minuten werden nicht nachgezählt.

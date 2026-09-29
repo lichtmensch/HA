@@ -1,0 +1,1253 @@
+{
+  "common": {
+    "source_entity": "Entité source",
+    "source_device": "Appareil source",
+    "remarks_smart_switch": "Ce profil ne fournit que des valeurs de puissance en veille. \n Si vous avez un appareil qui consomme une quantité fixe de puissance lorsqu'il est allumé, vous pouvez fournir cette valeur à l'étape suivante du flux de configuration",
+    "remarks_smart_dimmer": "Ce profil ne fournit que des valeurs de puissance en veille. \n À l'étape suivante, vous pouvez éventuellement fournir les valeurs de la lampe connectée",
+    "view_measurement_details": "Voir les détails de mesure"
+  },
+  "config": {
+    "abort": {
+      "already_configured": "Le capteur est déjà configuré, spécifiez un identifiant unique"
+    },
+    "error": {
+      "cost_price_mandatory": "Vous devez fournir soit un prix de l'énergie, soit un capteur de prix de l'énergie",
+      "daily_energy_mandatory": "Vous devez fournir au moins une valeur ou un modèle de valeur",
+      "entity_mandatory": "La sélection d'une entité est requise pour toute stratégie autre que le playbook",
+      "fixed_mandatory": "Vous devez fournir au moins une alimentation, un modèle d'alimentation ou un état d'alimentation",
+      "group_mandatory": "Vous devez définir au moins des sous-groupes ou des entités de puissance et d'énergie",
+      "linear_mandatory": "Vous devez spécifier au moins la puissance minimale ou la valeur d'étalonnage",
+      "linear_min_higher_as_max": "La puissance maximale ne peut pas être inférieure à la puissance minimale",
+      "linear_unsupported_domain": "Domaine d'entité non pris en charge pour le mode linéaire. Doit être l'un des suivants : ventilateur, lumière ou lecteur multimédia. Vous pouvez cependant utiliser l'option de calibrage",
+      "lut_unsupported_color_mode": "Le profil LUT ne prend pas en charge l'un des modes de couleur de votre lumière. Voir les journaux pour plus d'informations",
+      "lut_wrong_domain": "Seules les entités lumineuses peuvent utiliser le mode LUT",
+      "playbook_mandatory": "Vous devez spécifier au moins un playbook",
+      "unknown": "Une erreur inconnue s'est produite, veuillez consulter les journaux pour plus d'informations"
+    },
+    "flow_title": "{name} ({manufacturer} {model})",
+    "step": {
+      "assign_groups": {
+        "data": {
+          "group": "Sélectionner le ou les groupes",
+          "new_group": "Nouveau groupe"
+        },
+        "data_description": {
+          "new_group": "Saisissez un nom de groupe personnalisé pour créer un nouveau groupe"
+        },
+        "title": "Assigner au groupe"
+      },
+      "availability_entity": {
+        "data": {
+          "availability_entity": "Entité de disponibilité"
+        },
+        "data_description": {
+          "availability_entity": "Lorsque cette entité est indisponible, le capteur Powercalc sera également indisponible"
+        },
+        "title": "Entité de disponibilité",
+        "description": "Ce profil est par appareil. Veuillez sélectionner l'entité qui sera utilisée pour déterminer la disponibilité du capteur Powercalc"
+      },
+      "daily_energy": {
+        "data": {
+          "create_utility_meters": "Créer des compteurs de services publics",
+          "daily_energy_value": "Valeur d'énergie quotidienne",
+          "name": "Nom",
+          "on_time": "Temps de fonctionnement",
+          "start_time": "Heure de début",
+          "unit_of_measurement": "Unité de mesure",
+          "update_frequency": "Fréquence de mise à jour",
+          "value": "Valeur",
+          "value_template": "Modèle de valeur"
+        },
+        "data_description": {
+          "on_time": "Lorsqu'il est laissé vide, la valeur par défaut est 1 jour. Toujours allumé",
+          "update_frequency": "Temps en secondes entre les mises à jour d'état du capteur"
+        },
+        "title": "Créer un capteur fixe quotidien"
+      },
+      "energy_options": {
+        "title": "Options d'énergie",
+        "data": {
+          "energy_integration_method": "Méthode d'intégration",
+          "energy_sensor_unit_prefix": "Préfixe d'unité",
+          "energy_filter_outlier_enabled": "Filtrer les valeurs aberrantes",
+          "energy_filter_outlier_max_step": "Étape maximale du filtre des valeurs aberrantes"
+        },
+        "data_description": {
+          "energy_filter_outlier_enabled": "Activer le filtrage des valeurs aberrantes dans le capteur d'énergie",
+          "energy_filter_outlier_max_step": "Étape maximale attendue dans les valeurs de puissance (en watts) pour le filtre des valeurs aberrantes"
+        }
+      },
+      "group_domain": {
+        "data": {
+          "name": "Nom",
+          "create_energy_sensor": "Créer un capteur d'énergie",
+          "create_cost_sensor": "Créer un capteur de coût",
+          "create_utility_meters": "Créer des compteurs de services publics",
+          "domain": "Domaine de l'entité",
+          "exclude_entities": "Exclure des entités"
+        },
+        "title": "Créer un capteur de groupe basé sur un domaine"
+      },
+      "fixed": {
+        "data": {
+          "fixed_value": "Valeur de puissance"
+        },
+        "data_description": {
+          "fixed_value": "Valeur de puissance en watts lorsque l'entité est ON"
+        },
+        "description": "Définissez une valeur de puissance fixe pour votre entité. Consultez la [documentation]({docs_uri}) pour plus d'informations",
+        "title": "Configuration fixe"
+      },
+      "global_configuration": {
+        "title": "Configuration globale",
+        "description": "Configurer la configuration globale de Powercalc. Pour plus d'informations, consultez la [documentation]({docs_uri}). Des options supplémentaires pour les capteurs d'énergie et les compteurs de services publics peuvent être fournies dans les étapes suivantes.",
+        "sections": {
+          "power_options": {
+            "name": "Capteur de puissance",
+            "data": {
+              "power_sensor_naming": "Modèle de nom du capteur de puissance",
+              "power_sensor_friendly_naming": "Modèle de nom convivial du capteur de puissance",
+              "power_sensor_category": "Catégorie du capteur de puissance",
+              "power_sensor_precision": "Précision du capteur de puissance"
+            }
+          },
+          "features": {
+            "name": "Créer des capteurs",
+            "data": {
+              "create_energy_sensors": "Créer des capteurs d'énergie",
+              "create_cost_sensors": "Créer des capteurs de coût",
+              "create_standby_group": "Créer un groupe de veille",
+              "create_utility_meters": "Créer des compteurs de services publics"
+            },
+            "data_description": {
+              "create_energy_sensors": "Indique si Powercalc doit créer des capteurs kWh",
+              "create_cost_sensors": "Indique si Powercalc doit créer des capteurs de coût. Nécessite qu'un prix de l'énergie soit configuré dans les étapes suivantes",
+              "create_standby_group": "Créer un groupe qui additionne toute la consommation en veille et l'auto-consommation des appareils IoT",
+              "create_utility_meters": "Laisser Powercalc créer des compteurs de services publics, avec des cycles quotidiens, horaires, etc."
+            }
+          },
+          "advanced": {
+            "name": "Avancé",
+            "data": {
+              "enable_analytics": "Activer les analyses anonymes",
+              "ignore_unavailable_state": "Ignorer l'état indisponible",
+              "include_non_powercalc_sensors": "Inclure les capteurs non Powercalc",
+              "disable_extended_attributes": "Désactiver les attributs étendus",
+              "disable_library_download": "Désactiver le téléchargement distant de la bibliothèque"
+            },
+            "data_description": {
+              "enable_analytics": "Autoriser Powercalc à envoyer des statistiques d'utilisation anonymes et agrégées pour aider à améliorer l'intégration",
+              "ignore_unavailable_state": "Garder les capteurs Powercalc disponibles, même lorsque l'entité source est indisponible",
+              "include_non_powercalc_sensors": "Contrôler si vous souhaitez inclure les capteurs non Powercalc dans les groupes",
+              "disable_extended_attributes": "Désactiver tous les attributs supplémentaires que Powercalc ajoute aux états des entités de puissance, d'énergie et de groupe. Cela aidera à garder la base de données petite",
+              "disable_library_download": "Désactiver la fonctionnalité de téléchargement de la bibliothèque Powercalc"
+            }
+          }
+        }
+      },
+      "global_configuration_cost": {
+        "title": "Options de coût",
+        "description": "Configurez le prix de l'énergie utilisé pour calculer les capteurs de coût. Fournissez soit un prix fixe, soit un capteur qui fournit le prix actuel par kWh. Consultez la [documentation]({docs_uri}) pour plus d'informations",
+        "sections": {
+          "cost_pricing": {
+            "name": "Tarification",
+            "data": {
+              "energy_price": "Prix fixe de l'énergie",
+              "energy_price_multiplier": "Multiplicateur du prix de l'énergie",
+              "energy_price_sensor": "Capteur du prix de l'énergie",
+              "energy_price_surcharge": "Majoration du prix de l'énergie"
+            },
+            "data_description": {
+              "energy_price": "Un prix fixe par kWh dans votre devise locale",
+              "energy_price_multiplier": "Multiplicateur appliqué après la majoration. Utilisez-le pour les taxes ou frais en pourcentage, par exemple 1.21 pour 21 %",
+              "energy_price_sensor": "Un capteur qui fournit le prix actuel de l'énergie par kWh (par exemple depuis une intégration de tarif dynamique). Laissez le prix fixe vide pour utiliser ce capteur",
+              "energy_price_surcharge": "Montant fixe supplémentaire par kWh ajouté au prix fixe ou à la valeur du capteur de prix"
+            }
+          },
+          "cost_naming": {
+            "name": "Nommage",
+            "data": {
+              "cost_sensor_friendly_naming": "Modèle de nom convivial du capteur de coût",
+              "cost_sensor_naming": "Modèle de nom du capteur de coût"
+            },
+            "data_description": {
+              "cost_sensor_friendly_naming": "Modèle du nom convivial du capteur de coût. Le nom source est inséré à la position de l’espace réservé",
+              "cost_sensor_naming": "Modèle utilisé pour construire le nom du capteur de coût et l'ID d'entité. Le nom source est inséré à la position de l'espace réservé"
+            }
+          }
+        }
+      },
+      "global_configuration_cost_apply": {
+        "title": "Appliquer les capteurs de coût",
+        "description": "Vous avez modifié le paramètre global des capteurs de coût. Voulez-vous appliquer ce changement à tous les capteurs Powercalc existants créés via l'interface graphique ?",
+        "data": {
+          "apply_to_all": "Appliquer aux capteurs existants"
+        },
+        "data_description": {
+          "apply_to_all": "Mettre à jour chaque capteur Powercalc existant créé via l’interface graphique pour correspondre au nouveau paramètre des capteurs de coût"
+        }
+      },
+      "global_configuration_discovery": {
+        "title": "Options de découverte",
+        "description": "Powercalc peut analyser votre système à la recherche d'appareils et d'entités disposant de profils de puissance dans la bibliothèque intégrée. Les options ci-dessous vous permettent d'affiner ce comportement.",
+        "data": {
+          "enabled": "Activer la découverte",
+          "exclude_device_types": "Types d'appareils exclus",
+          "exclude_self_usage": "Exclure l'auto-consommation"
+        },
+        "data_description": {
+          "exclude_device_types": "Exclure un ou plusieurs types d’appareils spécifiques de la découverte.",
+          "exclude_self_usage": "Exclure les profils d'auto-consommation des interrupteurs connectés."
+        }
+      },
+      "global_configuration_energy": {
+        "title": "Options d'énergie",
+        "data": {
+          "energy_integration_method": "Méthode d'intégration de l'énergie",
+          "energy_sensor_category": "Catégorie du capteur d'énergie",
+          "energy_sensor_friendly_naming": "Modèle de nom convivial du capteur d'énergie",
+          "energy_sensor_naming": "Modèle de nom du capteur d'énergie",
+          "energy_sensor_precision": "Précision du capteur d'énergie",
+          "energy_sensor_unit_prefix": "Préfixe d'unité du capteur d'énergie"
+        }
+      },
+      "global_configuration_throttling": {
+        "title": "Options de limitation",
+        "description": "Définissez les intervalles de mise à jour pour les différents types de capteurs. Consultez la [documentation]({docs_uri}) pour plus d’informations",
+        "data": {
+          "group_energy_update_interval": "Intervalle de mise à jour de l'énergie du groupe",
+          "group_power_update_interval": "Intervalle de mise à jour de la puissance du groupe",
+          "energy_update_interval": "Intervalle de mise à jour de l'énergie",
+          "power_update_interval": "Intervalle de mise à jour de la puissance"
+        },
+        "data_description": {
+          "group_energy_update_interval": "Intervalle auquel les capteurs d'énergie de groupe sont mis à jour. En secondes. Réglez sur 0 pour désactiver",
+          "group_power_update_interval": "Intervalle auquel les capteurs de puissance de groupe sont mis à jour. En secondes. Réglez sur 0 pour désactiver",
+          "energy_update_interval": "Intervalle auquel les capteurs d'énergie sont mis à jour. En secondes. Réglez sur 0 pour désactiver",
+          "power_update_interval": "Intervalle auquel les capteurs d'énergie sont mis à jour de force. En secondes. Réglez sur 0 pour désactiver"
+        }
+      },
+      "global_configuration_utility_meter": {
+        "title": "Options des compteurs de services publics",
+        "data": {
+          "utility_meter_net_consumption": "Consommation nette du compteur de services publics",
+          "utility_meter_tariffs": "Tarifs du compteur de services publics",
+          "utility_meter_types": "Types de compteur de services publics"
+        }
+      },
+      "group_custom": {
+        "data": {
+          "name": "Nom"
+        },
+        "sections": {
+          "members": {
+            "name": "Membres",
+            "data": {
+              "group_member_sensors": "Membres des capteurs powercalc",
+              "group_member_devices": "Appareils membres",
+              "group_power_entities": "Entités de puissance supplémentaires",
+              "group_energy_entities": "Entités énergétiques supplémentaires",
+              "sub_groups": "Sous-groupes",
+              "area": "Zone",
+              "floor": "Étage"
+            },
+            "data_description": {
+              "group_member_sensors": "Capteurs Powercalc à inclure dans le groupe",
+              "group_member_devices": "Ajouter les entités de puissance et d'énergie des appareils sélectionnés au groupe",
+              "group_power_entities": "Capteurs de puissance supplémentaires (W) de votre installation HA à inclure",
+              "group_energy_entities": "Capteurs d'énergie supplémentaires (kWh) de votre installation HA à inclure",
+              "sub_groups": "Tous les capteurs contenant des sous-groupes sélectionnés seront également ajoutés à ce groupe",
+              "area": "Ajoute tous les capteurs powercalc de la zone spécifiée",
+              "floor": "Ajoute tous les capteurs powercalc de l'étage spécifié"
+            }
+          },
+          "options": {
+            "name": "Paramètres",
+            "data": {
+              "device": "Appareil",
+              "hide_members": "Masquer les membres",
+              "include_non_powercalc_sensors": "Inclure les capteurs non Powercalc",
+              "force_calculate_group_energy": "Forcer le calcul de l'énergie",
+              "group_energy_start_at_zero": "Commencer à zéro",
+              "create_energy_sensor": "Créer un capteur d'énergie",
+              "create_utility_meters": "Créer des compteurs d'électricité"
+            },
+            "data_description": {
+              "device": "Ajouter les entités de groupe créées par Powercalc à un appareil existant",
+              "include_non_powercalc_sensors": "Contrôler s'il faut inclure les capteurs non Powercalc lors de l'utilisation de l'option de zone",
+              "force_calculate_group_energy": "Par défaut, Powercalc additionne les capteurs d'énergie des capteurs membres. Activez cette option pour forcer la création d'un capteur de somme de Riemann",
+              "group_energy_start_at_zero": "Lorsque cette option est activée, le capteur d'énergie commencera à zéro lors de sa création. Sinon, il additionnera tous les états actuels des capteurs d'énergie membres",
+              "create_energy_sensor": "Indique si Powercalc doit créer un capteur kWh"
+            }
+          }
+        },
+        "title": "Créer un capteur de groupe"
+      },
+      "group_subtract": {
+        "data": {
+          "create_energy_sensor": "Créer un capteur d'énergie",
+          "create_cost_sensor": "Créer un capteur de coût",
+          "create_utility_meters": "Créer des compteurs de services publics",
+          "entity_id": "Entité de base",
+          "name": "Nom",
+          "subtract_entities": "Soustraire des entités"
+        },
+        "data_description": {
+          "entity_id": "L'entité de base de laquelle soustraire la puissance",
+          "subtract_entities": "Sélectionnez toutes les entités que vous souhaitez soustraire de l'entité de base"
+        },
+        "title": "Capteur de groupe par soustraction"
+      },
+      "group_tracked_untracked": {
+        "data": {
+          "main_power_sensor": "Capteur de puissance de l'alimentation principale",
+          "group_tracked_auto": "Entités ajoutées automatiquement",
+          "create_energy_sensor": "Créer un capteur d'énergie",
+          "create_cost_sensor": "Créer un capteur de coût",
+          "create_utility_meters": "Créer des compteurs de services publics"
+        },
+        "data_description": {
+          "main_power_sensor": "Sélectionnez le capteur de puissance contenant votre consommation totale. Si vous laissez vide, seul un capteur de puissance suivie sera créé",
+          "group_tracked_auto": "Powercalc ajoutera automatiquement tous les capteurs de puissance au groupe suivi, en ignorant les groupes Powercalc. Désactivez ceci si vous souhaitez définir manuellement les entités suivies",
+          "create_energy_sensor": "Indique si Powercalc doit créer un capteur kWh",
+          "create_utility_meters": "Laisser Powercalc créer des compteurs de services publics, avec des cycles quotidiens, horaires, etc."
+        },
+        "description": "Créer un capteur de groupe pour toute la puissance suivie et non suivie",
+        "title": "Créer un capteur de puissance suivie"
+      },
+      "group_tracked_untracked_manual": {
+        "data": {
+          "group_tracked_entities": "Entités suivies"
+        },
+        "description": "Sélectionnez tous les capteurs de puissance faisant partie de la consommation suivie. La liste est déjà remplie automatiquement, mais vous pouvez l’ajuster manuellement",
+        "title": "Sélectionner les entités de puissance"
+      },
+      "group_tracked_untracked_auto": {
+        "data": {
+          "exclude_entities": "Exclure des entités"
+        },
+        "description": "Exclure des entités spécifiques du groupe suivi automatiquement",
+        "title": "Configuration du suivi automatique"
+      },
+      "library": {
+        "data": {
+          "confirm_autodisovered_model": "Confirmer le modèle"
+        },
+        "data_description": {
+          "confirm_autodisovered_model": "Si vous choisissez de ne pas confirmer, vous pouvez entrer vous-même le fabricant et le modèle"
+        },
+        "description": "{source}\n\nLe fabricant \"{manufacturer}\" et le modèle \"{model}\" ont été automatiquement détectés pour votre appareil.{remarks}{profile_details}",
+        "title": "Bibliothèque"
+      },
+      "library_custom_fields": {
+        "title": "Configuration du profil",
+        "data": {
+          "power_factor": "Facteur de puissance"
+        },
+        "data_description": {
+          "power_factor": "Rapport entre la puissance réelle et la puissance apparente. Utilisez 0.6 pour les ordinateurs/électroniques, 0.7 pour les charges mixtes, 1.0 pour les charges résistives comme les radiateurs."
+        }
+      },
+      "library_multi_profile": {
+        "data": {
+          "model": "Sélectionner le modèle"
+        },
+        "description": "Le fabricant \"{manufacturer}\" et le modèle \"{model}\" ont été automatiquement détectés pour votre appareil. Plusieurs profils potentiellement utilisables ont été trouvés pour cette entité. Recherchez le modèle exact de votre appareil dans la [bibliothèque Powercalc]({library_link}) et sélectionnez le bon profil",
+        "title": "Bibliothèque"
+      },
+      "linear": {
+        "data": {
+          "attribute": "Attribut",
+          "calibrate": "Valeurs d'étalonnage",
+          "gamma_curve": "Courbe gamma",
+          "max_power": "Puissance Max",
+          "min_power": "Puissance Min"
+        },
+        "data_description": {
+          "attribute": "Spécifiez l'attribut. Si laissé vide, la luminosité sera utilisée pour les lampes, le volume pour les enceintes et le pourcentage pour les ventilateurs.",
+          "calibrate": "Mettez une valeur d'étalonnage sur chaque ligne. Exemple\n\n1 : 20"
+        },
+        "description": "Définissez les options de calcul linéaire de la puissance. Consultez la [documentation]({docs_uri}) pour plus d'informations. Utilisez soit la puissance min/max, soit les valeurs d'étalonnage, ce qui permet plus de points de contrôle.",
+        "title": "Configuration linéaire"
+      },
+      "manufacturer": {
+        "data": {
+          "manufacturer": "Fabricant"
+        },
+        "description": "Sélectionnez le fabricant de l'appareil",
+        "title": "Configuration du fabricant"
+      },
+      "model": {
+        "data": {
+          "model": "Identifiant du modèle"
+        },
+        "description": "Sélectionnez le modèle d'appareil. Consultez la [liste]({supported_models_link}) des modèles pris en charge pour plus d'informations",
+        "title": "Configuration du modèle"
+      },
+      "select_device": {
+        "data": {
+          "device": "Appareil"
+        },
+        "data_description": {
+          "device": "L’appareil auquel les entités Powercalc doivent être associées"
+        },
+        "description": "Sélectionnez l’appareil auquel le capteur Powercalc doit être associé.",
+        "title": "Sélectionner un appareil"
+      },
+      "menu_group": {
+        "menu_options": {
+          "group_custom": "Groupe standard",
+          "group_domain": "Basé sur le domaine",
+          "group_subtract": "Soustraire",
+          "group_tracked_untracked": "Puissance suivie/non suivie"
+        },
+        "title": "Choisir le type de groupe",
+        "description": "Sélectionnez le type de capteur de groupe que vous souhaitez créer. Choisissez un groupe basé sur un domaine si vous voulez regrouper toutes les entités d'un domaine spécifique, ou créer un capteur additionnant tous vos capteurs d'énergie. Sinon, choisissez un groupe standard."
+      },
+      "multi_switch": {
+        "data": {
+          "entities": "Entités d'interrupteur",
+          "power": "Puissance ON",
+          "power_off": "Puissance OFF"
+        },
+        "data_description": {
+          "entities": "Sélectionnez tous les interrupteurs individuels faisant partie du multi-interrupteur",
+          "power": "Puissance pour un interrupteur individuel lorsqu’il est allumé",
+          "power_off": "Puissance pour un interrupteur individuel lorsqu’il est éteint"
+        },
+        "description": "Définissez les options de calcul de puissance du multi-interrupteur. Consultez la [documentation]({docs_uri}) pour plus d'informations.",
+        "title": "Configuration du multi-interrupteur"
+      },
+      "playbook": {
+        "data": {
+          "autostart": "Démarrage automatique",
+          "playbooks": "Scénarios",
+          "repeat": "Répéter",
+          "states_trigger": "Déclencheur d'état"
+        },
+        "data_description": {
+          "autostart": "Indique de démarrer un certain playbook lorsque HA démarre. c'est-à-dire 'programme1'",
+          "repeat": "Basculer lorsque vous souhaitez continuer à répéter le playbook une fois qu'il est terminé",
+          "states_trigger": "Déclencher un playbook en fonction d'un changement d'état. Exemple\n\nplaying: program1"
+        },
+        "description": "Définissez les options du playbook. Consultez la [documentation]({docs_uri}) pour plus d'informations.",
+        "title": "Configuration Playbook"
+      },
+      "power_advanced": {
+        "data": {
+          "calculation_enabled_condition": "Condition de calcul activé",
+          "energy_integration_method": "Méthode d'intégration énergétique",
+          "energy_sensor_unit_prefix": "Préfixe d'unité du capteur d'énergie",
+          "energy_filter_outlier_enabled": "Filtrer les valeurs aberrantes d'énergie",
+          "energy_filter_outlier_max_step": "Écart maximal du filtre des valeurs aberrantes",
+          "ignore_unavailable_state": "Ignorer l'état indisponible",
+          "multiply_factor": "Facteur de multiplication",
+          "multiply_factor_standby": "Facteur de multiplication en veille",
+          "unavailable_power": "Alimentation indisponible"
+        },
+        "data_description": {
+          "calculation_enabled_condition": "La stratégie de calcul de puissance configurée ne sera exécutée que lorsque ce modèle sera évalué à vrai ou 1, sinon le capteur de puissance affichera 0",
+          "energy_filter_outlier_enabled": "Activer le filtrage des valeurs aberrantes dans le capteur d'énergie",
+          "energy_filter_outlier_max_step": "Écart maximal attendu dans les valeurs de puissance (en watts) pour le filtre des valeurs aberrantes",
+          "ignore_unavailable_state": "Activez ce paramètre lorsque vous souhaitez que le capteur de puissance reste disponible même si l'entité source n'est pas disponible",
+          "multiply_factor": "Multiplie la puissance calculée par ce rapport. Peut être utile pour les groupes légers",
+          "multiply_factor_standby": "Indique s'il faut également appliquer le facteur de multiplication à la puissance en veille",
+          "unavailable_power": "Puissance en W pour enregistrer lorsque l'entité source a un état indisponible"
+        },
+        "description": "Les options ci-dessous concernent la configuration avancée de powercalc. La plupart des utilisateurs ne l'utiliseront pas, vous pouvez donc les ignorer",
+        "title": "Options avancées"
+      },
+      "real_power": {
+        "data": {
+          "create_utility_meters": "Créer des compteurs d'électricité",
+          "entity_id": "ID du capteur de puissance",
+          "name": "Nom",
+          "device": "Appareil"
+        },
+        "data_description": {
+          "create_utility_meters": "Laissez powercalc créer des compteurs de services publics, qui effectuent un cycle quotidien, horaire, etc.",
+          "name": "Nom de base pour le compteur d'énergie et de services publics. Le nom complet de l'entité sera défini en fonction de energy_sensor_naming",
+          "device": "Ajouter le capteur d'énergie créé à un appareil spécifique"
+        },
+        "description": "Actuellement, les paramètres spécifiques ne peuvent être configurés que globalement",
+        "title": "Créer un capteur d'énergie pour un capteur de puissance existant"
+      },
+      "cost": {
+        "data": {
+          "energy_sensor_id": "Capteur d’énergie",
+          "name": "Nom"
+        },
+        "data_description": {
+          "energy_sensor_id": "Le capteur d’énergie existant (kWh) pour lequel calculer le coût. Il peut provenir de n’importe quelle intégration, pas seulement Powercalc",
+          "name": "Nom de base du capteur de coût. Le nom complet de l’entité est défini selon le paramètre cost_sensor_naming"
+        },
+        "description": "Créer un capteur de coût pour un capteur d’énergie existant. Le prix de l’énergie est pris dans la configuration globale de Powercalc.",
+        "sections": {
+          "cost_pricing": {
+            "name": "Remplacement du prix",
+            "data": {
+              "energy_price": "Prix fixe de l'énergie",
+              "energy_price_multiplier": "Multiplicateur du prix de l'énergie",
+              "energy_price_sensor": "Capteur du prix de l'énergie",
+              "energy_price_surcharge": "Majoration du prix de l'énergie"
+            },
+            "data_description": {
+              "energy_price": "Un prix fixe par kWh dans votre devise locale. Laissez vide pour utiliser le prix global de l'énergie",
+              "energy_price_multiplier": "Multiplicateur appliqué après la majoration. Utilisez-le pour les taxes ou frais en pourcentage, par exemple 1.21 pour 21 %. Laissez vide pour utiliser le multiplicateur global",
+              "energy_price_sensor": "Un capteur qui fournit le prix actuel de l'énergie par kWh (par exemple depuis une intégration de tarif dynamique). Laissez le prix fixe vide pour utiliser ce capteur",
+              "energy_price_surcharge": "Montant fixe supplémentaire par kWh ajouté au prix fixe ou à la valeur du capteur de prix. Laissez vide pour utiliser la majoration globale"
+            }
+          }
+        },
+        "title": "Créer un capteur de coût"
+      },
+      "sub_profile": {
+        "data": {
+          "sub_profile": "Sous-profil"
+        },
+        "description": "Cet appareil a un modèle avec plusieurs sous-profils. Sélectionnez celui qui correspond à l'entité suivante de cet appareil :\n\n\"{entity_id}\"{remarks}",
+        "title": "Configuration du sous-profil"
+      },
+      "sub_profile_per_device": {
+        "data": {
+          "sub_profile": "Sous-profil"
+        },
+        "description": "Cet appareil a un modèle avec plusieurs sous-profils. {remarks}",
+        "title": "Configuration du sous-profil"
+      },
+      "smart_switch": {
+        "data": {
+          "power": "Puissance",
+          "self_usage_included": "Auto-consommation incluse"
+        },
+        "data_description": {
+          "power": "Une valeur de puissance fixe en watts pour l'appareil connecté",
+          "self_usage_included": "Indique si la valeur de puissance inclut la puissance consommée par l'interrupteur connecté lui-même. Si vous l'omettez, Powercalc ajoutera l'auto-consommation de l'interrupteur connecté à la valeur de puissance, soit {self_usage_power}W"
+        },
+        "description": "Définissez la consommation de puissance de l'appareil connecté. S'il n'utilise pas une quantité de puissance fixe, vous pouvez ignorer cette étape. Powercalc configurera un capteur de puissance pour l'auto-consommation de l'interrupteur connecté lui-même",
+        "title": "Configuration de l'interrupteur connecté"
+      },
+      "user": {
+        "data": {
+          "sensor_type": "Type de capteur"
+        },
+        "menu_options": {
+          "cost": "Capteur de coût (à partir d’un capteur d’énergie existant)",
+          "daily_energy": "Énergie quotidienne",
+          "group": "Groupe",
+          "global_configuration": "Configuration globale",
+          "menu_group": "Groupe",
+          "menu_library": "Puissance virtuelle (bibliothèque)",
+          "real_power": "Énergie du capteur de puissance réelle",
+          "virtual_power": "Alimentation virtuelle (manuel)"
+        },
+        "title": "Choisissez votre type de capteur"
+      },
+      "utility_meter_options": {
+        "title": "Options des compteurs de services publics",
+        "description": "Définissez ici les paramètres de création des compteurs de services publics",
+        "data": {
+          "utility_meter_net_consumption": "Consommation nette",
+          "utility_meter_types": "Cycles",
+          "utility_meter_tariffs": "Tarifs"
+        },
+        "data_description": {
+          "utility_meter_net_consumption": "Activez cette option si vous souhaitez traiter la source comme un compteur net. Cela permettra à votre compteur de devenir positif ou négatif.",
+          "utility_meter_types": "Créer des compteurs de services publics pour les cycles spécifiés",
+          "utility_meter_tariffs": "Une liste des tarifs pris en charge. Laissez vide si un seul tarif est nécessaire."
+        }
+      },
+      "virtual_power": {
+        "data": {
+          "create_energy_sensor": "Créer un capteur d'énergie",
+          "create_standby_energy_sensor": "Créer un capteur d’énergie en veille",
+          "create_cost_sensor": "Créer un capteur de coût",
+          "create_utility_meters": "Créer un compteur d'électricité",
+          "entity_id": "Entité source",
+          "mode": "Stratégie de calcul",
+          "name": "Nom",
+          "standby_power": "Consommation en veille"
+        },
+        "data_description": {
+          "create_energy_sensor": "Si powercalc doit créer un capteur kWh",
+          "create_standby_energy_sensor": "Indique si Powercalc doit créer un capteur kWh qui suit uniquement la consommation en veille",
+          "create_utility_meters": "Laissez powercalc créer des compteurs de services publics, qui effectuent un cycle quotidien, horaire, etc.",
+          "entity_id": "Entité sur laquelle la puissance virtuelle est basée, le capteur de puissance écoutera les changements d'état de cette entité à mettre à jour",
+          "name": "Laisser vide prendra le nom de l'entité source",
+          "standby_power": "Définir la quantité d'énergie que l'appareil consomme lorsqu'il est à l'état OFF"
+        },
+        "description": "Consultez le fichier readme pour plus d'informations sur les stratégies possibles et les options de configuration. L'entité source ou le nom est requis, ou les deux.",
+        "title": "Créer un capteur de puissance virtuel"
+      },
+      "wled": {
+        "data": {
+          "current_entity": "Entité de courant",
+          "power_factor": "Facteur de puissance",
+          "voltage": "Tension"
+        },
+        "description": "Assurez-vous d’activer le limiteur de luminosité dans le logiciel WLED. Voir aussi {docs_uri}",
+        "title": "Configuration WLED",
+        "data_description": {
+          "current_entity": "Sélectionnez éventuellement un capteur fournissant le courant estimé en mA. Nécessaire uniquement lorsque Powercalc ne peut pas trouver automatiquement le capteur de courant estimé WLED, par exemple lorsque le limiteur de luminosité est configuré par sortie."
+        }
+      }
+    }
+  },
+  "exceptions": {
+    "invalid_integration_method": {
+      "message": "Méthode d'intégration non valide « {method} ». Elle doit être l'une des suivantes : {allowed_methods}."
+    },
+    "no_sub_profile_support": {
+      "message": "{entity_id} ne prend pas en charge le changement de sous-profils. Cette action n'est disponible que pour les capteurs disposant de sous-profils et sans sélection automatique du sous-profil."
+    },
+    "not_a_playbook_sensor": {
+      "message": "{entity_id} n'est pas un capteur compatible playbook. Cette action n'est disponible que pour les capteurs utilisant la stratégie playbook."
+    },
+    "unknown_sub_profile": {
+      "message": "« {profile} » n'est pas un sous-profil connu. Sous-profils disponibles : {known_profiles}."
+    }
+  },
+  "entity": {
+    "sensor": {
+      "measure_session_status": {
+        "name": "Measure session status",
+        "state": {
+          "idle": "Idle",
+          "validating": "Validating",
+          "ready": "Ready",
+          "awaiting_confirmation": "Awaiting confirmation",
+          "running": "Running",
+          "cancelling": "Cancelling",
+          "cancelled": "Cancelled",
+          "completed": "Completed",
+          "failed": "Failed",
+          "resumable": "Resumable"
+        }
+      }
+    }
+  },
+  "issues": {
+    "composite_device_id": {
+      "fix_flow": {
+        "abort": {
+          "entry_removed": "L'entrée de configuration Powercalc a été supprimée"
+        },
+        "error": {
+          "invalid_device": "Sélectionnez un appareil existant ou laissez le champ vide"
+        },
+        "step": {
+          "select_device": {
+            "data": {
+              "device": "Appareil"
+            },
+            "data_description": {
+              "device": "L'appareil auquel les entités créées par cette configuration Powercalc doivent être liées"
+            },
+            "description": "La configuration Powercalc {name} était liée à un appareil que Home Assistant a divisé en plusieurs appareils. Ses entités ne peuvent pas être liées à l'ancien identifiant de l'appareil.\n\nSélectionnez l'appareil auquel ces entités doivent être liées, ou laissez le champ vide pour ne les lier à aucun appareil.",
+            "title": "Sélectionner un appareil pour {name}"
+          }
+        }
+      },
+      "title": "L'appareil de la configuration Powercalc {name} doit être sélectionné à nouveau"
+    },
+    "deprecated_platform_yaml": {
+      "description": "La configuration des capteurs à l'aide de `sensor->platform` est obsolète. Vous devez changer votre configuration en `powercalc->sensors`. Cliquez sur 'En savoir plus' pour plus d'instructions.",
+      "title": "La configuration Powercalc YAML a été déplacée"
+    },
+    "legacy_config": {
+      "title": "La configuration YAML de découverte a changé",
+      "description": "Votre configuration YAML pour {type} doit être mise à jour vers la nouvelle structure. Cliquez sur 'En savoir plus' pour plus d'informations."
+    },
+    "sub_profile": {
+      "fix_flow": {
+        "step": {
+          "sub_profile": {
+            "description": "Cet appareil a un modèle avec plusieurs sous-profils. Sélectionnez celui qui correspond à l’entité suivante de cet appareil :\n\n\"{entity_id}\"\n\nFabricant : {manufacturer}\nModèle : {model}{remarks}",
+            "title": "Sélectionner le bon sous-profil",
+            "data": {
+              "sub_profile": "Sous-profil"
+            }
+          }
+        }
+      },
+      "title": "Sélection du sous-profil requise pour {entry}"
+    }
+  },
+  "options": {
+    "abort": {
+      "model_not_support": "Modèle non pris en charge"
+    },
+    "error": {
+      "cost_price_mandatory": "Vous devez fournir soit un prix de l'énergie, soit un capteur de prix de l'énergie",
+      "fixed_mandatory": "Vous devez fournir au moins une alimentation, un modèle d'alimentation ou une alimentation des états",
+      "group_mandatory": "Vous devez définir au moins des sous-groupes ou des entités de puissance et d'énergie",
+      "linear_mandatory": "Vous devez spécifier au moins la puissance minimale ou la valeur d'étalonnage",
+      "linear_min_higher_as_max": "La puissance maximale ne peut pas être inférieure à la puissance minimale",
+      "linear_unsupported_domain": "Domaine d'entité non pris en charge pour le mode linéaire. Doit être l'un des suivants : ventilateur, lumière ou lecteur multimédia. Vous pouvez cependant utiliser l'option de calibrage",
+      "unknown": "Une erreur inconnue s'est produite, veuillez consulter les journaux pour plus d'informations"
+    },
+    "step": {
+      "advanced_options": {
+        "title": "Options avancées",
+        "data": {
+          "calculation_enabled_condition": "Condition de calcul activé",
+          "energy_integration_method": "Méthode d'intégration de l'énergie",
+          "ignore_unavailable_state": "Ignorer l'état indisponible",
+          "multiply_factor": "Facteur de multiplication",
+          "multiply_factor_standby": "Facteur de multiplication en veille",
+          "unavailable_power": "Alimentation indisponible"
+        },
+        "data_description": {
+          "calculation_enabled_condition": "La stratégie de calcul de puissance configurée ne sera exécutée que lorsque ce modèle sera évalué à vrai ou 1, sinon le capteur de puissance affichera 0",
+          "ignore_unavailable_state": "Activez ce paramètre lorsque vous souhaitez que le capteur de puissance reste disponible même si l'entité source n'est pas disponible",
+          "multiply_factor": "Multiplie la puissance calculée par ce rapport. Peut être utile pour les groupes légers",
+          "multiply_factor_standby": "Indique s'il faut également appliquer le facteur de multiplication à la puissance en veille",
+          "unavailable_power": "Puissance en W pour enregistrer lorsque l'entité source a un état indisponible"
+        }
+      },
+      "basic_options": {
+        "title": "Options de base",
+        "data": {
+          "create_energy_sensor": "Créer un capteur d'énergie",
+          "create_standby_energy_sensor": "Créer un capteur d’énergie en veille",
+          "create_cost_sensor": "Créer un capteur de coût",
+          "create_utility_meters": "Créer un compteur d'électricité",
+          "entity_id": "Entité source",
+          "name": "Nom",
+          "standby_power": "Consommation en veille"
+        },
+        "data_description": {
+          "create_energy_sensor": "Indique si Powercalc doit créer un capteur kWh",
+          "create_standby_energy_sensor": "Indique si Powercalc doit créer un capteur kWh qui suit uniquement la consommation en veille",
+          "create_utility_meters": "Laisser Powercalc créer des compteurs de services publics, avec des cycles quotidiens, horaires, etc.",
+          "entity_id": "Entité sur laquelle la puissance virtuelle est basée ; le capteur de puissance écoutera les changements d'état de cette entité pour se mettre à jour",
+          "name": "Si vous laissez vide, le nom de l'entité source sera utilisé",
+          "standby_power": "Définir la quantité de puissance consommée par l'appareil lorsqu'il est à l'état OFF"
+        }
+      },
+      "daily_energy": {
+        "title": "Options d'énergie quotidienne",
+        "data": {
+          "daily_energy_value": "Valeur d'énergie quotidienne",
+          "name": "Nom",
+          "on_time": "Temps de fonctionnement",
+          "start_time": "Heure de début",
+          "unit_of_measurement": "Unité de mesure",
+          "update_frequency": "Fréquence de mise à jour",
+          "value": "Valeur",
+          "value_template": "Modèle de valeur"
+        },
+        "data_description": {
+          "on_time": "Si laissé vide, la valeur par défaut est 1 jour. Toujours activé",
+          "update_frequency": "temps en secondes entre les mises à jour d'état du capteur"
+        }
+      },
+      "energy_options": {
+        "title": "Options d'énergie",
+        "data": {
+          "energy_integration_method": "Méthode d'intégration",
+          "energy_sensor_unit_prefix": "Préfixe d'unité",
+          "energy_filter_outlier_enabled": "Filtrer les valeurs aberrantes",
+          "energy_filter_outlier_max_step": "Écart maximal du filtre des valeurs aberrantes"
+        },
+        "data_description": {
+          "energy_filter_outlier_enabled": "Activer le filtrage des valeurs aberrantes dans le capteur d'énergie",
+          "energy_filter_outlier_max_step": "Écart maximal attendu dans les valeurs de puissance (en watts) pour le filtre des valeurs aberrantes"
+        }
+      },
+      "fixed": {
+        "title": "Options fixes",
+        "data": {
+          "fixed_value": "Valeur fixe",
+          "self_usage_included": "Auto-consommation incluse"
+        },
+        "data_description": {
+          "self_usage_included": "Indique si la valeur de puissance inclut la puissance consommée par l'interrupteur connecté lui-même."
+        }
+      },
+      "global_configuration": {
+        "title": "Options de base",
+        "sections": {
+          "power_options": {
+            "name": "Capteur de puissance",
+            "data": {
+              "power_sensor_naming": "Modèle de nom du capteur de puissance",
+              "power_sensor_friendly_naming": "Modèle de nom convivial du capteur de puissance",
+              "power_sensor_category": "Catégorie du capteur de puissance",
+              "power_sensor_precision": "Précision du capteur de puissance"
+            }
+          },
+          "features": {
+            "name": "Créer des capteurs",
+            "data": {
+              "create_energy_sensors": "Créer des capteurs d'énergie",
+              "create_cost_sensors": "Créer des capteurs de coût",
+              "create_standby_group": "Créer un groupe de veille",
+              "create_utility_meters": "Créer des compteurs de services publics"
+            },
+            "data_description": {
+              "create_energy_sensors": "Indique si Powercalc doit créer des capteurs kWh",
+              "create_cost_sensors": "Indique si Powercalc doit créer des capteurs de coût. Nécessite qu'un prix de l'énergie soit configuré dans les étapes suivantes",
+              "create_standby_group": "Créer un groupe qui additionne toute la consommation en veille et l'auto-consommation des appareils IoT",
+              "create_utility_meters": "Laisser Powercalc créer des compteurs de services publics, avec des cycles quotidiens, horaires, etc."
+            }
+          },
+          "advanced": {
+            "name": "Avancé",
+            "data": {
+              "enable_analytics": "Activer les analyses anonymes",
+              "ignore_unavailable_state": "Ignorer l'état indisponible",
+              "include_non_powercalc_sensors": "Inclure les capteurs non Powercalc",
+              "disable_extended_attributes": "Désactiver les attributs étendus",
+              "disable_library_download": "Désactiver le téléchargement distant de la bibliothèque"
+            },
+            "data_description": {
+              "enable_analytics": "Autoriser Powercalc à envoyer des statistiques d'utilisation anonymes et agrégées pour aider à améliorer l'intégration",
+              "ignore_unavailable_state": "Garder les capteurs Powercalc disponibles, même lorsque l'entité source est indisponible",
+              "include_non_powercalc_sensors": "Contrôler si vous souhaitez inclure les capteurs non Powercalc dans les groupes",
+              "disable_extended_attributes": "Désactiver tous les attributs supplémentaires que Powercalc ajoute aux états des entités de puissance, d'énergie et de groupe. Cela aidera à garder la base de données petite",
+              "disable_library_download": "Désactiver la fonctionnalité de téléchargement de la bibliothèque Powercalc"
+            }
+          }
+        }
+      },
+      "global_configuration_cost": {
+        "title": "Options de coût",
+        "description": "Configurez le prix de l'énergie utilisé pour calculer les capteurs de coût. Fournissez soit un prix fixe, soit un capteur qui fournit le prix actuel par kWh. Consultez la [documentation]({docs_uri}) pour plus d'informations",
+        "sections": {
+          "cost_pricing": {
+            "name": "Tarification",
+            "data": {
+              "energy_price": "Prix fixe de l'énergie",
+              "energy_price_multiplier": "Multiplicateur du prix de l'énergie",
+              "energy_price_sensor": "Capteur du prix de l'énergie",
+              "energy_price_surcharge": "Majoration du prix de l'énergie"
+            },
+            "data_description": {
+              "energy_price": "Un prix fixe par kWh dans votre devise locale",
+              "energy_price_multiplier": "Multiplicateur appliqué après la majoration. Utilisez-le pour les taxes ou frais en pourcentage, par exemple 1.21 pour 21 %",
+              "energy_price_sensor": "Un capteur qui fournit le prix actuel de l'énergie par kWh (par exemple depuis une intégration de tarif dynamique). Laissez le prix fixe vide pour utiliser ce capteur",
+              "energy_price_surcharge": "Montant fixe supplémentaire par kWh ajouté au prix fixe ou à la valeur du capteur de prix"
+            }
+          },
+          "cost_naming": {
+            "name": "Nommage",
+            "data": {
+              "cost_sensor_friendly_naming": "Modèle de nom convivial du capteur de coût",
+              "cost_sensor_naming": "Modèle de nom du capteur de coût"
+            },
+            "data_description": {
+              "cost_sensor_friendly_naming": "Modèle du nom convivial du capteur de coût. Le nom source est inséré à la position de l’espace réservé",
+              "cost_sensor_naming": "Modèle utilisé pour construire le nom du capteur de coût et l'ID d'entité. Le nom source est inséré à la position de l'espace réservé"
+            }
+          }
+        }
+      },
+      "global_configuration_cost_apply": {
+        "title": "Appliquer les capteurs de coût",
+        "description": "Vous avez modifié le paramètre global des capteurs de coût. Voulez-vous appliquer ce changement à tous les capteurs Powercalc existants créés via l'interface graphique ?",
+        "data": {
+          "apply_to_all": "Appliquer aux capteurs existants"
+        },
+        "data_description": {
+          "apply_to_all": "Mettre à jour chaque capteur Powercalc existant créé via l’interface graphique pour correspondre au nouveau paramètre des capteurs de coût"
+        }
+      },
+      "global_configuration_discovery": {
+        "title": "Options de découverte",
+        "description": "Gérez le paramètre de découverte. Consultez la [documentation]({docs_uri}) pour plus d’informations",
+        "data": {
+          "enabled": "Activer la découverte",
+          "exclude_device_types": "Types d'appareils exclus",
+          "exclude_self_usage": "Exclure l'auto-consommation"
+        },
+        "data_description": {
+          "exclude_device_types": "Exclure un ou plusieurs types d’appareils spécifiques de la découverte.",
+          "exclude_self_usage": "Exclure les profils d'auto-consommation des interrupteurs connectés."
+        }
+      },
+      "global_configuration_energy": {
+        "title": "Options d'énergie",
+        "description": "Définissez ici les paramètres par défaut des capteurs d'énergie. Consultez la [documentation]({docs_uri}) pour plus d'informations",
+        "data": {
+          "energy_integration_method": "Méthode d'intégration de l'énergie",
+          "energy_sensor_category": "Catégorie du capteur d'énergie",
+          "energy_sensor_friendly_naming": "Modèle de nom convivial du capteur d'énergie",
+          "energy_sensor_naming": "Modèle de nom du capteur d'énergie",
+          "energy_sensor_precision": "Précision du capteur d'énergie",
+          "energy_sensor_unit_prefix": "Préfixe d'unité du capteur d'énergie"
+        }
+      },
+      "global_configuration_throttling": {
+        "title": "Options de limitation",
+        "description": "Définissez les intervalles de mise à jour pour les différents types de capteurs. Consultez la [documentation]({docs_uri}) pour plus d’informations",
+        "data": {
+          "group_energy_update_interval": "Intervalle de mise à jour de l'énergie du groupe",
+          "group_power_update_interval": "Intervalle de mise à jour de la puissance du groupe",
+          "energy_update_interval": "Intervalle de mise à jour de l'énergie",
+          "power_update_interval": "Intervalle de mise à jour de la puissance"
+        },
+        "data_description": {
+          "group_energy_update_interval": "Intervalle auquel les capteurs d'énergie de groupe sont mis à jour. En secondes. Réglez sur 0 pour désactiver",
+          "group_power_update_interval": "Intervalle auquel les capteurs de puissance de groupe sont mis à jour. En secondes. Réglez sur 0 pour désactiver",
+          "energy_update_interval": "Intervalle auquel les capteurs d'énergie sont mis à jour. En secondes. Réglez sur 0 pour désactiver",
+          "power_update_interval": "Intervalle auquel les capteurs de puissance sont mis à jour de force. En secondes. Réglez sur 0 pour désactiver"
+        }
+      },
+      "global_configuration_utility_meter": {
+        "title": "Options des compteurs de services publics",
+        "description": "Définissez ici les paramètres par défaut des compteurs de services publics. Consultez la [documentation]({docs_uri}) pour plus d'informations",
+        "data": {
+          "utility_meter_net_consumption": "Consommation nette du compteur de services publics",
+          "utility_meter_tariffs": "Tarifs du compteur de services publics",
+          "utility_meter_types": "Types de compteur de services publics"
+        }
+      },
+      "group_custom": {
+        "title": "Options de groupe",
+        "sections": {
+          "members": {
+            "name": "Membres",
+            "data": {
+              "group_member_sensors": "Membres capteurs powercalc",
+              "group_member_devices": "Appareils membres",
+              "group_power_entities": "Entités de puissances supplémentaires",
+              "group_energy_entities": "Entités d'énergies supplémentaires",
+              "sub_groups": "Sous-groupes",
+              "area": "Zone",
+              "floor": "Étage"
+            },
+            "data_description": {
+              "group_member_sensors": "Capteurs Powercalc à inclure dans le groupe",
+              "group_member_devices": "Ajouter les entités de puissance et d'énergie des appareils sélectionnés au groupe",
+              "group_power_entities": "Capteurs de puissance supplémentaires (W) de votre installation HA à inclure",
+              "group_energy_entities": "Capteurs d'énergie supplémentaires (kWh) de votre installation HA à inclure",
+              "sub_groups": "Tous les capteurs contenant des sous-groupes sélectionnés seront également ajoutés à ce groupe",
+              "area": "Ajoute tous les capteurs powercalc de la zone spécifiée",
+              "floor": "Ajoute tous les capteurs powercalc de l'étage spécifié"
+            }
+          },
+          "options": {
+            "name": "Paramètres",
+            "data": {
+              "device": "Appareil",
+              "hide_members": "Cacher membres",
+              "include_non_powercalc_sensors": "Inclure les capteurs non Powercalc",
+              "force_calculate_group_energy": "Forcer le calcul de l'énergie"
+            },
+            "data_description": {
+              "device": "Ajouter les entités de groupe créées par Powercalc à un appareil existant",
+              "include_non_powercalc_sensors": "Contrôler s'il faut inclure les capteurs non Powercalc lors de l'utilisation de l'option de zone",
+              "force_calculate_group_energy": "Par défaut, Powercalc additionne les capteurs d'énergie des capteurs membres. Activez cette option pour forcer la création d'un capteur de somme de Riemann"
+            }
+          }
+        }
+      },
+      "group_subtract": {
+        "data": {
+          "entity_id": "Entité de base",
+          "subtract_entities": "Soustraire des entités"
+        },
+        "data_description": {
+          "entity_id": "L'entité de base de laquelle soustraire la puissance",
+          "subtract_entities": "Sélectionnez toutes les entités que vous souhaitez soustraire de l'entité de base"
+        },
+        "title": "Options de groupe"
+      },
+      "group_tracked_untracked": {
+        "data": {
+          "main_power_sensor": "Capteur de puissance de l'alimentation principale",
+          "group_tracked_auto": "Entités ajoutées automatiquement",
+          "create_energy_sensor": "Créer un capteur d'énergie",
+          "create_cost_sensor": "Créer un capteur de coût",
+          "create_utility_meters": "Créer des compteurs de services publics"
+        },
+        "data_description": {
+          "main_power_sensor": "Sélectionnez le capteur de puissance contenant votre consommation totale. Si vous laissez vide, seul un capteur de puissance suivie sera créé",
+          "group_tracked_auto": "Powercalc ajoutera automatiquement tous les capteurs de puissance au groupe suivi, en ignorant les groupes Powercalc. Désactivez ceci si vous souhaitez définir manuellement les entités suivies",
+          "create_energy_sensor": "Indique si Powercalc doit créer un capteur kWh",
+          "create_utility_meters": "Laisser Powercalc créer des compteurs de services publics, avec des cycles quotidiens, horaires, etc."
+        },
+        "title": "Options de groupe suivi/non suivi"
+      },
+      "group_tracked_untracked_manual": {
+        "data": {
+          "group_tracked_entities": "Entités suivies"
+        },
+        "title": "Sélectionner les entités de puissance"
+      },
+      "init": {
+        "menu_options": {
+          "advanced_options": "Options avancées",
+          "basic_options": "Options de base",
+          "cost": "Options de coût",
+          "daily_energy": "Options d'énergie quotidienne",
+          "energy_options": "Options d'énergie",
+          "fixed": "Options fixes",
+          "group_custom": "Options de groupe",
+          "group_subtract": "Options de groupe",
+          "group_tracked_untracked": "Options de groupe",
+          "group_tracked_untracked_manual": "Entités suivies",
+          "library_options": "Options de bibliothèque",
+          "linear": "Options linéaires",
+          "playbook": "Options du playbook",
+          "multi_switch": "Options du multi-interrupteur",
+          "real_power": "Options de puissance réelle",
+          "select_device": "Appareil",
+          "utility_meter_options": "Options des compteurs de services publics",
+          "wled": "Options WLED",
+          "cost_options": "Options de coût"
+        }
+      },
+      "library_options": {
+        "title": "Options de bibliothèque",
+        "description": "Le profil de bibliothèque suivant est actuellement sélectionné : \n fabricant : {manufacturer}\n modèle : {model}\n\nSi vous souhaitez changer de profil, cliquez sur Suivant.{profile_details}"
+      },
+      "select_device": {
+        "data": {
+          "device": "Appareil"
+        },
+        "data_description": {
+          "device": "L’appareil auquel les entités Powercalc doivent être associées"
+        },
+        "description": "Sélectionnez l’appareil auquel le capteur Powercalc doit être associé.",
+        "title": "Sélectionner un appareil"
+      },
+      "linear": {
+        "title": "Options linéaires",
+        "data": {
+          "attribute": "Attribut",
+          "calibrate": "Valeurs d'étalonnage",
+          "gamma_curve": "Courbe gamma",
+          "max_power": "Puissance Max",
+          "min_power": "Puissance Min"
+        },
+        "data_description": {
+          "attribute": "Spécifiez l'attribut. Lorsqu'il est laissé vide, la luminosité des lumières et le pourcentage des ventilateurs seront affichés.",
+          "calibrate": "Mettez une valeur d'étalonnage sur chaque ligne. Exemple\n\n1 : 20"
+        }
+      },
+      "multi_switch": {
+        "title": "Options du multi-interrupteur",
+        "data": {
+          "entities": "Entités d'interrupteur",
+          "power": "Puissance ON",
+          "power_off": "Puissance OFF"
+        },
+        "data_description": {
+          "entities": "Sélectionnez tous les interrupteurs individuels faisant partie du multi-interrupteur",
+          "power": "Puissance pour un interrupteur individuel lorsqu’il est allumé",
+          "power_off": "Puissance pour un interrupteur individuel lorsqu’il est éteint"
+        }
+      },
+      "playbook": {
+        "title": "Options du playbook",
+        "data": {
+          "autostart": "Démarrage automatique",
+          "playbooks": "Scénarios",
+          "repeat": "Répéter",
+          "states_trigger": "Déclencheur d'état"
+        },
+        "data_description": {
+          "autostart": "Indique de démarrer un certain playbook lorsque HA démarre. c'est-à-dire 'programme1'",
+          "repeat": "Basculer lorsque vous souhaitez continuer à répéter le playbook une fois qu'il est terminé",
+          "states_trigger": "Déclencher un playbook en fonction d'un changement d'état. Exemple\n\nplaying: program1"
+        }
+      },
+      "real_power": {
+        "title": "Options de puissance réelle",
+        "data": {
+          "device": "Appareil"
+        },
+        "data_description": {
+          "device": "Ajouter le capteur d'énergie créé à un appareil spécifique"
+        }
+      },
+      "cost": {
+        "data": {
+          "energy_sensor_id": "Capteur d’énergie"
+        },
+        "data_description": {
+          "energy_sensor_id": "Le capteur d’énergie existant (kWh) pour lequel calculer le coût"
+        },
+        "sections": {
+          "cost_pricing": {
+            "name": "Remplacement du prix",
+            "data": {
+              "energy_price": "Prix fixe de l'énergie",
+              "energy_price_multiplier": "Multiplicateur du prix de l'énergie",
+              "energy_price_sensor": "Capteur du prix de l'énergie",
+              "energy_price_surcharge": "Majoration du prix de l'énergie"
+            },
+            "data_description": {
+              "energy_price": "Un prix fixe par kWh dans votre devise locale. Laissez vide pour utiliser le prix global de l'énergie",
+              "energy_price_multiplier": "Multiplicateur appliqué après la majoration. Utilisez-le pour les taxes ou frais en pourcentage, par exemple 1.21 pour 21 %. Laissez vide pour utiliser le multiplicateur global",
+              "energy_price_sensor": "Un capteur qui fournit le prix actuel de l'énergie par kWh (par exemple depuis une intégration de tarif dynamique). Laissez le prix fixe vide pour utiliser ce capteur",
+              "energy_price_surcharge": "Montant fixe supplémentaire par kWh ajouté au prix fixe ou à la valeur du capteur de prix. Laissez vide pour utiliser la majoration globale"
+            }
+          }
+        },
+        "title": "Options de coût"
+      },
+      "utility_meter_options": {
+        "title": "Options des compteurs de services publics",
+        "data": {
+          "utility_meter_net_consumption": "Consommation nette",
+          "utility_meter_types": "Cycles",
+          "utility_meter_tariffs": "Tarifs du compteur de services publics"
+        },
+        "data_description": {
+          "utility_meter_net_consumption": "Activez cette option si vous souhaitez traiter la source comme un compteur net. Cela permettra à votre compteur de devenir positif ou négatif.",
+          "utility_meter_types": "Créer des compteurs de services publics pour les cycles spécifiés",
+          "utility_meter_tariffs": "Une liste des tarifs pris en charge. Laissez vide si un seul tarif est nécessaire."
+        }
+      },
+      "wled": {
+        "title": "Options WLED",
+        "data": {
+          "current_entity": "Entité de courant",
+          "power_factor": "Facteur de puissance",
+          "voltage": "Tension"
+        },
+        "data_description": {
+          "current_entity": "Sélectionnez éventuellement un capteur fournissant le courant estimé en mA. Nécessaire uniquement lorsque Powercalc ne peut pas trouver automatiquement le capteur de courant estimé WLED, par exemple lorsque le limiteur de luminosité est configuré par sortie."
+        }
+      },
+      "cost_options": {
+        "data": {
+          "energy_price": "Prix fixe de l'énergie",
+          "energy_price_multiplier": "Multiplicateur du prix de l'énergie",
+          "energy_price_sensor": "Capteur du prix de l'énergie",
+          "energy_price_surcharge": "Majoration du prix de l'énergie"
+        },
+        "data_description": {
+          "energy_price": "Un prix fixe par kWh dans votre devise locale. Laissez vide pour utiliser le prix global de l'énergie",
+          "energy_price_multiplier": "Multiplicateur appliqué après la majoration. Utilisez-le pour les taxes ou frais en pourcentage, par exemple 1.21 pour 21 %. Laissez vide pour utiliser le multiplicateur global",
+          "energy_price_sensor": "Un capteur qui fournit le prix actuel de l'énergie par kWh (par exemple depuis une intégration de tarif dynamique). Laissez le prix fixe vide pour utiliser ce capteur",
+          "energy_price_surcharge": "Montant fixe supplémentaire par kWh ajouté au prix fixe ou à la valeur du capteur de prix. Laissez vide pour utiliser la majoration globale"
+        },
+        "description": "Remplace le prix de l'énergie configuré globalement pour ce capteur uniquement. Laissez tous les champs vides pour continuer à utiliser le prix global. Consultez la [documentation]({docs_uri}) pour plus d'informations",
+        "title": "Options de coût"
+      }
+    }
+  },
+  "selector": {
+    "daily_energy_value": {
+      "choices": {
+        "value": "Valeur",
+        "value_template": "Modèle"
+      }
+    },
+    "fixed_value": {
+      "choices": {
+        "power": "Puissance",
+        "power_template": "Modèle",
+        "states_power": "Correspondance des états"
+      }
+    }
+  },
+  "services": {
+    "activate_playbook": {
+      "description": "Démarrer l'exécution d'un playbook.",
+      "fields": {
+        "playbook_id": {
+          "description": "Identifiant du scénario.",
+          "name": "Scénario"
+        }
+      },
+      "name": "Activer playbook"
+    },
+    "calibrate_energy": {
+      "description": "Règle le capteur d'énergie sur une valeur kWh donnée.",
+      "fields": {
+        "value": {
+          "description": "La valeur à définir.",
+          "name": "Valeur"
+        }
+      },
+      "name": "Calibrer le capteur d'énergie"
+    },
+    "calibrate_cost": {
+      "description": "Définit le capteur de coût sur une valeur monétaire donnée.",
+      "fields": {
+        "value": {
+          "description": "La valeur à définir.",
+          "name": "Valeur"
+        }
+      },
+      "name": "Étalonner le capteur de coût"
+    },
+    "calibrate_utility_meter": {
+      "description": "Étalonne un capteur de compteur de services publics.",
+      "fields": {
+        "value": {
+          "description": "La valeur à définir.",
+          "name": "Valeur"
+        }
+      },
+      "name": "Étalonner le compteur d'électricité"
+    },
+    "change_gui_config": {
+      "description": "Modifier par lot la configuration de toutes les entrées de configuration Powercalc",
+      "fields": {
+        "field": {
+          "description": "Le champ que vous souhaitez modifier",
+          "name": "Valeur"
+        },
+        "value": {
+          "description": "La valeur à définir.",
+          "name": "Valeur"
+        }
+      },
+      "name": "Modifier la configuration de l'interface graphique"
+    },
+    "debug_group": {
+      "description": "Obtenir un aperçu de débogage d'un capteur de puissance ou d'énergie de groupe, y compris les valeurs actuelles des membres.",
+      "name": "Déboguer le groupe"
+    },
+    "get_active_playbook": {
+      "description": "Obtenir le playbook en cours d'exécution",
+      "name": "Obtenir le playbook actif"
+    },
+    "get_group_entities": {
+      "description": "Récupérer tous les ID d'entité d'un capteur d'énergie ou de puissance de groupe",
+      "name": "Obtenir les entités du groupe"
+    },
+    "increase_daily_energy": {
+      "description": "Augmente le capteur d'une quantité donnée.",
+      "fields": {
+        "value": {
+          "description": "Quantité à ajouter au capteur.",
+          "name": "Valeur"
+        }
+      },
+      "name": "Augmenter le capteur d'énergie quotidien"
+    },
+    "reload": {
+      "description": "Recharger la configuration et les entités Powercalc",
+      "name": "Recharger"
+    },
+    "reset_energy": {
+      "description": "Réinitialiser un capteur d'énergie à zéro kWh.",
+      "name": "Réinitialiser le capteur d'énergie"
+    },
+    "reset_cost": {
+      "description": "Réinitialise un capteur de coût à zéro.",
+      "name": "Réinitialiser le capteur de coût"
+    },
+    "stop_playbook": {
+      "description": "Arrêter le playbook actuellement actif.",
+      "name": "Arrêter playbook"
+    },
+    "switch_sub_profile": {
+      "description": "Certains profils de la bibliothèque ont différents sous-profils. Ce service vous permet de passer à un autre.",
+      "fields": {
+        "profile": {
+          "name": "Sous profil",
+          "description": "Définir un des sous profils possibles"
+        }
+      },
+      "name": "Passer à un autre sous-profil"
+    }
+  }
+}

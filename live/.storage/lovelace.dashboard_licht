@@ -1,0 +1,141 @@
+{
+  "version": 1,
+  "minor_version": 1,
+  "key": "lovelace.dashboard_licht",
+  "data": {
+    "config": {
+      "views": [
+        {
+          "title": "Licht",
+          "path": "licht",
+          "icon": "mdi:lightbulb",
+          "type": "sections",
+          "sections": [
+            {
+              "type": "grid",
+              "cards": [
+                {
+                  "type": "heading",
+                  "heading": "💡 Licht schalten"
+                },
+                {
+                  "type": "grid",
+                  "columns": 4,
+                  "square": true,
+                  "cards": [
+                    {
+                      "type": "tile",
+                      "entity": "light.wohnzimmer",
+                      "name": "🛋️ Wohnzimmer",
+                      "tap_action": {
+                        "action": "toggle"
+                      },
+                      "icon_tap_action": {
+                        "action": "more-info"
+                      },
+                      "color": "amber"
+                    },
+                    {
+                      "type": "tile",
+                      "entity": "light.kuche",
+                      "name": "🍳 Küche",
+                      "tap_action": {
+                        "action": "toggle"
+                      },
+                      "icon_tap_action": {
+                        "action": "more-info"
+                      },
+                      "color": "amber"
+                    },
+                    {
+                      "type": "tile",
+                      "entity": "light.esszimmer",
+                      "name": "🍽️ Esszimmer",
+                      "tap_action": {
+                        "action": "toggle"
+                      },
+                      "icon_tap_action": {
+                        "action": "more-info"
+                      },
+                      "color": "amber"
+                    },
+                    {
+                      "type": "tile",
+                      "entity": "light.flur",
+                      "name": "🚪 Flur",
+                      "tap_action": {
+                        "action": "toggle"
+                      },
+                      "icon_tap_action": {
+                        "action": "more-info"
+                      },
+                      "color": "amber"
+                    },
+                    {
+                      "type": "tile",
+                      "entity": "light.schlafzimmer",
+                      "name": "🛏️ Schlafzimmer",
+                      "tap_action": {
+                        "action": "toggle"
+                      },
+                      "icon_tap_action": {
+                        "action": "more-info"
+                      },
+                      "color": "amber"
+                    },
+                    {
+                      "type": "tile",
+                      "entity": "light.gastezimmer_2",
+                      "name": "🛏️ Gästezimmer",
+                      "tap_action": {
+                        "action": "toggle"
+                      },
+                      "icon_tap_action": {
+                        "action": "more-info"
+                      },
+                      "color": "amber"
+                    },
+                    {
+                      "type": "tile",
+                      "entity": "light.gaste_wc",
+                      "name": "🚽 Gäste WC",
+                      "tap_action": {
+                        "action": "toggle"
+                      },
+                      "icon_tap_action": {
+                        "action": "more-info"
+                      },
+                      "color": "amber"
+                    },
+                    {
+                      "type": "tile",
+                      "entity": "light.abstellkammer_2",
+                      "name": "📦 Abstellkammer",
+                      "tap_action": {
+                        "action": "toggle"
+                      },
+                      "icon_tap_action": {
+                        "action": "more-info"
+                      },
+                      "color": "amber"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "grid",
+              "cards": [
+                {
+                  "type": "tile",
+                  "entity": "switch.shellyoutdoorsg3_48f6eeb5d230"
+                }
+              ],
+              "title": "shellyoutdoorsg3-48f6eeb5d230"
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

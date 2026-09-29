@@ -1,0 +1,107 @@
+light:
+  - platform: group
+    name: Wohnbereich Dashboard
+    unique_id: dashboard_wohnbereich_gesamt
+    entities:
+      - light.wohnzimmer
+      - light.kuche
+      - light.esszimmer
+
+  - platform: group
+    name: Wohnzimmer Weisslicht
+    unique_id: dashboard_wohnzimmer_weisslicht
+    entities:
+      - light.hue_filament_bulb_1
+      - light.hue_filament_bulb_2
+      - light.hue_filament_bulb_3
+
+  - platform: group
+    name: Wohnzimmer Farblicht
+    unique_id: dashboard_wohnzimmer_farblicht
+    entities:
+      - light.hue_color_floor_1
+      - light.hue_play_gradient_lightstrip_1
+
+  - platform: group
+    name: Kueche Weisslicht
+    unique_id: dashboard_kueche_weisslicht
+    entities:
+      - light.kuche_decke
+
+  - platform: group
+    name: Kueche Farblicht
+    unique_id: dashboard_kueche_farblicht
+    entities:
+      - light.theke_1
+      - light.theke_3
+      - light.theke_4
+      - light.hue_color_lamp_1
+
+  - platform: group
+    name: Esszimmer Weisslicht
+    unique_id: dashboard_esszimmer_weisslicht
+    entities:
+      - light.esszimmertisch
+
+  - platform: group
+    name: Esszimmer Farblicht
+    unique_id: dashboard_esszimmer_farblicht
+    entities:
+      - light.hue_play_1
+      - light.hue_play_2
+      - light.hue_play_3
+
+  - platform: group
+    name: Schlafzimmer Weisslicht
+    unique_id: dashboard_schlafzimmer_weisslicht
+    entities:
+      - light.schlafzimmer_decke
+
+  - platform: group
+    name: Schlafzimmer Farblicht
+    unique_id: dashboard_schlafzimmer_farblicht
+    entities:
+      - light.stehlampe_schlafzimmer
+
+  - platform: group
+    name: Wohnbereich Weisslicht
+    unique_id: dashboard_wohnbereich_weisslicht
+    entities:
+      - light.wohnzimmer_weisslicht
+      - light.kueche_weisslicht
+      - light.esszimmer_weisslicht
+
+  - platform: group
+    name: Wohnbereich Farblicht
+    unique_id: dashboard_wohnbereich_farblicht
+    entities:
+      - light.wohnzimmer_farblicht
+      - light.kueche_farblicht
+      - light.esszimmer_farblicht
+
+  - platform: group
+    name: Alle Lampen Weisslicht
+    unique_id: dashboard_alle_lampen_weisslicht
+    entities:
+      - light.wohnbereich_weisslicht
+      - light.schlafzimmer_weisslicht
+      - light.gastezimmer_2
+      - light.flur
+      - light.gaste_wc
+      - light.abstellkammer_2
+      - light.kleiderschrank
+      - light.vitrine
+
+  - platform: group
+    name: Alle Lampen Farblicht
+    unique_id: dashboard_alle_lampen_farblicht
+    entities:
+      - light.wohnbereich_farblicht
+      - light.schlafzimmer_farblicht
+
+  - platform: group
+    name: Alle Lampen Dashboard
+    unique_id: dashboard_alle_lampen_gesamt
+    entities:
+      - light.alle_lampen_weisslicht
+      - light.alle_lampen_farblicht

@@ -1,0 +1,170 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "description": "Velg konfigurasjonstype for Blitzortung-integrasjonen",
+        "data": {
+          "config_type": "Konfigurasjonstype"
+        },
+        "data_description": {
+          "config_type": "Integrasjonen kan konfigureres for statiske koordinater eller f\u00f8lge stedsenheten."
+        }
+      },
+      "entity": {
+        "data": {
+          "location_entity": "Stedsenhet"
+        },
+        "data_description": {
+          "location_entity": "Enheten `device_tracker`, `person` eller `zone` hvis plassering vil bli brukt av integrasjonen."
+        }
+      },
+      "coordinates": {
+        "data": {
+          "name": "Navnet p\u00e5 integrasjonsforekomsten",
+          "latitude": "Breddegrad",
+          "longitude": "Lengdegrad"
+        },
+        "data_description": {
+          "name": "Navnet integrasjonen vil bruke for denne konfigurasjonen.",
+          "latitude": "Et desimaltall som representerer breddegraden.",
+          "longitude": "Et desimaltall som representerer lengdegraden."
+        }
+      },
+      "reconfigure": {
+        "description": "Oppdater konfigurasjonen for {name}.",
+        "data": {
+          "latitude": "Breddegrad",
+          "longitude": "Lengdegrad"
+        },
+        "data_description": {
+          "latitude": "Et desimaltall som representerer breddegraden.",
+          "longitude": "Et desimaltall som representerer lengdegraden."
+        }
+      }
+    },
+    "error": {
+      "entity_without_unique_id": "Den valgte enheten har ikke en unik identifikator, vennligst bruk en annen enhet.",
+      "entity_without_coordinates": "Den valgte enheten gir ikke koordinater."
+    },
+    "abort": {
+      "already_configured": "Tjenesten er allerede konfigurert",
+      "reconfigure_successful": "Rekonfigurasjon var vellykket",
+      "reconfigure_not_supported": "For entitetsbasert konfigurasjon st\u00f8ttes ikke rekonfigurasjon."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Blitzortung-alternativer",
+        "data": {
+          "radius": "Lyndeteksjonsradius",
+          "time_window": "Tidsvindu",
+          "max_tracked_lightnings": "Maks antall sporede lyn"
+        },
+        "data_description": {
+          "radius": "Radius p\u00e5 sirkelen for hvilke lyn vil bli oppdaget.",
+          "time_window": "Levetid for sporede lyn i minutter.",
+          "max_tracked_lightnings": "Maksimalt antall sporede lyn."
+        }
+      }
+    }
+  },
+  "exceptions": {
+    "mqtt_connect_not_ready": {
+      "message": "Klarte ikke \u00e5 koble til Blitzortung MQTT-server: {error}"
+    },
+    "no_coordinates_from_entity": {
+      "message": "Enhet {location_entity} gir ikke koordinater."
+    }
+  },
+  "selector": {
+    "config_type": {
+      "options": {
+        "entity": "Stedsenhet",
+        "coordinates": "Koordinater"
+      }
+    }
+  },
+  "entity": {
+    "sensor": {
+      "azimuth": {
+        "name": "Lynazimut",
+        "state_attributes": {
+          "lat": {
+            "name": "Breddegrad"
+          },
+          "lon": {
+            "name": "Lengdegrad"
+          }
+        }
+      },
+      "counter": {
+        "name": "Lynteller"
+      },
+      "distance": {
+        "name": "Lynavstand",
+        "state_attributes": {
+          "lat": {
+            "name": "Breddegrad"
+          },
+          "lon": {
+            "name": "Lengdegrad"
+          }
+        }
+      }
+    }
+  },
+  "issues": {
+    "max_tracked_lightnings_warning": {
+      "fix_flow": {
+        "step": {
+          "init": {
+            "description": "Stort antall sporede lyn ({tracked_lightnings}) kan f\u00f8re til st\u00f8rre minnebruk, ustabilt grensesnitt eller ukontrollert vekst av databasen.\n\nVelg om du vil redusere antall sporede lyn eller ignorere problemet. Du kan ogs\u00e5 endre antall sporede lyn selv i konfigurasjonsalternativene.",
+            "menu_options": {
+              "confirm": "Reduser til {max_tracked_lightnings}",
+              "ignore": "Ignorer"
+            }
+          }
+        },
+        "abort": {
+          "issue_ignored": "Problem ignorert"
+        }
+      },
+      "title": "{name}: stort antall sporede lyn"
+    },
+    "radius_max_warning": {
+      "fix_flow": {
+        "step": {
+          "init": {
+            "description": "Stor lyndeteksjonsradius ({radius}) kan f\u00f8re til st\u00f8rre minnebruk, ustabilt grensesnitt eller ukontrollert vekst av databasen.\n\nVelg om du vil redusere radiusen eller ignorere dette problemet. Du kan ogs\u00e5 endre radiusen selv i konfigurasjonsalternativene.",
+            "menu_options": {
+              "confirm": "Reduser til {radius_max}",
+              "ignore": "Ignorer"
+            }
+          }
+        },
+        "abort": {
+          "issue_ignored": "Problem ignorert"
+        }
+      },
+      "title": "{name}: stor lyndeteksjonsradius"
+    },
+    "time_window_max_warning": {
+      "fix_flow": {
+        "step": {
+          "init": {
+            "description": "Stort tidsvindu ({time_window}) kan f\u00f8re til st\u00f8rre minnebruk, ustabilt grensesnitt eller ukontrollert vekst av databasen.\n\nVelg om du vil redusere tidsvinduet eller ignorere dette problemet. Du kan ogs\u00e5 endre tidsvinduet selv i konfigurasjonsalternativene.",
+            "menu_options": {
+              "confirm": "Reduser til {time_window_max}",
+              "ignore": "Ignorer"
+            }
+          }
+        },
+        "abort": {
+          "issue_ignored": "Problem ignorert"
+        }
+      },
+      "title": "{name}: stort tidsvindu"
+    }
+  }
+}

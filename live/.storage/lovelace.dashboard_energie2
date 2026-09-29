@@ -1,0 +1,932 @@
+{
+  "version": 1,
+  "minor_version": 1,
+  "key": "lovelace.dashboard_energie2",
+  "data": {
+    "config": {
+      "title": "Energie",
+      "views": [
+        {
+          "title": "Energie",
+          "path": "verbrauch",
+          "icon": "mdi:lightning-bolt-outline",
+          "type": "sections",
+          "max_columns": 2,
+          "sections": [
+            {
+              "type": "grid",
+              "cards": [
+                {
+                  "type": "custom:button-card",
+                  "name": "Zurück zur Übersicht",
+                  "icon": "mdi:arrow-left",
+                  "styles": {
+                    "card": [
+                      {
+                        "height": "48px"
+                      },
+                      {
+                        "border-radius": "14px"
+                      },
+                      {
+                        "padding": "6px 12px"
+                      }
+                    ],
+                    "grid": [
+                      {
+                        "grid-template-areas": "'i n'"
+                      },
+                      {
+                        "grid-template-columns": "30px 1fr"
+                      }
+                    ],
+                    "icon": [
+                      {
+                        "width": "19px"
+                      }
+                    ],
+                    "name": [
+                      {
+                        "justify-self": "start"
+                      },
+                      {
+                        "font-size": "13px"
+                      }
+                    ]
+                  },
+                  "tap_action": {
+                    "action": "navigate",
+                    "navigation_path": "/ipad-basic/flur"
+                  }
+                },
+                {
+                  "type": "heading",
+                  "heading": "Energie im Blick",
+                  "icon": "mdi:home-lightning-bolt-outline"
+                },
+                {
+                  "type": "custom:energy-overview-card",
+                  "power": "sensor.gesamtleistung_aktuell",
+                  "annual": "sensor.verbrauch_laufendes_jahr",
+                  "price_per_kwh": 0.25,
+                  "consumers": [
+                    [
+                      "Kaffeemaschine",
+                      "sensor.shellyplugmg3_0892724df770_leistung"
+                    ],
+                    [
+                      "Spülmaschine",
+                      "sensor.shellyplugmg3_70af09e33520_leistung"
+                    ],
+                    [
+                      "Schlafzimmer TV",
+                      "sensor.schlafzimmer_schlafzimmer_tv_leistung"
+                    ],
+                    [
+                      "Plug TV Gästezimmer",
+                      "sensor.gastezimmer_plug_tx_gastezimmer_leistung"
+                    ],
+                    [
+                      "QNAP",
+                      "sensor.shellyplugmg3_089272576804_leistung"
+                    ],
+                    [
+                      "Lichtverbrauch",
+                      "sensor.lichtverbrauch_power"
+                    ],
+                    [
+                      "Waschmaschine",
+                      "sensor.stecker_waschmaschine_leistung"
+                    ],
+                    [
+                      "Wäschetrockner",
+                      "sensor.stecker_waschetrockner_leistung"
+                    ],
+                    [
+                      "TV und Yamaha",
+                      "sensor.shellypstripg4_d885ace4e950_output_0_leistung"
+                    ],
+                    [
+                      "Playstation",
+                      "sensor.shellypstripg4_d885ace4e950_output_1_leistung"
+                    ],
+                    [
+                      "Apple TV Backlight",
+                      "sensor.shellypstripg4_d885ace4e950_output_2_leistung"
+                    ],
+                    [
+                      "Ei",
+                      "sensor.shellypstripg4_d885ace4e950_output_3_leistung"
+                    ],
+                    [
+                      "Outdoor Plug",
+                      "sensor.shellyoutdoorsg3_48f6eeb5d230_leistung"
+                    ],
+                    [
+                      "Wohnzimmer",
+                      "sensor.wohnzimmerfenster_rollo_leistung"
+                    ],
+                    [
+                      "Terrasse",
+                      "sensor.terrassentur_rollo_rollo_terrassentur_leistung"
+                    ],
+                    [
+                      "Schlafzimmer",
+                      "sensor.rollo_schlafzimmer_leistung"
+                    ],
+                    [
+                      "Gästezimmer",
+                      "sensor.shelly2pmg3_8cbfea9a6bb0_rollo_gastezimmer_leistung"
+                    ],
+                    [
+                      "Gäste-WC",
+                      "sensor.shelly2pmg3_8cbfea97b428_rollo_gaste_wc_leistung"
+                    ],
+                    [
+                      "Bad",
+                      "sensor.shelly2pmg3_8cbfea9cc4f4_rollo_bad_leistung"
+                    ]
+                  ],
+                  "max": 6000,
+                  "green": 500,
+                  "red": 2500,
+                  "grid_options": {
+                    "columns": 12,
+                    "rows": 4
+                  }
+                },
+                {
+                  "type": "history-graph",
+                  "title": "Gesamtleistung · letzte 24 Stunden",
+                  "hours_to_show": 24,
+                  "min_y_axis": 0,
+                  "entities": [
+                    {
+                      "entity": "sensor.gesamtleistung_aktuell",
+                      "name": "Erfasste Geräte"
+                    }
+                  ],
+                  "grid_options": {
+                    "columns": 12,
+                    "rows": "auto"
+                  }
+                },
+                {
+                  "type": "markdown",
+                  "content": "Leistung in **Watt (W)** · Summe der erfassten Geräte, kein vollständiger Hauszähler. Für einzelne Verbraucher öffne die Geräteverläufe."
+                },
+                {
+                  "type": "button",
+                  "name": "Leistungsverlauf einzelner Geräte",
+                  "icon": "mdi:chart-line",
+                  "icon_height": "24px",
+                  "tap_action": {
+                    "action": "navigate",
+                    "navigation_path": "/dashboard-energie2/leistung"
+                  },
+                  "grid_options": {
+                    "columns": 12,
+                    "rows": 1
+                  }
+                },
+                {
+                  "type": "custom:button-card",
+                  "name": "Zeitraum und vergangene Jahre",
+                  "label": "Verbrauch frei auswerten",
+                  "icon": "mdi:calendar-range-outline",
+                  "show_label": true,
+                  "styles": {
+                    "card": [
+                      {
+                        "height": "72px"
+                      },
+                      {
+                        "border-radius": "16px"
+                      },
+                      {
+                        "padding": "10px 14px"
+                      },
+                      {
+                        "background": "linear-gradient(135deg, color-mix(in srgb, var(--card-background-color) 90%, var(--primary-color) 10%), var(--card-background-color))"
+                      }
+                    ],
+                    "grid": [
+                      {
+                        "grid-template-areas": "'i n' 'i l'"
+                      },
+                      {
+                        "grid-template-columns": "44px 1fr"
+                      }
+                    ],
+                    "img_cell": [
+                      {
+                        "width": "34px"
+                      },
+                      {
+                        "height": "34px"
+                      },
+                      {
+                        "border-radius": "10px"
+                      },
+                      {
+                        "background": "color-mix(in srgb, var(--primary-color) 15%, transparent)"
+                      }
+                    ],
+                    "icon": [
+                      {
+                        "width": "21px"
+                      },
+                      {
+                        "color": "var(--primary-color)"
+                      }
+                    ],
+                    "name": [
+                      {
+                        "justify-self": "start"
+                      },
+                      {
+                        "font-size": "14px"
+                      },
+                      {
+                        "font-weight": "600"
+                      }
+                    ],
+                    "label": [
+                      {
+                        "justify-self": "start"
+                      },
+                      {
+                        "font-size": "11px"
+                      },
+                      {
+                        "color": "var(--secondary-text-color)"
+                      }
+                    ]
+                  },
+                  "tap_action": {
+                    "action": "navigate",
+                    "navigation_path": "/dashboard-energie2/jahresverbrauch"
+                  }
+                }
+              ]
+            },
+            {
+              "type": "grid",
+              "cards": [
+                {
+                  "type": "heading",
+                  "heading": "Verbrauch im Detail",
+                  "icon": "mdi:chart-bar"
+                },
+                {
+                  "type": "custom:energy-list-card",
+                  "title": "Laufendes Jahr nach Gerät",
+                  "icon": "mdi:calendar-check-outline",
+                  "mode": "energy",
+                  "price_per_kwh": 0.25,
+                  "entities": [
+                    [
+                      "Kaffeemaschine",
+                      "sensor.kaffeemaschine_energie_seit_umstellung",
+                      "mdi:coffee-maker-outline"
+                    ],
+                    [
+                      "Klimaanlage · Archiv bis 06.09.",
+                      "sensor.klimaanlage_energie_archiv_2026",
+                      "mdi:air-conditioner"
+                    ],
+                    [
+                      "Spülmaschine",
+                      "sensor.spuelmaschine_energie_jaehrlich",
+                      "mdi:dishwasher"
+                    ],
+                    [
+                      "Schlafzimmer TV",
+                      "sensor.schlafzimmer_tv_energie_jaehrlich",
+                      "mdi:television"
+                    ],
+                    [
+                      "Plug TV Gästezimmer",
+                      "sensor.gastezimmer_tv_energie_jaehrlich",
+                      "mdi:power-plug-outline"
+                    ],
+                    [
+                      "QNAP",
+                      "sensor.qnap_energie_jaehrlich",
+                      "mdi:nas"
+                    ],
+                    [
+                      "Lichtverbrauch",
+                      "sensor.lichtverbrauch_energie_jaehrlich",
+                      "mdi:lightbulb-group-outline"
+                    ],
+                    [
+                      "Outdoor Plug",
+                      "sensor.outdoor_plug_energie_jaehrlich",
+                      "mdi:power-plug-outline"
+                    ],
+                    [
+                      "Rollo Wohnzimmer",
+                      "sensor.rollo_wohnzimmer_energie_jaehrlich",
+                      "mdi:window-shutter"
+                    ],
+                    [
+                      "Rollo Terrasse",
+                      "sensor.rollo_terrasse_energie_jaehrlich",
+                      "mdi:window-shutter"
+                    ],
+                    [
+                      "Rollo Schlafzimmer",
+                      "sensor.rollo_schlafzimmer_energie_jaehrlich",
+                      "mdi:window-shutter"
+                    ],
+                    [
+                      "Rollo Gästezimmer",
+                      "sensor.rollo_gastezimmer_energie_jaehrlich",
+                      "mdi:window-shutter"
+                    ],
+                    [
+                      "Rollo Gäste-WC",
+                      "sensor.rollo_gaste_wc_energie_jaehrlich",
+                      "mdi:window-shutter"
+                    ],
+                    [
+                      "Rollo Bad",
+                      "sensor.rollo_bad_energie_jaehrlich",
+                      "mdi:window-shutter"
+                    ],
+                    [
+                      "Waschmaschine",
+                      "sensor.waschmaschine_energie_jaehrlich",
+                      "mdi:washing-machine"
+                    ],
+                    [
+                      "Wäschetrockner",
+                      "sensor.waschetrockner_energie_jaehrlich",
+                      "mdi:tumble-dryer"
+                    ],
+                    [
+                      "Kühlschrank",
+                      "sensor.kuhlschrank_energie_jaehrlich",
+                      "mdi:fridge-outline"
+                    ],
+                    [
+                      "TV und Yamaha",
+                      "sensor.tv_yamaha_energie_jaehrlich",
+                      "mdi:television"
+                    ],
+                    [
+                      "Playstation",
+                      "sensor.playstation_energie_jaehrlich",
+                      "mdi:sony-playstation"
+                    ],
+                    [
+                      "Apple TV Backlight",
+                      "sensor.apple_tv_energie_jaehrlich",
+                      "mdi:television-ambient-light"
+                    ],
+                    [
+                      "Ei",
+                      "sensor.ei_energie_jaehrlich",
+                      "mdi:egg-outline"
+                    ]
+                  ],
+                  "grid_options": {
+                    "columns": 12,
+                    "rows": 6
+                  }
+                },
+                {
+                  "type": "custom:energy-list-card",
+                  "title": "Leistung aller Geräte",
+                  "icon": "mdi:flash-outline",
+                  "mode": "power",
+                  "entities": [
+                    [
+                      "Kaffeemaschine",
+                      "sensor.shellyplugmg3_0892724df770_leistung",
+                      "mdi:coffee-maker-outline"
+                    ],
+                    [
+                      "Spülmaschine",
+                      "sensor.shellyplugmg3_70af09e33520_leistung",
+                      "mdi:dishwasher"
+                    ],
+                    [
+                      "Schlafzimmer TV",
+                      "sensor.schlafzimmer_schlafzimmer_tv_leistung",
+                      "mdi:television"
+                    ],
+                    [
+                      "Plug TV Gästezimmer",
+                      "sensor.gastezimmer_plug_tx_gastezimmer_leistung",
+                      "mdi:power-plug-outline"
+                    ],
+                    [
+                      "QNAP",
+                      "sensor.shellyplugmg3_089272576804_leistung",
+                      "mdi:nas"
+                    ],
+                    [
+                      "Lichtverbrauch",
+                      "sensor.lichtverbrauch_power",
+                      "mdi:lightbulb-group-outline"
+                    ],
+                    [
+                      "Waschmaschine",
+                      "sensor.stecker_waschmaschine_leistung",
+                      "mdi:washing-machine"
+                    ],
+                    [
+                      "Wäschetrockner",
+                      "sensor.stecker_waschetrockner_leistung",
+                      "mdi:tumble-dryer"
+                    ],
+                    [
+                      "Kühlschrank",
+                      "sensor.kuhlschrank_leistung",
+                      "mdi:fridge-outline"
+                    ],
+                    [
+                      "TV und Yamaha",
+                      "sensor.shellypstripg4_d885ace4e950_output_0_leistung",
+                      "mdi:television"
+                    ],
+                    [
+                      "Playstation",
+                      "sensor.shellypstripg4_d885ace4e950_output_1_leistung",
+                      "mdi:sony-playstation"
+                    ],
+                    [
+                      "Apple TV Backlight",
+                      "sensor.shellypstripg4_d885ace4e950_output_2_leistung",
+                      "mdi:television-ambient-light"
+                    ],
+                    [
+                      "Ei",
+                      "sensor.shellypstripg4_d885ace4e950_output_3_leistung",
+                      "mdi:egg-outline"
+                    ],
+                    [
+                      "Outdoor Plug",
+                      "sensor.shellyoutdoorsg3_48f6eeb5d230_leistung",
+                      "mdi:power-plug-outline"
+                    ],
+                    [
+                      "Wohnzimmer",
+                      "sensor.wohnzimmerfenster_rollo_leistung",
+                      "mdi:window-shutter"
+                    ],
+                    [
+                      "Terrasse",
+                      "sensor.terrassentur_rollo_rollo_terrassentur_leistung",
+                      "mdi:window-shutter"
+                    ],
+                    [
+                      "Schlafzimmer",
+                      "sensor.rollo_schlafzimmer_leistung",
+                      "mdi:window-shutter"
+                    ],
+                    [
+                      "Gästezimmer",
+                      "sensor.shelly2pmg3_8cbfea9a6bb0_rollo_gastezimmer_leistung",
+                      "mdi:window-shutter"
+                    ],
+                    [
+                      "Gäste-WC",
+                      "sensor.shelly2pmg3_8cbfea97b428_rollo_gaste_wc_leistung",
+                      "mdi:window-shutter"
+                    ],
+                    [
+                      "Bad",
+                      "sensor.shelly2pmg3_8cbfea9cc4f4_rollo_bad_leistung",
+                      "mdi:window-shutter"
+                    ]
+                  ],
+                  "grid_options": {
+                    "columns": 12,
+                    "rows": 8
+                  }
+                }
+              ]
+            }
+          ],
+          "dense_section_placement": true
+        },
+        {
+          "title": "Zeitraum",
+          "path": "jahresverbrauch",
+          "icon": "mdi:calendar-range-outline",
+          "subview": true,
+          "type": "sections",
+          "max_columns": 1,
+          "sections": [
+            {
+              "type": "grid",
+              "cards": [
+                {
+                  "type": "custom:button-card",
+                  "name": "Zurück zur Energieübersicht",
+                  "icon": "mdi:arrow-left",
+                  "styles": {
+                    "card": [
+                      {
+                        "height": "48px"
+                      },
+                      {
+                        "border-radius": "14px"
+                      },
+                      {
+                        "padding": "6px 12px"
+                      }
+                    ],
+                    "grid": [
+                      {
+                        "grid-template-areas": "'i n'"
+                      },
+                      {
+                        "grid-template-columns": "30px 1fr"
+                      }
+                    ],
+                    "icon": [
+                      {
+                        "width": "19px"
+                      }
+                    ],
+                    "name": [
+                      {
+                        "justify-self": "start"
+                      },
+                      {
+                        "font-size": "13px"
+                      }
+                    ]
+                  },
+                  "tap_action": {
+                    "action": "navigate",
+                    "navigation_path": "/dashboard-energie2/verbrauch"
+                  }
+                },
+                {
+                  "type": "heading",
+                  "heading": "Verbrauch nach Zeitraum",
+                  "icon": "mdi:calendar-range-outline"
+                },
+                {
+                  "type": "energy-date-selection",
+                  "collection_key": "energy_zeitraum"
+                },
+                {
+                  "type": "energy-usage-graph",
+                  "title": "Gesamtverbrauch erfasste Geräte",
+                  "show_legend": false,
+                  "collection_key": "energy_zeitraum"
+                },
+                {
+                  "type": "grid",
+                  "columns": 2,
+                  "square": false,
+                  "cards": [
+                    {
+                      "type": "statistic",
+                      "entity": "sensor.kaffeemaschine_energie_seit_umstellung",
+                      "name": "Kaffeemaschine",
+                      "icon": "mdi:coffee-maker-outline",
+                      "stat_type": "change",
+                      "period": "energy_date_selection",
+                      "collection_key": "energy_zeitraum"
+                    },
+                    {
+                      "type": "statistic",
+                      "entity": "sensor.spuelmaschine_energie_jaehrlich",
+                      "name": "Spülmaschine",
+                      "icon": "mdi:dishwasher",
+                      "stat_type": "change",
+                      "period": "energy_date_selection",
+                      "collection_key": "energy_zeitraum"
+                    },
+                    {
+                      "type": "statistic",
+                      "entity": "sensor.schlafzimmer_tv_energie_jaehrlich",
+                      "name": "Schlafzimmer TV",
+                      "icon": "mdi:television",
+                      "stat_type": "change",
+                      "period": "energy_date_selection",
+                      "collection_key": "energy_zeitraum"
+                    },
+                    {
+                      "type": "statistic",
+                      "entity": "sensor.gastezimmer_tv_energie_jaehrlich",
+                      "name": "Plug TV Gästezimmer",
+                      "icon": "mdi:power-plug-outline",
+                      "stat_type": "change",
+                      "period": "energy_date_selection",
+                      "collection_key": "energy_zeitraum"
+                    },
+                    {
+                      "type": "statistic",
+                      "entity": "sensor.qnap_energie_jaehrlich",
+                      "name": "QNAP",
+                      "icon": "mdi:nas",
+                      "stat_type": "change",
+                      "period": "energy_date_selection",
+                      "collection_key": "energy_zeitraum"
+                    },
+                    {
+                      "type": "statistic",
+                      "entity": "sensor.lichtverbrauch_energie_jaehrlich",
+                      "name": "Lichtverbrauch",
+                      "icon": "mdi:lightbulb-group-outline",
+                      "stat_type": "change",
+                      "period": "energy_date_selection",
+                      "collection_key": "energy_zeitraum"
+                    },
+                    {
+                      "type": "statistic",
+                      "entity": "sensor.shellyoutdoorsg3_48f6eeb5d230_energie",
+                      "name": "Outdoor Plug",
+                      "icon": "mdi:power-plug-outline",
+                      "stat_type": "change",
+                      "period": "energy_date_selection",
+                      "collection_key": "energy_zeitraum"
+                    },
+                    {
+                      "type": "statistic",
+                      "entity": "sensor.wohnzimmerfenster_rollo_energie",
+                      "name": "Rollo Wohnzimmer",
+                      "icon": "mdi:window-shutter",
+                      "stat_type": "change",
+                      "period": "energy_date_selection",
+                      "collection_key": "energy_zeitraum"
+                    },
+                    {
+                      "type": "statistic",
+                      "entity": "sensor.terrassentur_rollo_rollo_terrassentur_energie",
+                      "name": "Rollo Terrasse",
+                      "icon": "mdi:window-shutter",
+                      "stat_type": "change",
+                      "period": "energy_date_selection",
+                      "collection_key": "energy_zeitraum"
+                    },
+                    {
+                      "type": "statistic",
+                      "entity": "sensor.rollo_schlafzimmer_energie",
+                      "name": "Rollo Schlafzimmer",
+                      "icon": "mdi:window-shutter",
+                      "stat_type": "change",
+                      "period": "energy_date_selection",
+                      "collection_key": "energy_zeitraum"
+                    },
+                    {
+                      "type": "statistic",
+                      "entity": "sensor.shelly2pmg3_8cbfea9a6bb0_rollo_gastezimmer_energie",
+                      "name": "Rollo Gästezimmer",
+                      "icon": "mdi:window-shutter",
+                      "stat_type": "change",
+                      "period": "energy_date_selection",
+                      "collection_key": "energy_zeitraum"
+                    },
+                    {
+                      "type": "statistic",
+                      "entity": "sensor.shelly2pmg3_8cbfea97b428_rollo_gaste_wc_energie",
+                      "name": "Rollo Gäste-WC",
+                      "icon": "mdi:window-shutter",
+                      "stat_type": "change",
+                      "period": "energy_date_selection",
+                      "collection_key": "energy_zeitraum"
+                    },
+                    {
+                      "type": "statistic",
+                      "entity": "sensor.shelly2pmg3_8cbfea9cc4f4_rollo_bad_energie",
+                      "name": "Rollo Bad",
+                      "icon": "mdi:window-shutter",
+                      "stat_type": "change",
+                      "period": "energy_date_selection",
+                      "collection_key": "energy_zeitraum"
+                    },
+                    {
+                      "type": "statistic",
+                      "entity": "sensor.waschmaschine_energie_jaehrlich",
+                      "name": "Waschmaschine",
+                      "icon": "mdi:washing-machine",
+                      "stat_type": "change",
+                      "period": "energy_date_selection",
+                      "collection_key": "energy_zeitraum"
+                    },
+                    {
+                      "type": "statistic",
+                      "entity": "sensor.waschetrockner_energie_jaehrlich",
+                      "name": "Wäschetrockner",
+                      "icon": "mdi:tumble-dryer",
+                      "stat_type": "change",
+                      "period": "energy_date_selection",
+                      "collection_key": "energy_zeitraum"
+                    },
+                    {
+                      "type": "statistic",
+                      "entity": "sensor.kuhlschrank_energie_jaehrlich",
+                      "name": "Kühlschrank",
+                      "icon": "mdi:fridge-outline",
+                      "stat_type": "change",
+                      "period": "energy_date_selection",
+                      "collection_key": "energy_zeitraum"
+                    },
+                    {
+                      "type": "statistic",
+                      "entity": "sensor.tv_yamaha_energie_jaehrlich",
+                      "name": "TV und Yamaha",
+                      "icon": "mdi:television",
+                      "stat_type": "change",
+                      "period": "energy_date_selection",
+                      "collection_key": "energy_zeitraum"
+                    },
+                    {
+                      "type": "statistic",
+                      "entity": "sensor.playstation_energie_jaehrlich",
+                      "name": "Playstation",
+                      "icon": "mdi:sony-playstation",
+                      "stat_type": "change",
+                      "period": "energy_date_selection",
+                      "collection_key": "energy_zeitraum"
+                    },
+                    {
+                      "type": "statistic",
+                      "entity": "sensor.apple_tv_energie_jaehrlich",
+                      "name": "Apple TV Backlight",
+                      "icon": "mdi:television-ambient-light",
+                      "stat_type": "change",
+                      "period": "energy_date_selection",
+                      "collection_key": "energy_zeitraum"
+                    },
+                    {
+                      "type": "statistic",
+                      "entity": "sensor.ei_energie_jaehrlich",
+                      "name": "Ei",
+                      "icon": "mdi:egg-outline",
+                      "stat_type": "change",
+                      "period": "energy_date_selection",
+                      "collection_key": "energy_zeitraum"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Geräte-Leistung",
+          "path": "leistung",
+          "subview": true,
+          "type": "sections",
+          "max_columns": 2,
+          "sections": [
+            {
+              "type": "grid",
+              "cards": [
+                {
+                  "type": "button",
+                  "name": "Zurück zur Energieübersicht",
+                  "icon": "mdi:chart-line",
+                  "icon_height": "24px",
+                  "tap_action": {
+                    "action": "navigate",
+                    "navigation_path": "/dashboard-energie2/verbrauch"
+                  },
+                  "grid_options": {
+                    "columns": 12,
+                    "rows": 1
+                  }
+                },
+                {
+                  "type": "markdown",
+                  "content": "## Leistung einzelner Geräte\nLetzte **24 Stunden**, nicht der Verbrauch in kWh. Farbige Häkchen blenden Kurven ein oder aus. Ein Klick auf den Gerätenamen öffnet den Einzelverlauf. Licht ist zusammengefasst; Messlücken sind keine Nullwerte."
+                },
+                {
+                  "type": "history-graph",
+                  "title": "Küche & Haushalt",
+                  "hours_to_show": 24,
+                  "min_y_axis": 0,
+                  "entities": [
+                    {
+                      "name": "Kaffeemaschine",
+                      "entity": "sensor.shellyplugmg3_0892724df770_leistung"
+                    },
+                    {
+                      "name": "Spülmaschine",
+                      "entity": "sensor.shellyplugmg3_70af09e33520_leistung"
+                    },
+                    {
+                      "name": "Waschmaschine",
+                      "entity": "sensor.stecker_waschmaschine_leistung"
+                    },
+                    {
+                      "name": "Wäschetrockner",
+                      "entity": "sensor.stecker_waschetrockner_leistung"
+                    },
+                    {
+                      "name": "Kühlschrank",
+                      "entity": "sensor.kuhlschrank_leistung"
+                    },
+                    {
+                      "name": "Outdoor Plug",
+                      "entity": "sensor.shellyoutdoorsg3_48f6eeb5d230_leistung"
+                    }
+                  ],
+                  "grid_options": {
+                    "columns": 12,
+                    "rows": "auto"
+                  }
+                }
+              ]
+            },
+            {
+              "type": "grid",
+              "cards": [
+                {
+                  "type": "history-graph",
+                  "title": "Unterhaltung, QNAP & Licht",
+                  "hours_to_show": 24,
+                  "min_y_axis": 0,
+                  "entities": [
+                    {
+                      "name": "Schlafzimmer TV",
+                      "entity": "sensor.schlafzimmer_schlafzimmer_tv_leistung"
+                    },
+                    {
+                      "name": "Plug TV Gästezimmer",
+                      "entity": "sensor.gastezimmer_plug_tx_gastezimmer_leistung"
+                    },
+                    {
+                      "name": "QNAP",
+                      "entity": "sensor.shellyplugmg3_089272576804_leistung"
+                    },
+                    {
+                      "name": "Licht",
+                      "entity": "sensor.lichtverbrauch_power"
+                    },
+                    {
+                      "name": "TV und Yamaha",
+                      "entity": "sensor.shellypstripg4_d885ace4e950_output_0_leistung"
+                    },
+                    {
+                      "name": "Playstation",
+                      "entity": "sensor.shellypstripg4_d885ace4e950_output_1_leistung"
+                    },
+                    {
+                      "name": "Apple TV Backlight",
+                      "entity": "sensor.shellypstripg4_d885ace4e950_output_2_leistung"
+                    },
+                    {
+                      "name": "Ei",
+                      "entity": "sensor.shellypstripg4_d885ace4e950_output_3_leistung"
+                    }
+                  ],
+                  "grid_options": {
+                    "columns": 12,
+                    "rows": "auto"
+                  }
+                },
+                {
+                  "type": "history-graph",
+                  "title": "Rollos",
+                  "hours_to_show": 24,
+                  "min_y_axis": 0,
+                  "entities": [
+                    {
+                      "name": "Rollo Wohnzimmer",
+                      "entity": "sensor.wohnzimmerfenster_rollo_leistung"
+                    },
+                    {
+                      "name": "Rollo Terrasse",
+                      "entity": "sensor.terrassentur_rollo_rollo_terrassentur_leistung"
+                    },
+                    {
+                      "name": "Rollo Schlafzimmer",
+                      "entity": "sensor.rollo_schlafzimmer_leistung"
+                    },
+                    {
+                      "name": "Rollo Gästezimmer",
+                      "entity": "sensor.shelly2pmg3_8cbfea9a6bb0_rollo_gastezimmer_leistung"
+                    },
+                    {
+                      "name": "Rollo Gäste-WC",
+                      "entity": "sensor.shelly2pmg3_8cbfea97b428_rollo_gaste_wc_leistung"
+                    },
+                    {
+                      "name": "Rollo Bad",
+                      "entity": "sensor.shelly2pmg3_8cbfea9cc4f4_rollo_bad_leistung"
+                    }
+                  ],
+                  "grid_options": {
+                    "columns": 12,
+                    "rows": "auto"
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

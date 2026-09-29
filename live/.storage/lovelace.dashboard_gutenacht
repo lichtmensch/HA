@@ -1,0 +1,178 @@
+{
+  "version": 1,
+  "minor_version": 1,
+  "key": "lovelace.dashboard_gutenacht",
+  "data": {
+    "config": {
+      "title": "Gute Nacht",
+      "views": [
+        {
+          "title": "Gute Nacht",
+          "path": "gutenacht",
+          "type": "sections",
+          "max_columns": 2,
+          "sections": [
+            {
+              "title": "🌙 Gute Nacht",
+              "type": "grid",
+              "cards": [
+                {
+                  "type": "button",
+                  "name": "🌙 Alle Lichter ausschalten",
+                  "icon": "mdi:power-off",
+                  "tap_action": {
+                    "action": "call-service",
+                    "service": "light.turn_off",
+                    "service_data": {},
+                    "target": {
+                      "entity_id": [
+                        "light.wohnzimmer",
+                        "light.kuche",
+                        "light.esszimmer",
+                        "light.flur",
+                        "light.schlafzimmer",
+                        "light.gastezimmer_2",
+                        "light.gaste_wc",
+                        "light.abstellkammer_2"
+                      ]
+                    }
+                  }
+                }
+              ]
+            },
+            {
+              "title": "💡 Lichter Status",
+              "type": "grid",
+              "cards": [
+                {
+                  "type": "tile",
+                  "entity": "light.wohnzimmer",
+                  "name": "🛋️ Wohnzimmer"
+                },
+                {
+                  "type": "tile",
+                  "entity": "light.kuche",
+                  "name": "🍳 Küche"
+                },
+                {
+                  "type": "tile",
+                  "entity": "light.esszimmer",
+                  "name": "🍽️ Esszimmer"
+                },
+                {
+                  "type": "tile",
+                  "entity": "light.flur",
+                  "name": "🚪 Flur"
+                },
+                {
+                  "type": "tile",
+                  "entity": "light.schlafzimmer",
+                  "name": "🛏️ Schlafzimmer"
+                },
+                {
+                  "type": "tile",
+                  "entity": "light.gastezimmer_2",
+                  "name": "🛏️ Gästezimmer"
+                },
+                {
+                  "type": "tile",
+                  "entity": "light.gaste_wc",
+                  "name": "🚽 Gäste WC"
+                },
+                {
+                  "type": "tile",
+                  "entity": "light.abstellkammer_2",
+                  "name": "📦 Abstellkammer"
+                }
+              ]
+            },
+            {
+              "title": "🪟 Rollos geschlossen?",
+              "type": "grid",
+              "cards": [
+                {
+                  "type": "tile",
+                  "entity": "cover.wohnzimmerfenster_rollo",
+                  "name": "Wohnzimmer",
+                  "features": [
+                    {
+                      "type": "cover-open-close"
+                    }
+                  ]
+                },
+                {
+                  "type": "tile",
+                  "entity": "cover.rollo_schlafzimmer",
+                  "name": "Schlafzimmer",
+                  "features": [
+                    {
+                      "type": "cover-open-close"
+                    }
+                  ]
+                },
+                {
+                  "type": "tile",
+                  "entity": "cover.shelly2pmg3_8cbfea9a6bb0_rollo_gastezimmer",
+                  "name": "Gästezimmer",
+                  "features": [
+                    {
+                      "type": "cover-open-close"
+                    }
+                  ]
+                },
+                {
+                  "type": "tile",
+                  "entity": "cover.shelly2pmg3_8cbfea9cc4f4_rollo_bad",
+                  "name": "Bad",
+                  "features": [
+                    {
+                      "type": "cover-open-close"
+                    }
+                  ]
+                },
+                {
+                  "type": "tile",
+                  "entity": "cover.shelly2pmg3_8cbfea97b428_rollo_gaste_wc",
+                  "name": "Gäste WC",
+                  "features": [
+                    {
+                      "type": "cover-open-close"
+                    }
+                  ]
+                },
+                {
+                  "type": "tile",
+                  "entity": "cover.terrassentur_rollo_rollo_terrassentur",
+                  "name": "Terrasse",
+                  "features": [
+                    {
+                      "type": "cover-open-close"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "title": "🚪 Türen & Sicherheit",
+              "type": "grid",
+              "cards": [
+                {
+                  "type": "tile",
+                  "entity": "binary_sensor.terrassen_tur",
+                  "name": "Terrassentür",
+                  "icon": "mdi:door"
+                },
+                {
+                  "type": "tile",
+                  "entity": "input_boolean.terrassentur_rollo_manuell_blockiert",
+                  "name": "Rollo Blockade",
+                  "icon": "mdi:lock"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

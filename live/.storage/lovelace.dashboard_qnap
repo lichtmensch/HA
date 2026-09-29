@@ -1,0 +1,98 @@
+{
+  "version": 1,
+  "minor_version": 1,
+  "key": "lovelace.dashboard_qnap",
+  "data": {
+    "config": {
+      "title": "QNAP",
+      "views": [
+        {
+          "title": "QNAP",
+          "path": "qnap",
+          "icon": "mdi:nas",
+          "type": "sections",
+          "max_columns": 2,
+          "sections": [
+            {
+              "type": "grid",
+              "cards": [
+                {
+                  "type": "heading",
+                  "heading": "System",
+                  "icon": "mdi:nas"
+                },
+                {
+                  "type": "grid",
+                  "columns": 2,
+                  "square": false,
+                  "cards": [
+                    {"type": "tile", "entity": "sensor.timosqnap_status", "name": "Status", "icon": "mdi:server-network-outline"},
+                    {"type": "tile", "entity": "sensor.timosqnap_systemtemperatur", "name": "Systemtemperatur", "icon": "mdi:thermometer-lines"},
+                    {"type": "tile", "entity": "sensor.timosqnap_cpu_auslastung", "name": "CPU-Auslastung", "icon": "mdi:cpu-64-bit"},
+                    {"type": "tile", "entity": "sensor.timosqnap_arbeitsspeicherauslastung", "name": "Arbeitsspeicher", "icon": "mdi:memory"},
+                    {"type": "tile", "entity": "sensor.timosqnap_volume_nutzung_datavol1", "name": "Speicherbelegung", "icon": "mdi:database-outline"},
+                    {"type": "tile", "entity": "sensor.shellyplugmg3_089272576804_leistung", "name": "Aktuelle Leistung", "icon": "mdi:flash-outline"},
+                    {"type": "tile", "entity": "sensor.shellyplugmg3_089272576804_energie", "name": "Verbrauch gesamt", "icon": "mdi:chart-timeline-variant"},
+                    {
+                      "type": "button",
+                      "name": "QTS öffnen",
+                      "icon": "mdi:open-in-new",
+                      "tap_action": {"action": "url", "url_path": "https://192.168.188.210"}
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "grid",
+              "cards": [
+                {"type": "heading", "heading": "Netzwerk", "icon": "mdi:lan"},
+                {
+                  "type": "grid",
+                  "columns": 2,
+                  "square": false,
+                  "cards": [
+                    {"type": "tile", "entity": "sensor.timosqnap_eth0_link", "name": "Netzwerk 1", "icon": "mdi:ethernet"},
+                    {"type": "tile", "entity": "sensor.timosqnap_eth1_link", "name": "Netzwerk 2", "icon": "mdi:ethernet"},
+                    {"type": "tile", "entity": "sensor.timosqnap_eth2_link", "name": "Netzwerk 3", "icon": "mdi:ethernet"},
+                    {"type": "tile", "entity": "sensor.timosqnap_eth3_link", "name": "Netzwerk 4", "icon": "mdi:ethernet"}
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "grid",
+              "column_span": 2,
+              "cards": [
+                {"type": "heading", "heading": "Verlauf", "icon": "mdi:chart-line"},
+                {
+                  "type": "history-graph",
+                  "hours_to_show": 24,
+                  "entities": [
+                    {"entity": "sensor.timosqnap_cpu_auslastung", "name": "CPU"},
+                    {"entity": "sensor.timosqnap_arbeitsspeicherauslastung", "name": "RAM"},
+                    {"entity": "sensor.timosqnap_volume_nutzung_datavol1", "name": "Speicher"}
+                  ]
+                },
+                {
+                  "type": "history-graph",
+                  "hours_to_show": 24,
+                  "entities": [
+                    {"entity": "sensor.timosqnap_systemtemperatur", "name": "Systemtemperatur"}
+                  ]
+                },
+                {
+                  "type": "history-graph",
+                  "hours_to_show": 24,
+                  "entities": [
+                    {"entity": "sensor.shellyplugmg3_089272576804_leistung", "name": "Leistungsaufnahme"}
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

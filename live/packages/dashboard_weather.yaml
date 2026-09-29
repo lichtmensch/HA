@@ -1,0 +1,231 @@
+template:
+  - sensor:
+      - name: Außentemperatur Dashboard
+        unique_id: aussentemperatur_dashboard
+        icon: mdi:thermometer-lines
+        device_class: temperature
+        unit_of_measurement: "°C"
+        state: >
+          {% set netatmo = states('sensor.weather_station_aussen_temperatur') %}
+          {% if is_number(netatmo) %}
+            {{ netatmo | float | round(1) }}
+          {% else %}
+            {{ state_attr('weather.forecast_home', 'temperature') | float(0) | round(1) }}
+          {% endif %}
+
+      - name: Außenluftfeuchtigkeit Dashboard
+        unique_id: aussenluftfeuchtigkeit_dashboard
+        icon: mdi:water-percent
+        device_class: humidity
+        unit_of_measurement: "%"
+        state: >
+          {% set netatmo = states('sensor.weather_station_aussen_luftfeuchtigkeit') %}
+          {% if is_number(netatmo) %}
+            {{ netatmo | float | round(0) }}
+          {% else %}
+            {{ state_attr('weather.forecast_home', 'humidity') | float(0) | round(0) }}
+          {% endif %}
+
+      - name: Wind mit Himmelsrichtung
+        unique_id: wind_mit_himmelsrichtung
+        icon: mdi:weather-windy
+        state: >
+          {% set netatmo_speed = states('sensor.weather_station_windmesser_windgeschwindigkeit') %}
+          {% set speed = netatmo_speed if is_number(netatmo_speed) else state_attr('weather.forecast_home', 'wind_speed') | float(0) | round(1) %}
+          {% set unit = state_attr('sensor.weather_station_windmesser_windgeschwindigkeit', 'unit_of_measurement') or state_attr('weather.forecast_home', 'wind_speed_unit') or 'km/h' %}
+          {% set raw_direction = states('sensor.weather_station_windmesser_windrichtung') | lower %}
+          {% set compass = {
+            'n': 'N', 'nne': 'NNO', 'ne': 'NO', 'ene': 'ONO',
+            'e': 'O', 'ese': 'OSO', 'se': 'SO', 'sse': 'SSO',
+            's': 'S', 'ssw': 'SSW', 'sw': 'SW', 'wsw': 'WSW',
+            'w': 'W', 'wnw': 'WNW', 'nw': 'NW', 'nnw': 'NNW'
+          } %}
+          {% if raw_direction in ['unknown', 'unavailable', 'none', ''] %}
+            {% set angle = state_attr('weather.forecast_home', 'wind_bearing') | float(0) %}
+            {% set points = ['N','NNO','NO','ONO','O','OSO','SO','SSO','S','SSW','SW','WSW','W','WNW','NW','NNW'] %}
+            {% set direction = points[((angle / 22.5) | round(0) | int) % 16] %}
+          {% else %}
+            {% set direction = compass.get(raw_direction, raw_direction | upper) %}
+          {% endif %}
+          {{ speed }}{% if unit %} {{ unit }}{% endif %} · {{ direction }}
+
+  - triggers:
+      - trigger: homeassistant
+        event: start
+      - trigger: time_pattern
+        minutes: "/15"
+    actions:
+      - action: weather.get_forecasts
+        target:
+          entity_id: weather.forecast_home
+        data:
+          type: hourly
+        response_variable: dashboard_hourly_forecast
+      - action: weather.get_forecasts
+        target:
+          entity_id: weather.forecast_home
+        data:
+          type: daily
+        response_variable: dashboard_daily_forecast
+    sensor:
+      - name: Außentemperatur mit 24h Prognose
+        unique_id: aussentemperatur_mit_24h_prognose
+        icon: mdi:thermometer-lines
+        state: >
+          {% set netatmo = states('sensor.weather_station_aussen_temperatur') %}
+          {% set current = netatmo if is_number(netatmo) else state_attr('weather.forecast_home', 'temperature') | float(0) | round(1) %}
+          {% set forecasts = dashboard_hourly_forecast.get('weather.forecast_home', {}).get('forecast', []) %}
+          {% set temperatures = forecasts[:24] | map(attribute='temperature') | select('number') | list %}
+          {% if temperatures | count > 0 %}
+            {{ current }} °C · {{ temperatures | min | round(1) }}–{{ temperatures | max | round(1) }} °C
+          {% else %}
+            {{ current }} °C
+          {% endif %}
+
+      - name: Regen mit 6h Prognose
+        unique_id: regen_mit_6h_prognose
+        icon: mdi:weather-rainy
+        state: >
+          {% set netatmo = states('sensor.weather_station_regenmesser_niederschlagsmenge') %}
+          {% set forecasts = dashboard_hourly_forecast.get('weather.forecast_home', {}).get('forecast', []) %}
+          {% set current = netatmo if is_number(netatmo) else (forecasts[0].get('precipitation', 0) if forecasts | count > 0 else 0) %}
+          {% set rain = namespace(total=0) %}
+          {% for item in forecasts[:6] %}
+            {% set rain.total = rain.total + (item.get('precipitation', 0) | float(0)) %}
+          {% endfor %}
+          {{ current }} mm · 6 h: {{ rain.total | round(1) }} mm
+
+      - name: Wetter Heute Tageszeiten
+        unique_id: wetter_heute_tageszeiten
+        icon: mdi:weather-partly-cloudy
+        state: "{{ now().date().isoformat() }}"
+        attributes:
+          periods: >
+            {% set forecasts = dashboard_hourly_forecast.get('weather.forecast_home', {}).get('forecast', []) %}
+            {% set result = namespace(items=[]) %}
+            {% set targets = [('Morgens', 7), ('Mittags', 12), ('Abends', 18), ('Nachts', 23)] %}
+            {% for label, target_hour in targets %}
+              {% set pick = namespace(item=none, delta=24) %}
+              {% for item in forecasts %}
+                {% set dt = as_local(as_datetime(item.get('datetime'))) %}
+                {% set delta = (dt.hour - target_hour) | abs %}
+                {% if dt.date() == now().date() and delta < pick.delta %}
+                  {% set pick.item = item %}
+                  {% set pick.delta = delta %}
+                {% endif %}
+              {% endfor %}
+              {% if pick.item is not none and pick.delta <= 2 %}
+                {% set display = namespace(temperature=pick.item.get('temperature')) %}
+                {% if label == 'Nachts' %}
+                  {% set night = namespace(temperatures=[]) %}
+                  {% set tomorrow = (now() + timedelta(days=1)).date() %}
+                  {% for item in forecasts %}
+                    {% set dt = as_local(as_datetime(item.get('datetime'))) %}
+                    {% if (dt.date() == now().date() and dt.hour >= 21) or (dt.date() == tomorrow and dt.hour <= 6) %}
+                      {% if item.get('temperature') is number %}
+                        {% set night.temperatures = night.temperatures + [item.get('temperature')] %}
+                      {% endif %}
+                    {% endif %}
+                  {% endfor %}
+                  {% if night.temperatures | count > 0 %}
+                    {% set display.temperature = night.temperatures | min %}
+                  {% endif %}
+                {% endif %}
+                {% set result.items = result.items + [dict(
+                  label=label,
+                  temperature=display.temperature,
+                  condition=pick.item.get('condition', 'unknown'),
+                  precipitation_probability=pick.item.get('precipitation_probability'),
+                  precipitation=pick.item.get('precipitation'),
+                  datetime=pick.item.get('datetime'))] %}
+              {% else %}
+                {% set old = this.attributes.get('periods', []) | selectattr('label', 'eq', label) | first | default({}) %}
+                {% set old_dt = as_local(as_datetime(old.get('datetime'))) if old.get('datetime') else none %}
+                {% if old_dt is not none and old_dt.date() == now().date() %}
+                  {% set result.items = result.items + [old] %}
+                {% else %}
+                  {% set result.items = result.items + [dict(label=label)] %}
+                {% endif %}
+              {% endif %}
+            {% endfor %}
+            {{ result.items }}
+
+      - name: Wetter Flur Tageszeiten
+        unique_id: wetter_flur_tageszeiten
+        icon: mdi:weather-partly-cloudy
+        state: >
+          {% set target_date = (now() + timedelta(days=1)).date() if now().hour >= 22 else now().date() %}
+          {{ target_date.isoformat() }}
+        attributes:
+          periods: >
+            {% set forecasts = dashboard_hourly_forecast.get('weather.forecast_home', {}).get('forecast', []) %}
+            {% set target_date = (now() + timedelta(days=1)).date() if now().hour >= 22 else now().date() %}
+            {% set following_date = target_date + timedelta(days=1) %}
+            {% set result = namespace(items=[]) %}
+            {% set targets = [('Morgens', 7), ('Mittags', 12), ('Abends', 18), ('Nachts', 23)] %}
+            {% for label, target_hour in targets %}
+              {% set pick = namespace(item=none, delta=24) %}
+              {% for item in forecasts %}
+                {% set dt = as_local(as_datetime(item.get('datetime'))) %}
+                {% set delta = (dt.hour - target_hour) | abs %}
+                {% if dt.date() == target_date and delta < pick.delta %}
+                  {% set pick.item = item %}
+                  {% set pick.delta = delta %}
+                {% endif %}
+              {% endfor %}
+              {% if pick.item is not none and pick.delta <= 2 %}
+                {% set display = namespace(temperature=pick.item.get('temperature')) %}
+                {% if label == 'Nachts' %}
+                  {% set night = namespace(temperatures=[]) %}
+                  {% for item in forecasts %}
+                    {% set dt = as_local(as_datetime(item.get('datetime'))) %}
+                    {% if (dt.date() == target_date and dt.hour >= 21) or (dt.date() == following_date and dt.hour <= 6) %}
+                      {% if item.get('temperature') is number %}
+                        {% set night.temperatures = night.temperatures + [item.get('temperature')] %}
+                      {% endif %}
+                    {% endif %}
+                  {% endfor %}
+                  {% if night.temperatures | count > 0 %}
+                    {% set display.temperature = night.temperatures | min %}
+                  {% endif %}
+                {% endif %}
+                {% set result.items = result.items + [dict(
+                  label=label,
+                  temperature=display.temperature,
+                  condition=pick.item.get('condition', 'unknown'),
+                  precipitation_probability=pick.item.get('precipitation_probability'),
+                  precipitation=pick.item.get('precipitation'),
+                  datetime=pick.item.get('datetime'))] %}
+              {% else %}
+                {% set old = this.attributes.get('periods', []) | selectattr('label', 'eq', label) | first | default({}) %}
+                {% set old_dt = as_local(as_datetime(old.get('datetime'))) if old.get('datetime') else none %}
+                {% if old_dt is not none and old_dt.date() == target_date %}
+                  {% set result.items = result.items + [old] %}
+                {% else %}
+                  {% set result.items = result.items + [dict(label=label)] %}
+                {% endif %}
+              {% endif %}
+            {% endfor %}
+            {{ result.items }}
+
+      - name: Wetter Nächste Tage
+        unique_id: wetter_naechste_tage
+        icon: mdi:calendar-week-outline
+        state: "{{ now().date().isoformat() }}"
+        attributes:
+          days: >
+            {% set forecasts = dashboard_daily_forecast.get('weather.forecast_home', {}).get('forecast', []) %}
+            {% set result = namespace(items=[]) %}
+            {% for item in forecasts %}
+              {% set dt = as_local(as_datetime(item.get('datetime'))) %}
+              {% if dt.date() > now().date() and result.items | count < 5 %}
+                {% set result.items = result.items + [dict(
+                  datetime=item.get('datetime'),
+                  condition=item.get('condition', 'unknown'),
+                  temperature=item.get('temperature'),
+                  templow=item.get('templow'),
+                  precipitation=item.get('precipitation'),
+                  precipitation_probability=item.get('precipitation_probability'))] %}
+              {% endif %}
+            {% endfor %}
+            {{ result.items }}

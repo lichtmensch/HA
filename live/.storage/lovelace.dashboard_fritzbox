@@ -1,0 +1,63 @@
+{
+  "version": 1,
+  "minor_version": 1,
+  "key": "lovelace.dashboard_fritzbox",
+  "data": {
+    "config": {
+      "views": [
+        {
+          "type": "sections",
+          "sections": [
+            {
+              "type": "grid",
+              "cards": [
+                {
+                  "type": "heading",
+                  "heading": "FritzboxTimo"
+                },
+                {
+                  "show_name": false,
+                  "show_icon": true,
+                  "show_state": true,
+                  "type": "glance",
+                  "entities": [
+                    {
+                      "entity": "sensor.fritzboxtimo_download_durchsatz",
+                      "name": "DL",
+                      "icon": "mdi:progress-download",
+                      "show_last_changed": false
+                    },
+                    {
+                      "entity": "sensor.fritzboxtimo_upload_durchsatz",
+                      "name": "UL",
+                      "icon": "mdi:progress-upload"
+                    },
+                    {
+                      "entity": "sensor.fritzboxtimo_gb_empfangen",
+                      "name": "DL Monat"
+                    },
+                    {
+                      "entity": "sensor.fritzboxtimo_gb_gesendet",
+                      "name": "UL Monat"
+                    },
+                    {
+                      "entity": "sensor.fritzboxtimo_externe_ip"
+                    },
+                    {
+                      "entity": "sensor.fritzboxtimo_externe_ip",
+                      "show_last_changed": true
+                    }
+                  ],
+                  "state_color": false,
+                  "title": "Internet Zugang FRITZ!Box",
+                  "columns": 2
+                }
+              ],
+              "column_span": 4
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,284 @@
+{
+  "version": 1,
+  "minor_version": 1,
+  "key": "lovelace.dashboard_verlauf",
+  "data": {
+    "config": {
+      "title": "Verlauf",
+      "views": [
+        {
+          "title": "Energie",
+          "path": "energie",
+          "type": "sections",
+          "max_columns": 1,
+          "sections": [
+            {
+              "title": "⚡ Energieverbrauch – Wochenverlauf",
+              "type": "grid",
+              "cards": [
+                {
+                  "type": "statistics-graph",
+                  "title": "☕ Kaffeemaschine",
+                  "entities": [
+                    {
+                      "entity": "sensor.shellyplugmg3_0892724df770_energie",
+                      "name": "Kaffeemaschine"
+                    }
+                  ],
+                  "stat_types": [
+                    "sum"
+                  ],
+                  "period": {
+                    "calendar": {
+                      "period": "week"
+                    }
+                  }
+                },
+                {
+                  "type": "statistics-graph",
+                  "title": "🫧 Waschmaschine",
+                  "entities": [
+                    {
+                      "entity": "sensor.stecker_waschmaschine_energie",
+                      "name": "Waschmaschine"
+                    }
+                  ],
+                  "stat_types": [
+                    "sum"
+                  ],
+                  "period": {
+                    "calendar": {
+                      "period": "week"
+                    }
+                  }
+                },
+                {
+                  "type": "statistics-graph",
+                  "title": "🌀 Wäschetrockner",
+                  "entities": [
+                    {
+                      "entity": "sensor.stecker_waschetrockner_energie",
+                      "name": "Wäschetrockner"
+                    }
+                  ],
+                  "stat_types": [
+                    "sum"
+                  ],
+                  "period": {
+                    "calendar": {
+                      "period": "week"
+                    }
+                  }
+                },
+                {
+                  "type": "statistics-graph",
+                  "title": "🧊 Kühlschrank",
+                  "entities": [
+                    {
+                      "entity": "sensor.kuhlschrank_energie",
+                      "name": "Kühlschrank"
+                    }
+                  ],
+                  "stat_types": [
+                    "sum"
+                  ],
+                  "period": {
+                    "calendar": {
+                      "period": "week"
+                    }
+                  }
+                }
+              ]
+            },
+            {
+              "title": "📺 Unterhaltungselektronik – Wochenverlauf",
+              "type": "grid",
+              "cards": [
+                {
+                  "type": "statistics-graph",
+                  "title": "📺 TV / Yamaha",
+                  "entities": [
+                    {
+                      "entity": "sensor.shellypstripg4_d885ace4e950_output_0_energie",
+                      "name": "TV/Yamaha"
+                    }
+                  ],
+                  "stat_types": [
+                    "sum"
+                  ],
+                  "period": {
+                    "calendar": {
+                      "period": "week"
+                    }
+                  }
+                },
+                {
+                  "type": "statistics-graph",
+                  "title": "🎮 PlayStation",
+                  "entities": [
+                    {
+                      "entity": "sensor.shellypstripg4_d885ace4e950_output_1_energie",
+                      "name": "PlayStation"
+                    }
+                  ],
+                  "stat_types": [
+                    "sum"
+                  ],
+                  "period": {
+                    "calendar": {
+                      "period": "week"
+                    }
+                  }
+                },
+                {
+                  "type": "statistics-graph",
+                  "title": "📱 Apple TV",
+                  "entities": [
+                    {
+                      "entity": "sensor.shellypstripg4_d885ace4e950_output_2_energie",
+                      "name": "Apple TV"
+                    }
+                  ],
+                  "stat_types": [
+                    "sum"
+                  ],
+                  "period": {
+                    "calendar": {
+                      "period": "week"
+                    }
+                  }
+                },
+                {
+                  "type": "statistics-graph",
+                  "title": "🔌 Steckdose 4",
+                  "entities": [
+                    {
+                      "entity": "sensor.shellypstripg4_d885ace4e950_output_3_energie",
+                      "name": "Steckdose 4"
+                    }
+                  ],
+                  "stat_types": [
+                    "sum"
+                  ],
+                  "period": {
+                    "calendar": {
+                      "period": "week"
+                    }
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Temperatur",
+          "path": "temperatur",
+          "type": "sections",
+          "max_columns": 1,
+          "sections": [
+            {
+              "title": "🌡️ Temperaturen – Wochenverlauf",
+              "type": "grid",
+              "cards": [
+                {
+                  "type": "statistics-graph",
+                  "title": "Innen vs. Außen",
+                  "entities": [
+                    {
+                      "entity": "sensor.weather_station_temperatur",
+                      "name": "Wohnzimmer"
+                    },
+                    {
+                      "entity": "sensor.weather_station_aussen_temperatur",
+                      "name": "Außen"
+                    }
+                  ],
+                  "stat_types": [
+                    "mean",
+                    "min",
+                    "max"
+                  ],
+                  "period": {
+                    "calendar": {
+                      "period": "day"
+                    }
+                  }
+                },
+                {
+                  "type": "statistics-graph",
+                  "title": "Raumtemperaturen",
+                  "entities": [
+                    {
+                      "entity": "sensor.weather_station_schlafzimmer_temperatur",
+                      "name": "Schlafzimmer"
+                    },
+                    {
+                      "entity": "sensor.weather_station_gastezimmer_temperatur",
+                      "name": "Gästezimmer"
+                    },
+                    {
+                      "entity": "sensor.weather_station_bad_temperatur",
+                      "name": "Bad"
+                    },
+                    {
+                      "entity": "sensor.abstellkammer_temperatur",
+                      "name": "Abstellkammer"
+                    }
+                  ],
+                  "stat_types": [
+                    "mean"
+                  ],
+                  "period": {
+                    "calendar": {
+                      "period": "day"
+                    }
+                  }
+                }
+              ]
+            },
+            {
+              "title": "💧 Luftfeuchtigkeit – Wochenverlauf",
+              "type": "grid",
+              "cards": [
+                {
+                  "type": "statistics-graph",
+                  "title": "Luftfeuchtigkeit alle Räume",
+                  "entities": [
+                    {
+                      "entity": "sensor.weather_station_luftfeuchtigkeit",
+                      "name": "Wohnzimmer"
+                    },
+                    {
+                      "entity": "sensor.weather_station_aussen_luftfeuchtigkeit",
+                      "name": "Außen"
+                    },
+                    {
+                      "entity": "sensor.weather_station_schlafzimmer_luftfeuchtigkeit",
+                      "name": "Schlafzimmer"
+                    },
+                    {
+                      "entity": "sensor.weather_station_gastezimmer_luftfeuchtigkeit",
+                      "name": "Gästezimmer"
+                    },
+                    {
+                      "entity": "sensor.weather_station_bad_luftfeuchtigkeit",
+                      "name": "Bad"
+                    }
+                  ],
+                  "stat_types": [
+                    "mean"
+                  ],
+                  "period": {
+                    "calendar": {
+                      "period": "day"
+                    }
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

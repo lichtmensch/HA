@@ -1,0 +1,308 @@
+{
+  "version": 1,
+  "minor_version": 1,
+  "key": "lovelace.dashboard_einkaufen",
+  "data": {
+    "config": {
+      "title": "Einkaufen",
+      "views": [
+        {
+          "title": "Einkaufen",
+          "path": "einkaufen",
+          "type": "sections",
+          "max_columns": 2,
+          "sections": [
+            {
+              "type": "grid",
+              "cards": [
+                {
+                  "type": "heading",
+                  "heading": "Auf unserer Liste",
+                  "icon": "mdi:cart-outline"
+                },
+                {
+                  "type": "markdown",
+                  "content": "**Timo Seli · Bring!**\n\nArtikel abhaken, sobald sie im Einkaufswagen sind. Änderungen gelten auch in der Bring!-App."
+                },
+                {
+                  "type": "todo-list",
+                  "entity": "todo.timo_seli",
+                  "title": "Noch einkaufen",
+                  "hide_create": true,
+                  "hide_completed": true
+                },
+                {
+                  "type": "horizontal-stack",
+                  "cards": [
+                    {
+                      "type": "button",
+                      "name": "Zuletzt gekauft",
+                      "icon": "mdi:history",
+                      "icon_height": "26px",
+                      "tap_action": {
+                        "action": "navigate",
+                        "navigation_path": "/dashboard-einkaufen/alle"
+                      }
+                    },
+                    {
+                      "type": "button",
+                      "name": "Listen aktualisieren",
+                      "icon": "mdi:refresh",
+                      "icon_height": "26px",
+                      "tap_action": {
+                        "action": "perform-action",
+                        "perform_action": "homeassistant.update_entity",
+                        "target": {
+                          "entity_id": [
+                            "todo.timo_seli",
+                            "todo.cookidoo_einkaufsliste",
+                            "todo.cookidoo_zusatzliche_kaufe",
+                            "calendar.cookidoo_speiseplan"
+                          ]
+                        }
+                      }
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "grid",
+              "cards": [
+                {
+                  "type": "heading",
+                  "heading": "Einkauf ergänzen",
+                  "icon": "mdi:cart-plus"
+                },
+                {
+                  "type": "custom:bring-suggest-card",
+                  "entity": "todo.timo_seli",
+                  "statistics_entity": "sensor.bring_timo_seli_kaufstatistik"
+                },
+                {
+                  "type": "horizontal-stack",
+                  "cards": [
+                    {
+                      "type": "button",
+                      "name": "Rezepte & Wochenplan",
+                      "icon": "mdi:calendar-week",
+                      "icon_height": "26px",
+                      "tap_action": {
+                        "action": "navigate",
+                        "navigation_path": "/dashboard-einkaufen/planen"
+                      }
+                    },
+                    {
+                      "type": "button",
+                      "name": "Haussteuerung",
+                      "icon": "mdi:home-outline",
+                      "icon_height": "26px",
+                      "tap_action": {
+                        "action": "navigate",
+                        "navigation_path": "/dashboard-haus"
+                      }
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Rezepte & Wochenplan",
+          "path": "planen",
+          "type": "sections",
+          "max_columns": 2,
+          "sections": [
+            {
+              "type": "grid",
+              "cards": [
+                {
+                  "type": "heading",
+                  "heading": "1 · Gerichte planen",
+                  "icon": "mdi:chef-hat"
+                },
+                {
+                  "type": "markdown",
+                  "content": "Rezepte stöbern und planen geht **auf Cookidoo**. Öffne dort ein Rezept und wähle **„Zu Meine Woche hinzufügen“** und **„Auf die Einkaufsliste“**. Anschließend hier Vorräte prüfen und nach Bring! übernehmen."
+                },
+                {
+                  "type": "button",
+                  "name": "Rezepte auf Cookidoo suchen ↗",
+                  "icon": "mdi:open-in-new",
+                  "icon_height": "28px",
+                  "tap_action": {
+                    "action": "url",
+                    "url_path": "https://cookidoo.de/search/de-DE"
+                  }
+                },
+                {
+                  "type": "calendar",
+                  "title": "Mein Speiseplan · nächste 7 Tage",
+                  "initial_view": "listWeek",
+                  "entities": [
+                    "calendar.cookidoo_speiseplan"
+                  ]
+                },
+                {
+                  "type": "markdown",
+                  "content": "Die Planung wird hier angezeigt, aber auf Cookidoo bearbeitet. Der Link öffnet Cookidoo außerhalb dieses Dashboards; eventuell ist dort eine Anmeldung nötig."
+                }
+              ]
+            },
+            {
+              "type": "grid",
+              "cards": [
+                {
+                  "type": "heading",
+                  "heading": "2 · Vorräte prüfen, dann übernehmen",
+                  "icon": "mdi:clipboard-check-outline"
+                },
+                {
+                  "type": "markdown",
+                  "content": "Hake Zutaten ab, die du schon zu Hause hast. Der Import übernimmt nur neue offene Einträge. **Abhaken in Cookidoo und Bring! ist getrennt.**"
+                },
+                {
+                  "type": "horizontal-stack",
+                  "cards": [
+                    {
+                      "type": "button",
+                      "name": "Nach Bring! übernehmen",
+                      "icon": "mdi:cart-arrow-down",
+                      "icon_height": "28px",
+                      "tap_action": {
+                        "action": "perform-action",
+                        "perform_action": "script.cookidoo_nach_bring",
+                        "confirmation": {
+                          "text": "Neue offene Cookidoo-Zutaten und Zusatzkäufe nach „Timo Seli“ übernehmen? Bestehende Bring!-Einträge bleiben erhalten; die 13 ausgeschlossenen Altzutaten werden nicht importiert."
+                        }
+                      }
+                    },
+                    {
+                      "type": "button",
+                      "name": "Listen aktualisieren",
+                      "icon": "mdi:refresh",
+                      "icon_height": "26px",
+                      "tap_action": {
+                        "action": "perform-action",
+                        "perform_action": "homeassistant.update_entity",
+                        "target": {
+                          "entity_id": [
+                            "todo.timo_seli",
+                            "todo.cookidoo_einkaufsliste",
+                            "todo.cookidoo_zusatzliche_kaufe",
+                            "calendar.cookidoo_speiseplan"
+                          ]
+                        }
+                      }
+                    }
+                  ]
+                },
+                {
+                  "type": "todo-list",
+                  "entity": "todo.cookidoo_einkaufsliste",
+                  "title": "Zutaten aus Rezepten",
+                  "hide_create": true,
+                  "hide_completed": true,
+                  "item_tap_action": "toggle"
+                },
+                {
+                  "type": "todo-list",
+                  "entity": "todo.cookidoo_zusatzliche_kaufe",
+                  "title": "Zusätzliche Cookidoo-Einkäufe",
+                  "hide_completed": true
+                },
+                {
+                  "type": "markdown",
+                  "content": "<details><summary>Hinweise zum Import</summary>\n\nBereits übertragene Einträge werden gemerkt. Abweichende Mengen werden nicht überschrieben; ein Hinweis erscheint unter Home-Assistant-Benachrichtigungen. Die 13 ursprünglich ausgeschlossenen Altzutaten bleiben ausgeschlossen. Neue Rezeptzutaten sind davon nicht pauschal betroffen.\n\n</details>"
+                },
+                {
+                  "type": "button",
+                  "name": "Weiter zur Bring!-Liste",
+                  "icon": "mdi:cart-outline",
+                  "icon_height": "26px",
+                  "tap_action": {
+                    "action": "navigate",
+                    "navigation_path": "/dashboard-einkaufen/einkaufen"
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Verlauf & Statistik",
+          "path": "alle",
+          "type": "sections",
+          "max_columns": 2,
+          "sections": [
+            {
+              "type": "grid",
+              "cards": [
+                {
+                  "type": "heading",
+                  "heading": "Zuletzt gekauft",
+                  "icon": "mdi:history"
+                },
+                {
+                  "type": "markdown",
+                  "content": "Bring! nennt diese Artikel **„Erledigt“**. Entferne den Haken, um einen Artikel wieder auf die Einkaufsliste zu setzen."
+                },
+                {
+                  "type": "todo-list",
+                  "entity": "todo.timo_seli",
+                  "title": "Bring! · bisherige Einkäufe",
+                  "hide_create": true
+                },
+                {
+                  "type": "button",
+                  "name": "Zur aktuellen Einkaufsliste",
+                  "icon": "mdi:cart-outline",
+                  "icon_height": "26px",
+                  "tap_action": {
+                    "action": "navigate",
+                    "navigation_path": "/dashboard-einkaufen/einkaufen"
+                  }
+                }
+              ]
+            },
+            {
+              "type": "grid",
+              "cards": [
+                {
+                  "type": "heading",
+                  "heading": "Häufig verwendet",
+                  "icon": "mdi:chart-bar"
+                },
+                {
+                  "type": "markdown",
+                  "title": "Häufig gekauft · Top 10",
+                  "content": "{% set s = 'sensor.bring_timo_seli_kaufstatistik' %}\n{% set rows = state_attr(s, 'artikel') or [] %}\n{% set seit = state_attr(s, 'seit') %}\n{% if seit %}Erkannte Einkäufe seit {{ as_timestamp(seit) | timestamp_custom('%d.%m.%Y, %H:%M') }}.{% endif %}\n{% for p in rows[:10] %}\n{{ loop.index }}. **{{ p.name }}** — {{ p.anzahl }}×\n{% else %}\nNoch keine neuen Einkäufe erkannt.\n{% endfor %}\n\n<details><summary>Wie wird gezählt?</summary>\n\nNur beobachtete Wechsel von offen zu gekauft. Derselbe Artikel zählt höchstens einmal je zehn Minuten. Alte Einkäufe und Datenlücken werden nicht nachgerechnet.\n</details>"
+                },
+                {
+                  "type": "heading",
+                  "heading": "Cookidoo · auch erledigte Einträge",
+                  "icon": "mdi:checkbox-marked-outline"
+                },
+                {
+                  "type": "todo-list",
+                  "entity": "todo.cookidoo_einkaufsliste",
+                  "title": "Rezeptzutaten",
+                  "hide_create": true,
+                  "item_tap_action": "toggle"
+                },
+                {
+                  "type": "todo-list",
+                  "entity": "todo.cookidoo_zusatzliche_kaufe",
+                  "title": "Zusätzliche Käufe",
+                  "hide_create": true
+                }
+              ]
+            }
+          ],
+          "cards": []
+        }
+      ]
+    }
+  }
+}

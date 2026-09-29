@@ -1,0 +1,85 @@
+template:
+  - sensor:
+      - name: Shellys aktuell
+        unique_id: gesamtleistung_aktuell
+        unit_of_measurement: W
+        device_class: power
+        state_class: measurement
+        icon: mdi:flash-outline
+        state: >
+          {% set sensors = [
+            'sensor.rollo_schlafzimmer_leistung',
+            'sensor.shelly2pmg3_8cbfea97b428_rollo_gaste_wc_leistung',
+            'sensor.shelly2pmg3_8cbfea9a6bb0_rollo_gastezimmer_leistung',
+            'sensor.shelly2pmg3_8cbfea9cc4f4_rollo_bad_leistung',
+            'sensor.shellyoutdoorsg3_48f6eeb5d230_leistung',
+            'sensor.shellyplugmg3_0892724df770_leistung',
+            'sensor.shellyplugmg3_70af09e33520_leistung',
+            'sensor.schlafzimmer_schlafzimmer_tv_leistung',
+            'sensor.gastezimmer_plug_tx_gastezimmer_leistung',
+            'sensor.shellyplugmg3_089272576804_leistung',
+            'sensor.lichtverbrauch_power',
+            'sensor.shellypstripg4_d885ace4e950_output_0_leistung',
+            'sensor.shellypstripg4_d885ace4e950_output_1_leistung',
+            'sensor.shellypstripg4_d885ace4e950_output_2_leistung',
+            'sensor.shellypstripg4_d885ace4e950_output_3_leistung',
+            'sensor.stecker_waschetrockner_leistung',
+            'sensor.stecker_waschmaschine_leistung',
+            'sensor.kuhlschrank_leistung',
+            'sensor.terrassentur_rollo_rollo_terrassentur_leistung',
+            'sensor.wohnzimmerfenster_rollo_leistung'
+          ] %}
+          {{ sensors | map('states') | map('float', 0) | sum | round(1) }}
+
+      - name: Kaffeemaschine Energie seit Umstellung
+        unique_id: kaffeemaschine_energie_seit_umstellung
+        unit_of_measurement: kWh
+        device_class: energy
+        state_class: total_increasing
+        icon: mdi:coffee-maker-outline
+        availability: >
+          {{ states('sensor.shellyplugmg3_0892724df770_energie')
+             not in ['unknown', 'unavailable'] }}
+        state: >
+          {% set zaehler = states('sensor.shellyplugmg3_0892724df770_energie') | float(353.131) %}
+          {{ [zaehler - 353.131, 0] | max | round(3) }}
+
+      - name: Klimaanlage Energie Archiv 2026
+        unique_id: klimaanlage_energie_archiv_2026
+        unit_of_measurement: kWh
+        device_class: energy
+        state_class: total
+        icon: mdi:air-conditioner
+        state: "353.131"
+
+      - name: Verbrauch laufendes Jahr
+        unique_id: jahresverbrauch_erfasste_geraete
+        unit_of_measurement: kWh
+        device_class: energy
+        state_class: total
+        icon: mdi:calendar-check-outline
+        state: >
+          {% set sensors = [
+            'sensor.klimaanlage_energie_archiv_2026',
+            'sensor.kaffeemaschine_energie_seit_umstellung',
+            'sensor.spuelmaschine_energie_jaehrlich',
+            'sensor.schlafzimmer_tv_energie_jaehrlich',
+            'sensor.gastezimmer_tv_energie_jaehrlich',
+            'sensor.qnap_energie_jaehrlich',
+            'sensor.lichtverbrauch_energie_jaehrlich',
+            'sensor.outdoor_plug_energie_jaehrlich',
+            'sensor.rollo_wohnzimmer_energie_jaehrlich',
+            'sensor.rollo_terrasse_energie_jaehrlich',
+            'sensor.rollo_schlafzimmer_energie_jaehrlich',
+            'sensor.rollo_gastezimmer_energie_jaehrlich',
+            'sensor.rollo_gaste_wc_energie_jaehrlich',
+            'sensor.rollo_bad_energie_jaehrlich',
+            'sensor.waschmaschine_energie_jaehrlich',
+            'sensor.waschetrockner_energie_jaehrlich',
+            'sensor.kuhlschrank_energie_jaehrlich',
+            'sensor.tv_yamaha_energie_jaehrlich',
+            'sensor.playstation_energie_jaehrlich',
+            'sensor.apple_tv_energie_jaehrlich',
+            'sensor.ei_energie_jaehrlich'
+          ] %}
+          {{ sensors | map('states') | map('float', 0) | sum | round(3) }}

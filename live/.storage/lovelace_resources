@@ -1,0 +1,29 @@
+{
+  "version": 1,
+  "minor_version": 1,
+  "key": "lovelace_resources",
+  "data": {
+    "items": [
+      {
+        "id": "2786550d9f3c4efda43e830c779de69c",
+        "url": "/hacsfiles/button-card/button-card.js?hacstag=146194325701",
+        "type": "module"
+      },
+      {
+        "id": "haus-power-card-20260907",
+        "url": "/local/haus-power-card.js?v=20260920-rooms",
+        "type": "module"
+      },
+      {
+        "id": "weather-radar-card-20260907",
+        "url": "/local/community/weather-radar-card/weather-radar-card.js?v=20260907-1",
+        "type": "module"
+      },
+      {
+        "id": "2d5c0b094f65447aabc282672f2ba65a",
+        "url": "/local/bring-suggest-card.js?v=20260926-1",
+        "type": "module"
+      }
+    ]
+  }
+}
