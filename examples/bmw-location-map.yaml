@@ -1,0 +1,15 @@
+type: vertical-stack
+cards:
+- type: map
+  entities:
+  - entity: sensor.bmw_ix1_kartenposition
+    name: BMW iX1
+    label_mode: icon
+  hours_to_show: 24
+  auto_fit: true
+  cluster: false
+- type: markdown
+  content: 🚙 **BMW iX1:** {{ states('sensor.bmw_ix1_kartenposition') }}. {% if is_state('sensor.bmw_ix1_kartenposition','Zuhause
+    angenommen') %} Letzte GPS-Position innerhalb von 50 m; seit mindestens 5 Minuten
+    keine neue Position. {% elif is_state('sensor.bmw_ix1_kartenposition','Unbekannt')
+    %} Noch keine gültige Fahrzeugposition gespeichert. {% endif %}

@@ -4,6 +4,16 @@ Alle wichtigen Änderungen an der Home-Assistant-Konfiguration werden hier kurz 
 
 ## 2026-10-04
 
+### BMW-Karte · Autosymbol und Tiefgarage
+
+- BMW-Karte auf Fahrzeug-Symbol und persistente letzte gültige GPS-Position umgestellt.
+- Nach 5 Minuten ohne neue GPS-Position und letzter Entfernung <=50 m wird Zuhause als angenommene Position angezeigt; neue gültige Positionsmeldungen ersetzen die Annahme.
+- Außerhalb des Radius bleibt die letzte bekannte Position erhalten; ohne jemals gültige Position bleibt der Status unbekannt.
+- Sensorzustand und letzte gültige Koordinaten werden lokal über einen triggerbasierten Template-Sensor wiederhergestellt. Keine Koordinaten oder Fahrzeugkennung im neuen veröffentlichten Code.
+- Dashboard vorab lokal gesichert; Konfigurationscheck und 54 simulierte Positions-/Zeit-/Neustartfälle erfolgreich. Anzeige im Browser geprüft; reale Ankunft in der Tiefgarage noch nicht getestet.
+- Öffentliche Kartenkonfiguration unter `examples/bmw-location-map.yaml`; Live-Dashboard enthält private Fahrzeugkennungen und wird für diese Änderung nicht erneut exportiert.
+
+
 ### Bad-Heizung · manueller 30-Minuten-Lauf
 
 - Regelmäßige Heizungsprüfung Mo–Fr 04:30–07:00 weiterhin minütlich, außerhalb nur um :00 und :30; Sensor-, Neustart- und Reload-Auslöser erhalten.

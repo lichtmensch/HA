@@ -1,0 +1,58 @@
+# Stores only the last valid BMW coordinates locally. No coordinates in source.
+template:
+  - triggers:
+      - trigger: state
+        entity_id: device_tracker.ix1_xdrive30_location
+      - trigger: time_pattern
+        minutes: /1
+      - trigger: homeassistant
+        event: start
+    actions:
+      - variables:
+          raw_lat: "{{ state_attr('device_tracker.ix1_xdrive30_location', 'latitude') }}"
+          raw_lon: "{{ state_attr('device_tracker.ix1_xdrive30_location', 'longitude') }}"
+          old_lat: "{{ state_attr('sensor.bmw_ix1_kartenposition', 'last_valid_latitude') }}"
+          old_lon: "{{ state_attr('sensor.bmw_ix1_kartenposition', 'last_valid_longitude') }}"
+          old_time: "{{ state_attr('sensor.bmw_ix1_kartenposition', 'last_valid_timestamp') | float(0) }}"
+      - variables:
+          raw_valid: >-
+            {{ states('device_tracker.ix1_xdrive30_location') not in ['unknown','unavailable']
+               and is_number(raw_lat) and is_number(raw_lon)
+               and -90 <= raw_lat | float <= 90 and -180 <= raw_lon | float <= 180
+               and not (raw_lat | float == 0 and raw_lon | float == 0) }}
+      - variables:
+          fresh: >-
+            {{ raw_valid and (trigger.platform == 'state' or not is_number(old_lat) or not is_number(old_lon)) }}
+      - variables:
+          lat: "{{ raw_lat | float if fresh else old_lat }}"
+          lon: "{{ raw_lon | float if fresh else old_lon }}"
+          gps_time: >-
+            {{ as_timestamp(states.device_tracker.ix1_xdrive30_location.last_reported, 0)
+               if fresh else old_time }}
+      - variables:
+          valid: "{{ is_number(lat) and is_number(lon) and gps_time | float(0) > 0 }}"
+          age: "{{ [0, as_timestamp(now()) - gps_time | float(0)] | max }}"
+          home_distance: >-
+            {{ (distance(lat | float, lon | float, 'zone.home') * 1000) | round(1)
+               if is_number(lat) and is_number(lon) and state_attr('zone.home','latitude') is not none else none }}
+      - variables:
+          assumed_home: "{{ valid and is_number(home_distance) and home_distance | float <= 50 and age | float >= 300 }}"
+    sensor:
+      - name: BMW iX1 Kartenposition
+        default_entity_id: sensor.bmw_ix1_kartenposition
+        unique_id: bmw_ix1_persistent_map_location_20261004
+        icon: mdi:car-electric
+        state: >-
+          {{ 'Zuhause angenommen' if assumed_home else
+             'Unbekannt' if not valid else
+             'BMW-Position' if raw_valid and age | float < 300 else 'Letzte Position' }}
+        attributes:
+          latitude: "{{ state_attr('zone.home','latitude') if assumed_home else lat }}"
+          longitude: "{{ state_attr('zone.home','longitude') if assumed_home else lon }}"
+          last_valid_latitude: "{{ lat }}"
+          last_valid_longitude: "{{ lon }}"
+          last_valid_timestamp: "{{ gps_time }}"
+          distance_to_home_m: "{{ home_distance }}"
+          assumed_home: "{{ assumed_home }}"
+          timeout_minutes: 5
+          home_radius_m: 50
