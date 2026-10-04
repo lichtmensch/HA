@@ -1,5 +1,11 @@
 # Bathroom radiator only; floor heating remains manually controlled.
 # Europe/Berlin (Home Assistant local time). No temperature offset applied.
+input_datetime:
+  bad_heizung_manuell_bis:
+    name: Bad · Manuell heizen bis
+    has_date: true
+    has_time: true
+
 automation:
   - id: bad_heizkoerper_werktags_netatmo_20260928
     alias: "Bad – Morgenwärme 22,5 °C mit Netatmo"
@@ -7,7 +13,10 @@ automation:
       Mo–Fr dynamischer Vorlauf zwischen 04:30 und 06:00, Ziel 22,5 °C um 06:00,
       Halten bis 07:00, sonst aus mit Geräte-Frostschutz.
       Netatmo nur bei Verbindung, plausiblem Wert und HA-Meldung jünger als
-      20 Minuten. Sonst interner Sensor. Prüfung jede Minute und nach Neustart.
+      20 Minuten. Sonst interner Sensor. Prüfung Mo–Fr 04:30–07:00 jede Minute, sonst alle 30 Minuten;
+      zusätzlich bei Sensoränderungen, Neustart und Automations-Reload.
+      Manuelles Einschalten außerhalb des Morgenfensters erlaubt 30 Minuten
+      Heizbetrieb; eine neue manuelle Sollwertänderung verlängert um 30 Minuten.
       Vorlauf: 22 °C=20 min, 21,5=40, 21=60, <=20,5=90; dazwischen interpoliert.
       Ohne Netatmo Ersatzstart 05:00 mit internem Sensor. Gelernte Vorlaufkorrektur
       aus gültigen Morgenläufen, maximal 5 Minuten Änderung pro Tag.
@@ -22,6 +31,8 @@ automation:
         at: "07:00:00"
       - trigger: time_pattern
         minutes: "/1"
+      - trigger: time
+        at: input_datetime.bad_heizung_manuell_bis
       - trigger: homeassistant
         event: start
       - trigger: event
@@ -31,6 +42,21 @@ automation:
       - trigger: state
         entity_id: sensor.weather_station_bad_temperatur
     conditions:
+      # Periodic checks outside the weekday morning window only at :00 / :30.
+      # State/start/reload triggers continue to react immediately.
+      - condition: template
+        value_template: >-
+          {% set minute = now().hour * 60 + now().minute %}
+          {{ trigger.platform != 'time_pattern'
+             or (now().weekday() < 5 and 270 <= minute < 420)
+             or now().minute % 30 == 0 }}
+      # Let manual heating run until the persistent deadline, only outside mornings.
+      - condition: template
+        value_template: >-
+          {% set minute = now().hour * 60 + now().minute %}
+          {{ (now().weekday() < 5 and 270 <= minute < 420)
+             or not is_state('climate.heizkorper_bad_thermostat', 'heat')
+             or as_timestamp(states('input_datetime.bad_heizung_manuell_bis'), 0) <= as_timestamp(now()) }}
       - condition: template
         value_template: >-
           {{ states('climate.heizkorper_bad_thermostat') not in ['unknown', 'unavailable'] }}
@@ -147,3 +173,41 @@ automation:
                   entity_id: climate.heizkorper_bad_thermostat
                 data:
                   hvac_mode: "off"
+
+  - id: bad_heizung_manueller_30min_lauf_20261004
+    alias: Bad – Manuelles Heizen für 30 Minuten
+    description: >-
+      Außerhalb Mo–Fr 04:30–07:00 startet Einschalten oder eine Sollwertänderung
+      am bereits eingeschalteten Thermostat eine 30-Minuten-Frist.
+      Morgens bleibt die automatische Regelung unverändert. Wiederverbindung
+      aus unknown/unavailable startet keine neue Frist.
+    mode: restart
+    triggers:
+      - trigger: state
+        entity_id: climate.heizkorper_bad_thermostat
+    conditions:
+      - condition: template
+        value_template: >-
+          {% set minute = now().hour * 60 + now().minute %}
+          {{ not (now().weekday() < 5 and 270 <= minute < 420) }}
+      - condition: template
+        value_template: >-
+          {{ trigger.from_state is not none and trigger.to_state is not none
+             and trigger.from_state.state not in ['unknown', 'unavailable']
+             and trigger.to_state.state == 'heat'
+             and (trigger.from_state.state != 'heat'
+                  or trigger.from_state.attributes.get('temperature') != trigger.to_state.attributes.get('temperature')) }}
+    actions:
+      - action: input_datetime.set_datetime
+        target:
+          entity_id: input_datetime.bad_heizung_manuell_bis
+        data:
+          timestamp: "{{ as_timestamp(now()) + 1800 }}"
+      - if:
+          - condition: state
+            entity_id: switch.heizkorper_bad_externer_temperatursensor
+            state: 'on'
+        then:
+          - action: switch.turn_off
+            target:
+              entity_id: switch.heizkorper_bad_externer_temperatursensor

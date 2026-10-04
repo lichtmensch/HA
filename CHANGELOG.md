@@ -4,6 +4,14 @@ Alle wichtigen Änderungen an der Home-Assistant-Konfiguration werden hier kurz 
 
 ## 2026-10-04
 
+### Bad-Heizung · manueller 30-Minuten-Lauf
+
+- Regelmäßige Heizungsprüfung Mo–Fr 04:30–07:00 weiterhin minütlich, außerhalb nur um :00 und :30; Sensor-, Neustart- und Reload-Auslöser erhalten.
+- Manuelles Einschalten oder Sollwertänderung außerhalb des Morgenfensters erlaubt 30 Minuten Betrieb mit persistentem Endzeitpunkt; Wiederverbindung verlängert nicht.
+- Morgenautomatik unverändert, Abschaltung am Endzeitpunkt und Wiederanlaufprüfung nach HA-Neustart.
+- Original gesichert; Konfigurationsprüfung sowie Zeitfenster-, Frist- und Erkennungstests erfolgreich. Kein physischer Heiztest.
+
+
 ### Bereinigte Veröffentlichung
 
 - Routinen-Dashboard, Helfer, QNAP-Prüfung und BMW-Korrektur gemeinsam veröffentlicht.
