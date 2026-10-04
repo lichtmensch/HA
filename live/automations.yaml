@@ -1,7 +1,7 @@
 - id: '1771557943974'
   alias: Flur - Licht Motion nach Tageszeit
-  description: Schaltet Dekolampe, Flur 1 und Flur 2 bei Bewegung je nach Tageszeit.
-    Der Nachlauf startet erst, wenn beide Flur-Bewegungsmelder wieder frei sind.
+  description: Schaltet Dekolampe, Flur 1 und Flur 2 bei Bewegung je nach Tageszeit. Der Nachlauf startet erst, wenn beide
+    Flur-Bewegungsmelder wieder frei sind.
   triggers:
   - entity_id:
     - binary_sensor.hue_motion_sensor_2_bewegung
@@ -14,11 +14,19 @@
       motion_sensors:
       - binary_sensor.hue_motion_sensor_2_bewegung
       - binary_sensor.hue_motion_sensor_4_bewegung
-      periode: "{% set t = now().strftime('%H:%M') %} {% if '07:01' <= t <= '09:00'
-        %}\n  morgens\n{% elif '09:01' <= t <= '20:00' %}\n  tag\n{% elif '20:01'
-        <= t <= '23:59' %}\n  abends\n{% else %}\n  nacht\n{% endif %}"
-      transition_seconds: "{% set p = periode | trim %} {% if p == 'nacht' %}\n  2\n{%
-        elif p == 'tag' %}\n  0.5\n{% else %}\n  1\n{% endif %}"
+      periode: "{% set t = now().strftime('%H:%M') %}\n{% set weekend = now().weekday() in [5, 6] %}\n\n{% if weekend %}\n\
+        \  {% if states('input_datetime.rt_flur_zeit_0600')[:5] <= t < states('input_datetime.rt_flur_zeit_0830')[:5] %}\n\
+        \    wochenende_frueh\n  {% elif states('input_datetime.rt_flur_zeit_0830')[:5] <= t <= states('input_datetime.rt_flur_zeit_0900')[:5]\
+        \ %}\n    morgens\n  {% elif states('input_datetime.rt_flur_zeit_0901')[:5] <= t <= states('input_datetime.rt_flur_zeit_2000')[:5]\
+        \ %}\n    tag\n  {% elif states('input_datetime.rt_flur_zeit_2001')[:5] <= t <= states('input_datetime.rt_flur_zeit_2359')[:5]\
+        \ %}\n    abends\n  {% else %}\n    nacht\n  {% endif %}\n{% else %}\n  {% if states('input_datetime.rt_flur_zeit_0701')[:5]\
+        \ <= t <= states('input_datetime.rt_flur_zeit_0900')[:5] %}\n    morgens\n  {% elif states('input_datetime.rt_flur_zeit_0901')[:5]\
+        \ <= t <= states('input_datetime.rt_flur_zeit_2000')[:5] %}\n    tag\n  {% elif states('input_datetime.rt_flur_zeit_2001')[:5]\
+        \ <= t <= states('input_datetime.rt_flur_zeit_2359')[:5] %}\n    abends\n  {% else %}\n    nacht\n  {% endif %}\n\
+        {% endif %}"
+      transition_seconds: "{% set p = periode | trim %}\n{% if p == 'nacht' %}\n  {{ states('input_number.rt_flur_uebergang_nacht')\
+        \ | float(2) }}\n{% elif p == 'tag' %}\n  {{ states('input_number.rt_flur_uebergang_tag') | float(0.5) }}\n{% else\
+        \ %}\n  {{ states('input_number.rt_flur_uebergang_sonst') | float(1) }}\n{% endif %}"
   - choose:
     - conditions:
       - condition: template
@@ -29,16 +37,37 @@
           entity_id:
           - light.dekolampe
         data:
-          brightness_pct: 30
+          brightness_pct: '{{ states(''input_number.rt_flur_helligkeit_30'') | float(30) }}'
           transition: '{{ transition_seconds | float }}'
-      - wait_template: "{{ expand(motion_sensors)\n   | selectattr('state', 'eq',
-          'on')\n   | list\n   | count == 0 }}"
+      - wait_template: "{{ expand(motion_sensors)\n   | selectattr('state', 'eq', 'on')\n   | list\n   | count == 0 }}"
         continue_on_timeout: false
       - delay:
-          seconds: 30
+          seconds: '{{ states(''input_number.rt_flur_nachlauf_30'') | float(30) }}'
       - condition: template
-        value_template: "{{ expand(motion_sensors)\n   | selectattr('state', 'eq',
-          'on')\n   | list\n   | count == 0 }}"
+        value_template: "{{ expand(motion_sensors)\n   | selectattr('state', 'eq', 'on')\n   | list\n   | count == 0 }}"
+      - action: light.turn_off
+        target:
+          entity_id:
+          - light.dekolampe
+        data:
+          transition: '{{ transition_seconds | float }}'
+    - conditions:
+      - condition: template
+        value_template: '{{ periode | trim == ''wochenende_frueh'' }}'
+      sequence:
+      - action: light.turn_on
+        target:
+          entity_id:
+          - light.dekolampe
+        data:
+          brightness_pct: '{{ states(''input_number.rt_flur_helligkeit_45'') | float(45) }}'
+          transition: '{{ transition_seconds | float }}'
+      - wait_template: "{{ expand(motion_sensors)\n   | selectattr('state', 'eq', 'on')\n   | list\n   | count == 0 }}"
+        continue_on_timeout: false
+      - delay:
+          seconds: '{{ states(''input_number.rt_flur_nachlauf_30'') | float(30) }}'
+      - condition: template
+        value_template: "{{ expand(motion_sensors)\n   | selectattr('state', 'eq', 'on')\n   | list\n   | count == 0 }}"
       - action: light.turn_off
         target:
           entity_id:
@@ -58,7 +87,7 @@
             - light.flur_1
             - light.flur_2
           data:
-            brightness_pct: 65
+            brightness_pct: '{{ states(''input_number.rt_flur_helligkeit_65'') | float(65) }}'
             transition: '{{ transition_seconds | float }}'
       - conditions:
         - condition: template
@@ -71,7 +100,7 @@
             - light.flur_1
             - light.flur_2
           data:
-            brightness_pct: 90
+            brightness_pct: '{{ states(''input_number.rt_flur_helligkeit_90'') | float(90) }}'
             transition: '{{ transition_seconds | float }}'
       default:
       - action: light.turn_on
@@ -81,16 +110,14 @@
           - light.flur_1
           - light.flur_2
         data:
-          brightness_pct: 45
+          brightness_pct: '{{ states(''input_number.rt_flur_helligkeit_45'') | float(45) }}'
           transition: '{{ transition_seconds | float }}'
-    - wait_template: "{{ expand(motion_sensors)\n   | selectattr('state', 'eq', 'on')\n
-        \  | list\n   | count == 0 }}"
+    - wait_template: "{{ expand(motion_sensors)\n   | selectattr('state', 'eq', 'on')\n   | list\n   | count == 0 }}"
       continue_on_timeout: false
     - delay:
-        minutes: 1
+        seconds: '{{ states(''input_number.rt_flur_nachlauf_60'') | float(60) }}'
     - condition: template
-      value_template: "{{ expand(motion_sensors)\n   | selectattr('state', 'eq', 'on')\n
-        \  | list\n   | count == 0 }}"
+      value_template: "{{ expand(motion_sensors)\n   | selectattr('state', 'eq', 'on')\n   | list\n   | count == 0 }}"
     - action: light.turn_off
       target:
         entity_id:
@@ -119,8 +146,8 @@
       - choose:
         - conditions:
           - condition: time
-            after: 06:00:00
-            before: 09:30:00
+            after: input_datetime.rt_kuche_dimmer_zeit_060000
+            before: input_datetime.rt_kuche_dimmer_zeit_093000
           sequence:
           - action: light.turn_on
             target:
@@ -131,8 +158,8 @@
               transition: '{{ tr_on }}'
         - conditions:
           - condition: time
-            after: 09:30:00
-            before: '20:00:00'
+            after: input_datetime.rt_kuche_dimmer_zeit_093000
+            before: input_datetime.rt_kuche_dimmer_zeit_200000
           sequence:
           - action: light.turn_on
             target:
@@ -143,8 +170,8 @@
               transition: '{{ tr_on }}'
         - conditions:
           - condition: time
-            after: '20:00:00'
-            before: '23:30:00'
+            after: input_datetime.rt_kuche_dimmer_zeit_200000
+            before: input_datetime.rt_kuche_dimmer_zeit_233000
           sequence:
           - action: light.turn_on
             target:
@@ -163,7 +190,8 @@
             transition: '{{ tr_on }}'
     - conditions:
       - condition: template
-        value_template: '{{ trigger.entity_id.endswith(''taste_2'') and trigger.to_state.attributes.event_type == ''short_release'' }}'
+        value_template: '{{ trigger.entity_id.endswith(''taste_2'') and trigger.to_state.attributes.event_type == ''short_release''
+          }}'
       sequence:
       - action: light.turn_on
         target:
@@ -173,7 +201,8 @@
           transition: '{{ tr_step }}'
     - conditions:
       - condition: template
-        value_template: '{{ trigger.entity_id.endswith(''taste_3'') and trigger.to_state.attributes.event_type == ''short_release'' }}'
+        value_template: '{{ trigger.entity_id.endswith(''taste_3'') and trigger.to_state.attributes.event_type == ''short_release''
+          }}'
       sequence:
       - action: light.turn_on
         target:
@@ -193,20 +222,20 @@
   mode: restart
   variables:
     light_target: light.kuche_2
-    b_morning: 60
-    b_day: 100
-    b_evening: 75
-    b_night: 10
-    k_warm: 2300
-    k_day: 6000
+    b_morning: '{{ states(''input_number.rt_kuche_dimmer_b_morning'') | float(60) }}'
+    b_day: '{{ states(''input_number.rt_kuche_dimmer_b_day'') | float(100) }}'
+    b_evening: '{{ states(''input_number.rt_kuche_dimmer_b_evening'') | float(75) }}'
+    b_night: '{{ states(''input_number.rt_kuche_dimmer_b_night'') | float(10) }}'
+    k_warm: '{{ states(''input_number.rt_kuche_dimmer_k_warm'') | float(2300) }}'
+    k_day: '{{ states(''input_number.rt_kuche_dimmer_k_day'') | float(6000) }}'
     k_clean: 6000
     hs_night:
-    - 220
-    - 90
-    tr_on: 2
-    tr_off: 3
-    tr_step: 1
-    step_pct: 10
+    - '{{ states(''input_number.rt_kuche_nacht_hue'') | float(220) }}'
+    - '{{ states(''input_number.rt_kuche_nacht_saturation'') | float(90) }}'
+    tr_on: '{{ states(''input_number.rt_kuche_dimmer_tr_on'') | float(2) }}'
+    tr_off: '{{ states(''input_number.rt_kuche_dimmer_tr_off'') | float(3) }}'
+    tr_step: '{{ states(''input_number.rt_kuche_dimmer_tr_step'') | float(1) }}'
+    step_pct: '{{ states(''input_number.rt_kuche_dimmer_step_pct'') | float(10) }}'
 - id: '1771742860013'
   alias: Hue Dimmer Wohnzimmer - Decke + Orange + Küche/Esszimmer Aus
   description: ''
@@ -222,20 +251,19 @@
   - choose:
     - conditions:
       - condition: template
-        value_template: '{{ trigger.entity_id == ''event.hue_dimmer_switch_wohnzimmer_taste_1''
-          }}
+        value_template: '{{ trigger.entity_id == ''event.hue_dimmer_switch_wohnzimmer_taste_1'' }}
 
           '
       - condition: template
-        value_template: "{{ trigger.to_state.attributes.event_type in\n   ['short_release','short_press','press','release']
-          }}\n"
+        value_template: "{{ trigger.to_state.attributes.event_type in\n   ['short_release','short_press','press','release']\
+          \ }}\n"
       sequence:
       - action: light.turn_on
         target:
           entity_id: '{{ decke_lampen }}'
         data:
-          brightness_pct: 4
-          color_temp_kelvin: 2200
+          brightness_pct: '{{ states(''input_number.rt_wohnzimmer_kurz_decke'') | float(4) }}'
+          color_temp_kelvin: '{{ states(''input_number.rt_wohnzimmer_kurz_kelvin'') | float(2200) }}'
           transition: '{{ transition_s }}'
       - action: light.turn_on
         target:
@@ -243,24 +271,22 @@
           - light.hue_play_gradient_lightstrip_1
           - light.hue_color_floor_1
         data:
-          brightness_pct: 100
+          brightness_pct: '{{ states(''input_number.rt_wohnzimmer_kurz_ambient'') | float(100) }}'
           hs_color: '{{ deep_orange_hs }}'
           transition: '{{ transition_s }}'
     - conditions:
       - condition: template
-        value_template: '{{ trigger.entity_id == ''event.hue_dimmer_switch_wohnzimmer_taste_1''
-          }}
+        value_template: '{{ trigger.entity_id == ''event.hue_dimmer_switch_wohnzimmer_taste_1'' }}
 
           '
       - condition: template
-        value_template: "{{ trigger.to_state.attributes.event_type in\n   ['long_release','long_press','hold','repeat']
-          }}\n"
+        value_template: "{{ trigger.to_state.attributes.event_type in\n   ['long_release','long_press','hold','repeat'] }}\n"
       sequence:
       - action: light.turn_on
         target:
           entity_id: '{{ decke_lampen }}'
         data:
-          brightness_pct: 100
+          brightness_pct: '{{ states(''input_number.rt_wohnzimmer_lang_helligkeit'') | float(100) }}'
           color_temp_kelvin: '{{ warmweiss_kelvin }}'
           transition: '{{ transition_s }}'
       - action: light.turn_on
@@ -269,50 +295,47 @@
           - light.hue_play_gradient_lightstrip_1
           - light.hue_color_floor_1
         data:
-          brightness_pct: 100
+          brightness_pct: '{{ states(''input_number.rt_wohnzimmer_lang_helligkeit'') | float(100) }}'
           color_temp_kelvin: '{{ warmweiss_kelvin }}'
           transition: '{{ transition_s }}'
     - conditions:
       - condition: template
-        value_template: '{{ trigger.entity_id == ''event.hue_dimmer_switch_wohnzimmer_taste_2''
-          }}
+        value_template: '{{ trigger.entity_id == ''event.hue_dimmer_switch_wohnzimmer_taste_2'' }}
 
           '
       - condition: template
-        value_template: "{{ trigger.to_state.attributes.event_type in\n   ['short_release','short_press','press','release']
-          }}\n"
+        value_template: "{{ trigger.to_state.attributes.event_type in\n   ['short_release','short_press','press','release']\
+          \ }}\n"
       sequence:
       - action: light.turn_on
         target:
           entity_id: '{{ dimm_lampen }}'
         data:
-          brightness_step_pct: 10
+          brightness_step_pct: '{{ (states(''input_number.rt_wohnzimmer_dimmschritt'') | float(10)) }}'
           transition: '{{ dim_transition_s }}'
     - conditions:
       - condition: template
-        value_template: '{{ trigger.entity_id == ''event.hue_dimmer_switch_wohnzimmer_taste_3''
-          }}
+        value_template: '{{ trigger.entity_id == ''event.hue_dimmer_switch_wohnzimmer_taste_3'' }}
 
           '
       - condition: template
-        value_template: "{{ trigger.to_state.attributes.event_type in\n   ['short_release','short_press','press','release']
-          }}\n"
+        value_template: "{{ trigger.to_state.attributes.event_type in\n   ['short_release','short_press','press','release']\
+          \ }}\n"
       sequence:
       - action: light.turn_on
         target:
           entity_id: '{{ dimm_lampen }}'
         data:
-          brightness_step_pct: -10
+          brightness_step_pct: '{{ -(states(''input_number.rt_wohnzimmer_dimmschritt'') | float(10)) }}'
           transition: '{{ dim_transition_s }}'
     - conditions:
       - condition: template
-        value_template: '{{ trigger.entity_id == ''event.hue_dimmer_switch_wohnzimmer_taste_4''
-          }}
+        value_template: '{{ trigger.entity_id == ''event.hue_dimmer_switch_wohnzimmer_taste_4'' }}
 
           '
       - condition: template
-        value_template: "{{ trigger.to_state.attributes.event_type in\n   ['short_release','short_press','press','release']
-          }}\n"
+        value_template: "{{ trigger.to_state.attributes.event_type in\n   ['short_release','short_press','press','release']\
+          \ }}\n"
       sequence:
       - action: light.turn_off
         target:
@@ -326,13 +349,11 @@
           transition: '{{ off_transition_s }}'
     - conditions:
       - condition: template
-        value_template: '{{ trigger.entity_id == ''event.hue_dimmer_switch_wohnzimmer_taste_4''
-          }}
+        value_template: '{{ trigger.entity_id == ''event.hue_dimmer_switch_wohnzimmer_taste_4'' }}
 
           '
       - condition: template
-        value_template: "{{ trigger.to_state.attributes.event_type in\n   ['long_release','long_press','hold','repeat']
-          }}\n"
+        value_template: "{{ trigger.to_state.attributes.event_type in\n   ['long_release','long_press','hold','repeat'] }}\n"
       sequence:
       - action: light.turn_off
         target:
@@ -343,13 +364,13 @@
           transition: '{{ off_transition_s }}'
   mode: single
   variables:
-    transition_s: 1.5
-    dim_transition_s: 0.4
-    off_transition_s: 0.8
-    warmweiss_kelvin: 2700
+    transition_s: '{{ states(''input_number.rt_wohnzimmer_transition_s'') | float(1.5) }}'
+    dim_transition_s: '{{ states(''input_number.rt_wohnzimmer_dim_transition_s'') | float(0.4) }}'
+    off_transition_s: '{{ states(''input_number.rt_wohnzimmer_off_transition_s'') | float(0.8) }}'
+    warmweiss_kelvin: '{{ states(''input_number.rt_wohnzimmer_warmweiss_kelvin'') | float(2700) }}'
     deep_orange_hs:
-    - 20
-    - 100
+    - '{{ states(''input_number.rt_wohnzimmer_orange_hue'') | float(20) }}'
+    - '{{ states(''input_number.rt_wohnzimmer_orange_saturation'') | float(100) }}'
     decke_lampen:
     - light.hue_filament_bulb_1
     - light.hue_filament_bulb_2
@@ -377,16 +398,16 @@
     offset: 01:00:00
     id: sunrise_60_weekend
   - trigger: time
-    at: 07:00:00
+    at: input_datetime.rt_rollo_weekday_0700
     id: weekday_0700
   - trigger: time
-    at: 08:30:00
+    at: input_datetime.rt_rollo_weekend_0830
     id: weekend_0830
   - trigger: time
-    at: '10:00:00'
+    at: input_datetime.rt_rollo_weekday_1000
     id: weekday_1000
   - trigger: time
-    at: '11:00:00'
+    at: input_datetime.rt_rollo_weekend_1100
     id: weekend_1100
   conditions: []
   actions:
@@ -400,39 +421,40 @@
           - action: script.rollo_position_sicher_anfahren
             data:
               rollo: cover.shelly2pmg3_8cbfea9cc4f4_rollo_bad
-              zielposition: 0
+              zielposition: '{{ states(''input_number.rt_rollo_bad_abend'') | float(0) }}'
         - sequence:
           - action: script.rollo_position_sicher_anfahren
             data:
               rollo: cover.shelly2pmg3_8cbfea97b428_rollo_gaste_wc
-              zielposition: 0
+              zielposition: '{{ states(''input_number.rt_rollo_gaste_wc_abend'') | float(0) }}'
         - sequence:
           - action: script.rollo_position_sicher_anfahren
             data:
               rollo: cover.wohnzimmerfenster_rollo
-              zielposition: 40
+              zielposition: '{{ states(''input_number.rt_rollo_wohnzimmer_abend'') | float(40) }}'
         - sequence:
           - action: script.rollo_position_sicher_anfahren
             data:
               rollo: cover.shelly2pmg3_8cbfea9a6bb0_rollo_gastezimmer
-              zielposition: 25
+              zielposition: '{{ states(''input_number.rt_rollo_gastezimmer_abend'') | float(25) }}'
         - sequence:
           - action: script.rollo_position_sicher_anfahren
             data:
               rollo: cover.rollo_schlafzimmer
-              zielposition: 25
+              zielposition: '{{ states(''input_number.rt_rollo_schlafzimmer_abend'') | float(25) }}'
         - sequence:
           - action: script.rollo_position_sicher_anfahren
             data:
               rollo: cover.terrassentur_rollo_rollo_terrassentur
-              zielposition: 25
+              zielposition: '{{ states(''input_number.rt_rollo_terrasse_abend'') | float(25) }}'
     - conditions:
       - condition: trigger
         id:
         - sunrise_30_weekday
         - weekday_0700
       - condition: template
-        value_template: '{{ now().weekday() < 5 and now().strftime(''%H:%M'') >= ''07:00'' }}'
+        value_template: '{{ now().weekday() < 5 and now().strftime(''%H:%M'') >= states(''input_datetime.rt_rollo_weekday_0700'')[:5]
+          }}'
       - condition: sun
         after: sunrise
         after_offset: 00:30:00
@@ -442,29 +464,30 @@
           - action: script.rollo_position_sicher_anfahren
             data:
               rollo: cover.shelly2pmg3_8cbfea9cc4f4_rollo_bad
-              zielposition: 100
+              zielposition: '{{ states(''input_number.rt_rollo_bad_morgen'') | float(100) }}'
         - sequence:
           - action: script.rollo_position_sicher_anfahren
             data:
               rollo: cover.shelly2pmg3_8cbfea97b428_rollo_gaste_wc
-              zielposition: 100
+              zielposition: '{{ states(''input_number.rt_rollo_gaste_wc_morgen'') | float(100) }}'
         - sequence:
           - action: script.rollo_position_sicher_anfahren
             data:
               rollo: cover.wohnzimmerfenster_rollo
-              zielposition: 100
+              zielposition: '{{ states(''input_number.rt_rollo_wohnzimmer_morgen'') | float(100) }}'
         - sequence:
           - action: script.rollo_position_sicher_anfahren
             data:
               rollo: cover.terrassentur_rollo_rollo_terrassentur
-              zielposition: 100
+              zielposition: '{{ states(''input_number.rt_rollo_terrasse_morgen'') | float(100) }}'
     - conditions:
       - condition: trigger
         id:
         - sunrise_60_weekend
         - weekend_0830
       - condition: template
-        value_template: '{{ now().weekday() >= 5 and now().strftime(''%H:%M'') >= ''08:30'' }}'
+        value_template: '{{ now().weekday() >= 5 and now().strftime(''%H:%M'') >= states(''input_datetime.rt_rollo_weekend_0830'')[:5]
+          }}'
       - condition: sun
         after: sunrise
         after_offset: 01:00:00
@@ -474,22 +497,22 @@
           - action: script.rollo_position_sicher_anfahren
             data:
               rollo: cover.shelly2pmg3_8cbfea9cc4f4_rollo_bad
-              zielposition: 100
+              zielposition: '{{ states(''input_number.rt_rollo_bad_morgen'') | float(100) }}'
         - sequence:
           - action: script.rollo_position_sicher_anfahren
             data:
               rollo: cover.shelly2pmg3_8cbfea97b428_rollo_gaste_wc
-              zielposition: 100
+              zielposition: '{{ states(''input_number.rt_rollo_gaste_wc_morgen'') | float(100) }}'
         - sequence:
           - action: script.rollo_position_sicher_anfahren
             data:
               rollo: cover.wohnzimmerfenster_rollo
-              zielposition: 100
+              zielposition: '{{ states(''input_number.rt_rollo_wohnzimmer_morgen'') | float(100) }}'
         - sequence:
           - action: script.rollo_position_sicher_anfahren
             data:
               rollo: cover.terrassentur_rollo_rollo_terrassentur
-              zielposition: 100
+              zielposition: '{{ states(''input_number.rt_rollo_terrasse_morgen'') | float(100) }}'
     - conditions:
       - condition: trigger
         id: weekday_1000
@@ -501,12 +524,12 @@
           - action: script.rollo_position_sicher_anfahren
             data:
               rollo: cover.rollo_schlafzimmer
-              zielposition: 87
+              zielposition: '{{ states(''input_number.rt_rollo_schlafzimmer_morgen'') | float(87) }}'
         - sequence:
           - action: script.rollo_position_sicher_anfahren
             data:
               rollo: cover.shelly2pmg3_8cbfea9a6bb0_rollo_gastezimmer
-              zielposition: 100
+              zielposition: '{{ states(''input_number.rt_rollo_gastezimmer_morgen'') | float(100) }}'
     - conditions:
       - condition: trigger
         id: weekend_1100
@@ -518,17 +541,16 @@
           - action: script.rollo_position_sicher_anfahren
             data:
               rollo: cover.rollo_schlafzimmer
-              zielposition: 87
+              zielposition: '{{ states(''input_number.rt_rollo_schlafzimmer_morgen'') | float(87) }}'
         - sequence:
           - action: script.rollo_position_sicher_anfahren
             data:
               rollo: cover.shelly2pmg3_8cbfea9a6bb0_rollo_gastezimmer
-              zielposition: 100
+              zielposition: '{{ states(''input_number.rt_rollo_gastezimmer_morgen'') | float(100) }}'
 - id: '1771746410073'
   alias: Rollos - Sonnenschutz Westseite intelligent
-  description: Faehrt die Westrollos auf 40 %, wenn Westsonne und Waermebedarf zusammentreffen.
-    Beruecksichtigt Raumtemperaturen, Tagesprognose, den Sonnensensor am Westfenster,
-    Regen und Wind. Direkte Sonne muss mindestens drei Minuten anliegen. Manuelle
+  description: Faehrt die Westrollos auf 40 %, wenn Westsonne und Waermebedarf zusammentreffen. Beruecksichtigt Raumtemperaturen,
+    Tagesprognose, den Sonnensensor am Westfenster, Regen und Wind. Direkte Sonne muss mindestens drei Minuten anliegen. Manuelle
     Eingriffe bleiben geschuetzt.
   triggers:
   - trigger: state
@@ -562,49 +584,42 @@
     entity_id: sensor.hue_motion_sensor_3_beleuchtungsstarke
     above: 2499
   - condition: template
-    value_template: "{% set outside = states('sensor.weather_station_aussen_temperatur')
-      | float(-99) %} {% set living = states('sensor.weather_station_temperatur')
-      | float(-99) %} {% set bedroom = states('sensor.weather_station_schlafzimmer_temperatur')
-      | float(-99) %} {% set guest = states('sensor.weather_station_gastezimmer_temperatur')
-      | float(-99) %} {% set forecast_max = states('sensor.wetter_heute_temperatur_max')
-      | float(-99) %} {% set wind = states('sensor.weather_station_windmesser_windgeschwindigkeit')
-      | float(0) %} {% set gust = states('sensor.weather_station_windmesser_boenstarke')
-      | float(0) %} {% set rain = states('sensor.weather_station_regenmesser_niederschlagsmenge_letzte_stunde')
-      | float(0) %} {% set elevation = state_attr('sun.sun', 'elevation') | float(-90)
-      %} {% set azimuth = state_attr('sun.sun', 'azimuth') | float(0) %} {{ outside
-      > 22\n  and (living >= 24 or bedroom >= 24 or guest >= 24 or forecast_max >=
-      26)\n  and elevation > 10 and 240 < azimuth < 300\n  and rain <= 0.1 and wind
-      < 30 and gust < 45 }}"
+    value_template: "{% set outside = states('sensor.weather_station_aussen_temperatur') | float(-99) %} {% set living = states('sensor.weather_station_temperatur')\
+      \ | float(-99) %} {% set bedroom = states('sensor.weather_station_schlafzimmer_temperatur') | float(-99) %} {% set guest\
+      \ = states('sensor.weather_station_gastezimmer_temperatur') | float(-99) %} {% set forecast_max = states('sensor.wetter_heute_temperatur_max')\
+      \ | float(-99) %} {% set wind = states('sensor.weather_station_windmesser_windgeschwindigkeit') | float(0) %} {% set\
+      \ gust = states('sensor.weather_station_windmesser_boenstarke') | float(0) %} {% set rain = states('sensor.weather_station_regenmesser_niederschlagsmenge_letzte_stunde')\
+      \ | float(0) %} {% set elevation = state_attr('sun.sun', 'elevation') | float(-90) %} {% set azimuth = state_attr('sun.sun',\
+      \ 'azimuth') | float(0) %} {{ outside > 22\n  and (living >= 24 or bedroom >= 24 or guest >= 24 or forecast_max >= 26)\n\
+      \  and elevation > 10 and 240 < azimuth < 300\n  and rain <= 0.1 and wind < 30 and gust < 45 }}"
   actions:
   - parallel:
     - sequence:
       - action: script.rollo_position_sicher_anfahren
         data:
           rollo: cover.wohnzimmerfenster_rollo
-          zielposition: 40
+          zielposition: '{{ states(''input_number.rt_rollo_wohnzimmer_sonnenschutz'') | float(40) }}'
     - sequence:
       - action: script.rollo_position_sicher_anfahren
         data:
           rollo: cover.rollo_schlafzimmer
-          zielposition: 40
+          zielposition: '{{ states(''input_number.rt_rollo_schlafzimmer_sonnenschutz'') | float(40) }}'
     - sequence:
       - action: script.rollo_position_sicher_anfahren
         data:
           rollo: cover.shelly2pmg3_8cbfea97b428_rollo_gaste_wc
-          zielposition: 40
+          zielposition: '{{ states(''input_number.rt_rollo_gaste_wc_sonnenschutz'') | float(40) }}'
     - sequence:
       - action: script.rollo_position_sicher_anfahren
         data:
           rollo: cover.terrassentur_rollo_rollo_terrassentur
-          zielposition: 40
+          zielposition: '{{ states(''input_number.rt_rollo_terrasse_sonnenschutz'') | float(40) }}'
   - delay: 00:00:05
-  - wait_template: "{{ not is_state('cover.wohnzimmerfenster_rollo', 'opening')\n
-      \ and not is_state('cover.wohnzimmerfenster_rollo', 'closing')\n  and not is_state('cover.rollo_schlafzimmer',
-      'opening')\n  and not is_state('cover.rollo_schlafzimmer', 'closing')\n  and
-      not is_state('cover.shelly2pmg3_8cbfea97b428_rollo_gaste_wc', 'opening')\n  and
-      not is_state('cover.shelly2pmg3_8cbfea97b428_rollo_gaste_wc', 'closing')\n  and
-      not is_state('cover.terrassentur_rollo_rollo_terrassentur', 'opening')\n  and
-      not is_state('cover.terrassentur_rollo_rollo_terrassentur', 'closing') }}"
+  - wait_template: "{{ not is_state('cover.wohnzimmerfenster_rollo', 'opening')\n  and not is_state('cover.wohnzimmerfenster_rollo',\
+      \ 'closing')\n  and not is_state('cover.rollo_schlafzimmer', 'opening')\n  and not is_state('cover.rollo_schlafzimmer',\
+      \ 'closing')\n  and not is_state('cover.shelly2pmg3_8cbfea97b428_rollo_gaste_wc', 'opening')\n  and not is_state('cover.shelly2pmg3_8cbfea97b428_rollo_gaste_wc',\
+      \ 'closing')\n  and not is_state('cover.terrassentur_rollo_rollo_terrassentur', 'opening')\n  and not is_state('cover.terrassentur_rollo_rollo_terrassentur',\
+      \ 'closing') }}"
     timeout: 00:02:00
     continue_on_timeout: true
   - delay: 00:00:10
@@ -614,10 +629,9 @@
   mode: single
 - id: '1788540000001'
   alias: Rollos - Sonnenschutz Westseite automatisch beenden
-  description: Oeffnet nur automatisch beschattete Westrollos wieder, wenn die Westsonne
-    mindestens 20 Minuten ausbleibt, die Westsonne vorbei ist, es deutlich abgekuehlt
-    hat oder starker Wind auftritt. Ein manueller Override verhindert jede automatische
-    Korrektur.
+  description: Oeffnet nur automatisch beschattete Westrollos wieder, wenn die Westsonne mindestens 20 Minuten ausbleibt,
+    die Westsonne vorbei ist, es deutlich abgekuehlt hat oder starker Wind auftritt. Ein manueller Override verhindert jede
+    automatische Korrektur.
   triggers:
   - trigger: state
     entity_id:
@@ -638,13 +652,11 @@
     entity_id: input_boolean.rollo_west_manuell_override
     state: 'off'
   - condition: template
-    value_template: "{% set outside = states('sensor.weather_station_aussen_temperatur')
-      | float(99) %} {% set wind = states('sensor.weather_station_windmesser_windgeschwindigkeit')
-      | float(0) %} {% set gust = states('sensor.weather_station_windmesser_boenstarke')
-      | float(0) %} {% set elevation = state_attr('sun.sun', 'elevation') | float(-90)
-      %} {% set azimuth = state_attr('sun.sun', 'azimuth') | float(360) %} {{ elevation
-      <= 5 or azimuth >= 305 or outside <= 20.5\n  or wind >= 30 or gust >= 45\n  or
-      is_state('binary_sensor.westfenster_direkte_sonne', 'off') }}"
+    value_template: "{% set outside = states('sensor.weather_station_aussen_temperatur') | float(99) %} {% set wind = states('sensor.weather_station_windmesser_windgeschwindigkeit')\
+      \ | float(0) %} {% set gust = states('sensor.weather_station_windmesser_boenstarke') | float(0) %} {% set elevation\
+      \ = state_attr('sun.sun', 'elevation') | float(-90) %} {% set azimuth = state_attr('sun.sun', 'azimuth') | float(360)\
+      \ %} {{ elevation <= 5 or azimuth >= 305 or outside <= 20.5\n  or wind >= 30 or gust >= 45\n  or is_state('binary_sensor.westfenster_direkte_sonne',\
+      \ 'off') }}"
   actions:
   - action: input_boolean.turn_off
     target:
@@ -654,28 +666,27 @@
       - action: script.rollo_position_sicher_anfahren
         data:
           rollo: cover.wohnzimmerfenster_rollo
-          zielposition: 100
+          zielposition: '{{ states(''input_number.rt_rollo_wohnzimmer_nach_sonnenschutz'') | float(100) }}'
     - sequence:
       - action: script.rollo_position_sicher_anfahren
         data:
           rollo: cover.rollo_schlafzimmer
-          zielposition: 100
+          zielposition: '{{ states(''input_number.rt_rollo_schlafzimmer_nach_sonnenschutz'') | float(100) }}'
     - sequence:
       - action: script.rollo_position_sicher_anfahren
         data:
           rollo: cover.shelly2pmg3_8cbfea97b428_rollo_gaste_wc
-          zielposition: 100
+          zielposition: '{{ states(''input_number.rt_rollo_gaste_wc_nach_sonnenschutz'') | float(100) }}'
     - sequence:
       - action: script.rollo_position_sicher_anfahren
         data:
           rollo: cover.terrassentur_rollo_rollo_terrassentur
-          zielposition: 100
+          zielposition: '{{ states(''input_number.rt_rollo_terrasse_nach_sonnenschutz'') | float(100) }}'
   mode: single
 - id: '1772142255363'
   alias: Gästezimmer - Decke Erreichbarkeit steuert Dimmer-Profil (ohne Konflikt)
-  description: 'Nutzt ausschließlich die Erreichbarkeit der Deckenlampe als Trigger.
-    - Wenn Decke nicht erreichbar (stromlos/unavailable/unknown) -> Gruppe aus. -
-    Wenn Decke wieder erreichbar -> setze Zeitprofil (nur wenn Decke ON ist).
+  description: 'Nutzt ausschließlich die Erreichbarkeit der Deckenlampe als Trigger. - Wenn Decke nicht erreichbar (stromlos/unavailable/unknown)
+    -> Gruppe aus. - Wenn Decke wieder erreichbar -> setze Zeitprofil (nur wenn Decke ON ist).
 
     '
   triggers:
@@ -720,8 +731,8 @@
       - choose:
         - conditions:
           - condition: time
-            after: 00:30:00
-            before: 07:00:00
+            after: input_datetime.rt_gast_decke_zeit_003000
+            before: input_datetime.rt_gast_decke_zeit_070000
           sequence:
           - action: light.turn_on
             data:
@@ -731,8 +742,8 @@
               transition: '{{ night_transition }}'
         - conditions:
           - condition: time
-            after: 07:00:00
-            before: 09:30:00
+            after: input_datetime.rt_gast_decke_zeit_070000
+            before: input_datetime.rt_gast_decke_zeit_093000
           sequence:
           - action: light.turn_on
             data:
@@ -742,8 +753,8 @@
               transition: '{{ morning_transition }}'
         - conditions:
           - condition: time
-            after: 09:30:00
-            before: '17:30:00'
+            after: input_datetime.rt_gast_decke_zeit_093000
+            before: input_datetime.rt_gast_decke_zeit_173000
           sequence:
           - action: light.turn_on
             data:
@@ -753,8 +764,8 @@
               transition: '{{ day_transition }}'
         - conditions:
           - condition: time
-            after: '17:30:00'
-            before: '22:00:00'
+            after: input_datetime.rt_gast_decke_zeit_173000
+            before: input_datetime.rt_gast_decke_zeit_220000
           sequence:
           - action: light.turn_on
             data:
@@ -764,8 +775,8 @@
               transition: '{{ evening_transition }}'
         - conditions:
           - condition: time
-            after: '22:00:00'
-            before: 00:30:00
+            after: input_datetime.rt_gast_decke_zeit_220000
+            before: input_datetime.rt_gast_decke_zeit_003000
           sequence:
           - action: light.turn_on
             data:
@@ -775,53 +786,53 @@
               transition: '{{ late_transition }}'
   variables:
     light_group: light.gastezimmer_2
-    morning_brightness: 60
-    morning_kelvin: 3800
-    morning_transition: 2
-    day_brightness: 100
-    day_kelvin: 6000
-    day_transition: 1
-    evening_brightness: 75
-    evening_kelvin: 3300
-    evening_transition: 2
-    late_brightness: 30
-    late_kelvin: 2400
-    late_transition: 3
-    night_brightness: 1
-    night_kelvin: 2400
-    night_transition: 2
-    off_transition: 3
+    morning_brightness: '{{ states(''input_number.rt_gast_decke_morning_brightness'') | float(60) }}'
+    morning_kelvin: '{{ states(''input_number.rt_gast_decke_morning_kelvin'') | float(3800) }}'
+    morning_transition: '{{ states(''input_number.rt_gast_decke_morning_transition'') | float(2) }}'
+    day_brightness: '{{ states(''input_number.rt_gast_decke_day_brightness'') | float(100) }}'
+    day_kelvin: '{{ states(''input_number.rt_gast_decke_day_kelvin'') | float(6000) }}'
+    day_transition: '{{ states(''input_number.rt_gast_decke_day_transition'') | float(1) }}'
+    evening_brightness: '{{ states(''input_number.rt_gast_decke_evening_brightness'') | float(75) }}'
+    evening_kelvin: '{{ states(''input_number.rt_gast_decke_evening_kelvin'') | float(3300) }}'
+    evening_transition: '{{ states(''input_number.rt_gast_decke_evening_transition'') | float(2) }}'
+    late_brightness: '{{ states(''input_number.rt_gast_decke_late_brightness'') | float(30) }}'
+    late_kelvin: '{{ states(''input_number.rt_gast_decke_late_kelvin'') | float(2400) }}'
+    late_transition: '{{ states(''input_number.rt_gast_decke_late_transition'') | float(3) }}'
+    night_brightness: '{{ states(''input_number.rt_gast_decke_night_brightness'') | float(1) }}'
+    night_kelvin: '{{ states(''input_number.rt_gast_decke_night_kelvin'') | float(2400) }}'
+    night_transition: '{{ states(''input_number.rt_gast_decke_night_transition'') | float(2) }}'
+    off_transition: '{{ states(''input_number.rt_gast_decke_off_transition'') | float(3) }}'
   mode: restart
 - id: '1772158332905'
   alias: Hue Dimmer Gästezimmer
-  description: Hue Dimmer steuert Gästezimmer Licht synchron mit Zeitfenstern + 10%-Dimmsteps
-    + langer Druck auf Taste 1 = hell an
+  description: Hue Dimmer steuert Gästezimmer Licht synchron mit Zeitfenstern + 10%-Dimmsteps + langer Druck auf Taste 1 =
+    hell an
   triggers:
-  - device_id: 8baa1ac4f2e5c94557f04b7a140b20be
+  - device_id: !secret private_device_1
     domain: hue
     type: short_release
     subtype: 1
     id: 'on'
     trigger: device
-  - device_id: 8baa1ac4f2e5c94557f04b7a140b20be
+  - device_id: !secret private_device_1
     domain: hue
     type: long_press
     subtype: 1
     id: on_long
     trigger: device
-  - device_id: 8baa1ac4f2e5c94557f04b7a140b20be
+  - device_id: !secret private_device_1
     domain: hue
     type: initial_press
     subtype: 4
     id: 'off'
     trigger: device
-  - device_id: 8baa1ac4f2e5c94557f04b7a140b20be
+  - device_id: !secret private_device_1
     domain: hue
     type: short_release
     subtype: 2
     id: up
     trigger: device
-  - device_id: 8baa1ac4f2e5c94557f04b7a140b20be
+  - device_id: !secret private_device_1
     domain: hue
     type: short_release
     subtype: 3
@@ -836,8 +847,8 @@
       - choose:
         - conditions:
           - condition: time
-            after: '23:30:00'
-            before: 07:00:00
+            after: input_datetime.rt_gast_dimmer_zeit_233000
+            before: input_datetime.rt_gast_dimmer_zeit_070000
           sequence:
           - action: light.turn_on
             data:
@@ -847,8 +858,8 @@
               transition: '{{ night_transition }}'
         - conditions:
           - condition: time
-            after: 07:00:00
-            before: 09:30:00
+            after: input_datetime.rt_gast_dimmer_zeit_070000
+            before: input_datetime.rt_gast_dimmer_zeit_093000
           sequence:
           - action: light.turn_on
             data:
@@ -858,8 +869,8 @@
               transition: '{{ morning_transition }}'
         - conditions:
           - condition: time
-            after: 09:30:00
-            before: '17:30:00'
+            after: input_datetime.rt_gast_dimmer_zeit_093000
+            before: input_datetime.rt_gast_dimmer_zeit_173000
           sequence:
           - action: light.turn_on
             data:
@@ -869,8 +880,8 @@
               transition: '{{ day_transition }}'
         - conditions:
           - condition: time
-            after: '17:30:00'
-            before: '20:30:00'
+            after: input_datetime.rt_gast_dimmer_zeit_173000
+            before: input_datetime.rt_gast_dimmer_zeit_203000
           sequence:
           - action: light.turn_on
             data:
@@ -880,8 +891,8 @@
               transition: '{{ evening_transition }}'
         - conditions:
           - condition: time
-            after: '20:30:00'
-            before: '23:30:00'
+            after: input_datetime.rt_gast_dimmer_zeit_203000
+            before: input_datetime.rt_gast_dimmer_zeit_233000
           sequence:
           - action: light.turn_on
             data:
@@ -896,9 +907,9 @@
       - action: light.turn_on
         data:
           entity_id: '{{ light_group }}'
-          brightness_pct: 100
-          color_temp_kelvin: 4000
-          transition: 2
+          brightness_pct: '{{ states(''input_number.rt_gast_dimmer_langdruck_helligkeit'') | float(100) }}'
+          color_temp_kelvin: '{{ states(''input_number.rt_gast_dimmer_langdruck_kelvin'') | float(4000) }}'
+          transition: '{{ states(''input_number.rt_gast_dimmer_langdruck_uebergang'') | float(2) }}'
     - conditions:
       - condition: trigger
         id: 'off'
@@ -929,24 +940,24 @@
           transition: '{{ step_transition }}'
   variables:
     light_group: light.gastezimmer_2
-    morning_brightness: 60
-    morning_kelvin: 3800
-    morning_transition: 2
-    day_brightness: 100
-    day_kelvin: 6000
-    day_transition: 1
-    evening_brightness: 75
-    evening_kelvin: 3300
-    evening_transition: 2
-    late_brightness: 5
-    late_kelvin: 2400
-    late_transition: 3
-    night_brightness: 1
-    night_kelvin: 2400
-    night_transition: 2
-    off_transition: 1
-    step_pct: 10
-    step_transition: 0.4
+    morning_brightness: '{{ states(''input_number.rt_gast_dimmer_morning_brightness'') | float(60) }}'
+    morning_kelvin: '{{ states(''input_number.rt_gast_dimmer_morning_kelvin'') | float(3800) }}'
+    morning_transition: '{{ states(''input_number.rt_gast_dimmer_morning_transition'') | float(2) }}'
+    day_brightness: '{{ states(''input_number.rt_gast_dimmer_day_brightness'') | float(100) }}'
+    day_kelvin: '{{ states(''input_number.rt_gast_dimmer_day_kelvin'') | float(6000) }}'
+    day_transition: '{{ states(''input_number.rt_gast_dimmer_day_transition'') | float(1) }}'
+    evening_brightness: '{{ states(''input_number.rt_gast_dimmer_evening_brightness'') | float(75) }}'
+    evening_kelvin: '{{ states(''input_number.rt_gast_dimmer_evening_kelvin'') | float(3300) }}'
+    evening_transition: '{{ states(''input_number.rt_gast_dimmer_evening_transition'') | float(2) }}'
+    late_brightness: '{{ states(''input_number.rt_gast_dimmer_late_brightness'') | float(5) }}'
+    late_kelvin: '{{ states(''input_number.rt_gast_dimmer_late_kelvin'') | float(2400) }}'
+    late_transition: '{{ states(''input_number.rt_gast_dimmer_late_transition'') | float(3) }}'
+    night_brightness: '{{ states(''input_number.rt_gast_dimmer_night_brightness'') | float(1) }}'
+    night_kelvin: '{{ states(''input_number.rt_gast_dimmer_night_kelvin'') | float(2400) }}'
+    night_transition: '{{ states(''input_number.rt_gast_dimmer_night_transition'') | float(2) }}'
+    off_transition: '{{ states(''input_number.rt_gast_dimmer_off_transition'') | float(1) }}'
+    step_pct: '{{ states(''input_number.rt_gast_dimmer_step_pct'') | float(10) }}'
+    step_transition: '{{ states(''input_number.rt_gast_dimmer_step_transition'') | float(0.4) }}'
   mode: restart
 - id: '1772754085800'
   alias: Abstellkammer Licht Bewegung
@@ -984,29 +995,25 @@
   mode: single
 - id: '1773104281445'
   alias: System - Batterie kritisch
-  description: Meldet echte, nicht wiederaufladbare Hausgeräte-Batterien einmalig
-    beim Unterschreiten von 5%
+  description: Meldet echte, nicht wiederaufladbare Hausgeräte-Batterien einmalig beim Unterschreiten von 5%
   triggers:
   - event_type: state_changed
     trigger: event
   conditions:
   - condition: template
-    value_template: "{% set e = trigger.event.data.entity_id | default('') | lower
-      %} {% set old = trigger.event.data.old_state %} {% set new = trigger.event.data.new_state
-      %} {% set excluded = 'iphone' in e or 'ipad' in e or 'watch' in e\n  or 'macbook'
-      in e or 'wby' in e or 'ix1' in e\n  or 'state_of_charge' in e or 'robotic_vacuum'
-      in e or 's8_maxv' in e %}\n{% if not new or not e.startswith('sensor.') or excluded
-      %}\n  false\n{% else %}\n  {% set unit = state_attr(e, 'unit_of_measurement')
-      %}\n  {% set device_class = state_attr(e, 'device_class') %}\n  {% set new_value
-      = new.state | float(-1) %}\n  {% set old_value = old.state | float(101) if old
-      else 101 %}\n  {{ device_class == 'battery' and unit == '%' and new_value >=
-      0\n    and new_value <= 5 and old_value > 5 }}\n{% endif %}"
+    value_template: "{% set e = trigger.event.data.entity_id | default('') | lower %} {% set old = trigger.event.data.old_state\
+      \ %} {% set new = trigger.event.data.new_state %} {% set excluded = 'iphone' in e or 'ipad' in e or 'watch' in e\n \
+      \ or 'macbook' in e or 'wby' in e or 'ix1' in e\n  or 'state_of_charge' in e or 'robotic_vacuum' in e or 's8_maxv' in\
+      \ e %}\n{% if not new or not e.startswith('sensor.') or excluded %}\n  false\n{% else %}\n  {% set unit = state_attr(e,\
+      \ 'unit_of_measurement') %}\n  {% set device_class = state_attr(e, 'device_class') %}\n  {% set new_value = new.state\
+      \ | float(-1) %}\n  {% set old_value = old.state | float(101) if old else 101 %}\n  {{ device_class == 'battery' and\
+      \ unit == '%' and new_value >= 0\n    and new_value <= (states('input_number.rt_batterie_grenze') | float(5)) and old_value\
+      \ > (states('input_number.rt_batterie_grenze') | float(5)) }}\n{% endif %}"
   actions:
-  - action: notify.mobile_app_timos_iphone15_pro_max
+  - action: !secret private_notify_1
     data:
       title: Batterie kritisch
-      message: '{{ trigger.event.data.new_state.name }} hat nur noch {{ trigger.event.data.new_state.state
-        | int }} % Batterie.'
+      message: '{{ trigger.event.data.new_state.name }} hat nur noch {{ trigger.event.data.new_state.state | int }} % Batterie.'
       data:
         tag: ha_battery_critical_{{ trigger.event.data.entity_id }}
         group: home_assistant_system
@@ -1020,25 +1027,22 @@
     trigger: event
   conditions:
   - condition: template
-    value_template: "{% set e = trigger.event.data.entity_id | default('') %} {% set
-      ns = trigger.event.data.new_state %} {% if not ns %}\n  false\n{% else %}\n
-      \ {{\n    ns.state == 'on'\n    and e.startswith('binary_sensor.')\n    and
-      (\n      'uberhitzung' in e\n      or 'uberlast' in e\n      or 'uberspannung'
-      in e\n      or 'uberstrom' in e\n      or 'neustart_erforderlich' in e\n    )\n
-      \   and (\n      'rollo' in e\n      or 'wohnzimmerfenster' in e\n      or 'terrassentur'
-      in e\n      or 'shelly2pmg3_' in e\n    )\n  }}\n{% endif %}\n"
+    value_template: "{% set e = trigger.event.data.entity_id | default('') %} {% set ns = trigger.event.data.new_state %}\
+      \ {% if not ns %}\n  false\n{% else %}\n  {{\n    ns.state == 'on'\n    and e.startswith('binary_sensor.')\n    and\
+      \ (\n      'uberhitzung' in e\n      or 'uberlast' in e\n      or 'uberspannung' in e\n      or 'uberstrom' in e\n \
+      \     or 'neustart_erforderlich' in e\n    )\n    and (\n      'rollo' in e\n      or 'wohnzimmerfenster' in e\n   \
+      \   or 'terrassentur' in e\n      or 'shelly2pmg3_' in e\n    )\n  }}\n{% endif %}\n"
   actions:
   - data:
       title: Home Assistant – Shelly Fehler
-      message: '{{ trigger.event.data.new_state.name }} wurde ausgelöst ({{ trigger.event.data.entity_id
-        }}).
+      message: '{{ trigger.event.data.new_state.name }} wurde ausgelöst ({{ trigger.event.data.entity_id }}).
 
         '
-    action: notify.mobile_app_timos_iphone15_pro_max
+    action: !secret private_notify_1
   - data:
       title: Shelly Fehler
-      message: '{{ trigger.event.data.new_state.name }} hat einen Fehler gemeldet.
-        Entity: {{ trigger.event.data.entity_id }}
+      message: '{{ trigger.event.data.new_state.name }} hat einen Fehler gemeldet. Entity: {{ trigger.event.data.entity_id
+        }}
 
         '
     action: persistent_notification.create
@@ -1054,18 +1058,20 @@
     - binary_sensor.kuhlschrank_coolselect_tur
     to: 'on'
     for:
-      minutes: 15
+      minutes: '{{ states(''input_number.rt_warn_dauer_1773105691813_0'') | float(15) }}'
     trigger: state
   actions:
   - data:
       title: Home Assistant – Kühlschrank
-      message: 'Achtung: {{ trigger.to_state.name }} ist seit 15 Minuten offen.
+      message: 'Achtung: {{ trigger.to_state.name }} ist seit {{ states(''input_number.rt_warn_dauer_1773105691813_0'') |
+        int(15) }} Minuten offen.
 
         '
-    action: notify.mobile_app_timos_iphone15_pro_max
+    action: !secret private_notify_1
   - data:
       title: Kühlschrank-Tür offen
-      message: 'Achtung: {{ trigger.to_state.name }} ist seit 15 Minuten offen.
+      message: 'Achtung: {{ trigger.to_state.name }} ist seit {{ states(''input_number.rt_warn_dauer_1773105691813_0'') |
+        int(15) }} Minuten offen.
 
         '
     action: persistent_notification.create
@@ -1075,15 +1081,15 @@
   description: Meldet starken Wind, starke Böen oder Regen
   triggers:
   - entity_id: sensor.weather_station_windmesser_windgeschwindigkeit
-    above: 30
+    above: input_number.rt_warn_1773106433748_0
     id: wind
     trigger: numeric_state
   - entity_id: sensor.weather_station_windmesser_boenstarke
-    above: 45
+    above: input_number.rt_warn_1773106433748_1
     id: boe
     trigger: numeric_state
   - entity_id: sensor.weather_station_regenmesser_niederschlagsmenge_letzte_stunde
-    above: 0.6
+    above: input_number.rt_warn_1773106433748_2
     id: regen
     trigger: numeric_state
   actions:
@@ -1098,7 +1104,7 @@
             }}).
 
             '
-        action: notify.mobile_app_timos_iphone15_pro_max
+        action: !secret private_notify_1
       - data:
           title: Wetterwarnung Wind
           message: 'Achtung: Windgeschwindigkeit ist hoch ({{ states(''sensor.weather_station_windmesser_windgeschwindigkeit'')
@@ -1112,15 +1118,13 @@
       sequence:
       - data:
           title: Home Assistant – Wetterwarnung
-          message: 'Achtung: Starke Böen erkannt ({{ states(''sensor.weather_station_windmesser_boenstarke'')
-            }}).
+          message: 'Achtung: Starke Böen erkannt ({{ states(''sensor.weather_station_windmesser_boenstarke'') }}).
 
             '
-        action: notify.mobile_app_timos_iphone15_pro_max
+        action: !secret private_notify_1
       - data:
           title: Wetterwarnung Böen
-          message: 'Achtung: Starke Böen erkannt ({{ states(''sensor.weather_station_windmesser_boenstarke'')
-            }}).
+          message: 'Achtung: Starke Böen erkannt ({{ states(''sensor.weather_station_windmesser_boenstarke'') }}).
 
             '
         action: persistent_notification.create
@@ -1134,7 +1138,7 @@
             }}.
 
             '
-        action: notify.mobile_app_timos_iphone15_pro_max
+        action: !secret private_notify_1
       - data:
           title: Wetterwarnung Regen
           message: 'Es regnet. Letzte Stunde: {{ states(''sensor.weather_station_regenmesser_niederschlagsmenge_letzte_stunde'')
@@ -1145,8 +1149,7 @@
   mode: single
 - id: '1773106634183'
   alias: System - Intelligente Wochenübersicht
-  description: Meldet sonntags nur bei Handlungsbedarf Hausgeräte-Batterien bis 10%,
-    Updates oder aktive Shelly-Fehler
+  description: Meldet sonntags nur bei Handlungsbedarf Hausgeräte-Batterien bis 10%, Updates oder aktive Shelly-Fehler
   triggers:
   - at: '10:00:00'
     trigger: time
@@ -1156,39 +1159,30 @@
     - sun
   actions:
   - variables:
-      low_batteries: "{% set ns = namespace(items=[]) %} {% for s in states.sensor
-        %}\n  {% set e = s.entity_id | lower %}\n  {% set excluded = 'iphone' in e
-        or 'ipad' in e or 'watch' in e\n    or 'macbook' in e or 'wby' in e or 'ix1'
-        in e\n    or 'state_of_charge' in e or 'robotic_vacuum' in e or 's8_maxv'
-        in e %}\n  {% if state_attr(e, 'device_class') == 'battery'\n    and state_attr(e,
-        'unit_of_measurement') == '%'\n    and not excluded and s.state not in ['unknown',
-        'unavailable', 'none', ''] %}\n    {% set value = s.state | int(-1) %}\n    {%
-        if value >= 0 and value <= 10 %}\n      {% set ns.items = ns.items + [s.name
-        ~ ' (' ~ value ~ ' %)'] %}\n    {% endif %}\n  {% endif %}\n{% endfor %} {{
-        ns.items }}"
-      available_updates: "{% set ns = namespace(items=[]) %} {% for u in states.update
-        %}\n  {% if u.state == 'on' %}\n    {% set installed = state_attr(u.entity_id,
-        'installed_version') | default('unbekannt', true) %}\n    {% set latest =
-        state_attr(u.entity_id, 'latest_version') | default('unbekannt', true) %}\n
-        \   {% set ns.items = ns.items + [u.name ~ ' (' ~ installed ~ ' → ' ~ latest
-        ~ ')'] %}\n  {% endif %}\n{% endfor %} {{ ns.items }}"
-      shelly_errors: "{% set ns = namespace(items=[]) %} {% for s in states.binary_sensor
-        %}\n  {% set e = s.entity_id | lower %}\n  {% if s.state == 'on'\n    and
-        ('uberhitzung' in e or 'uberlast' in e or 'uberspannung' in e\n      or 'uberstrom'
-        in e or 'neustart_erforderlich' in e)\n    and ('rollo' in e or 'wohnzimmerfenster'
-        in e or 'terrassentur' in e\n      or 'shelly2pmg3_' in e) %}\n    {% set
-        ns.items = ns.items + [s.name] %}\n  {% endif %}\n{% endfor %} {{ ns.items
-        }}"
+      low_batteries: "{% set ns = namespace(items=[]) %} {% for s in states.sensor %}\n  {% set e = s.entity_id | lower %}\n\
+        \  {% set excluded = 'iphone' in e or 'ipad' in e or 'watch' in e\n    or 'macbook' in e or 'wby' in e or 'ix1' in\
+        \ e\n    or 'state_of_charge' in e or 'robotic_vacuum' in e or 's8_maxv' in e %}\n  {% if state_attr(e, 'device_class')\
+        \ == 'battery'\n    and state_attr(e, 'unit_of_measurement') == '%'\n    and not excluded and s.state not in ['unknown',\
+        \ 'unavailable', 'none', ''] %}\n    {% set value = s.state | int(-1) %}\n    {% if value >= 0 and value <= 10 %}\n\
+        \      {% set ns.items = ns.items + [s.name ~ ' (' ~ value ~ ' %)'] %}\n    {% endif %}\n  {% endif %}\n{% endfor\
+        \ %} {{ ns.items }}"
+      available_updates: "{% set ns = namespace(items=[]) %} {% for u in states.update %}\n  {% if u.state == 'on' %}\n  \
+        \  {% set installed = state_attr(u.entity_id, 'installed_version') | default('unbekannt', true) %}\n    {% set latest\
+        \ = state_attr(u.entity_id, 'latest_version') | default('unbekannt', true) %}\n    {% set ns.items = ns.items + [u.name\
+        \ ~ ' (' ~ installed ~ ' → ' ~ latest ~ ')'] %}\n  {% endif %}\n{% endfor %} {{ ns.items }}"
+      shelly_errors: "{% set ns = namespace(items=[]) %} {% for s in states.binary_sensor %}\n  {% set e = s.entity_id | lower\
+        \ %}\n  {% if s.state == 'on'\n    and ('uberhitzung' in e or 'uberlast' in e or 'uberspannung' in e\n      or 'uberstrom'\
+        \ in e or 'neustart_erforderlich' in e)\n    and ('rollo' in e or 'wohnzimmerfenster' in e or 'terrassentur' in e\n\
+        \      or 'shelly2pmg3_' in e) %}\n    {% set ns.items = ns.items + [s.name] %}\n  {% endif %}\n{% endfor %} {{ ns.items\
+        \ }}"
   - condition: template
-    value_template: "{{ low_batteries | count > 0 or available_updates | count > 0\n
-      \ or shelly_errors | count > 0 }}"
-  - action: notify.mobile_app_timos_iphone15_pro_max
+    value_template: "{{ low_batteries | count > 0 or available_updates | count > 0\n  or shelly_errors | count > 0 }}"
+  - action: !secret private_notify_1
     data:
       title: Home Assistant – Wochenübersicht
-      message: "{% if low_batteries | count > 0 %}\U0001F50B Batterien: {{ low_batteries
-        | join(', ') }} {% endif %}{% if available_updates | count > 0 %}↻ Updates:
-        {{ available_updates | join(', ') }} {% endif %}{% if shelly_errors | count
-        > 0 %}⚠ Shelly-Fehler: {{ shelly_errors | join(', ') }}{% endif %}"
+      message: '{% if low_batteries | count > 0 %}🔋 Batterien: {{ low_batteries | join('', '') }} {% endif %}{% if available_updates
+        | count > 0 %}↻ Updates: {{ available_updates | join('', '') }} {% endif %}{% if shelly_errors | count > 0 %}⚠ Shelly-Fehler:
+        {{ shelly_errors | join('', '') }}{% endif %}'
       data:
         tag: ha_weekly_system_status
         group: home_assistant_system
@@ -1198,15 +1192,15 @@
   description: Warnt bei dauerhaft hoher Download- oder Upload-Auslastung
   triggers:
   - entity_id: sensor.fritzboxtimo_download_durchsatz
-    above: 250
+    above: input_number.rt_warn_1773108731795_0
     for:
-      minutes: 10
+      minutes: '{{ states(''input_number.rt_warn_dauer_1773108731795_0'') | float(10) }}'
     id: download
     trigger: numeric_state
   - entity_id: sensor.fritzboxtimo_upload_durchsatz
-    above: 130
+    above: input_number.rt_warn_1773108731795_1
     for:
-      minutes: 10
+      minutes: '{{ states(''input_number.rt_warn_dauer_1773108731795_1'') | float(10) }}'
     id: upload
     trigger: numeric_state
   actions:
@@ -1217,15 +1211,15 @@
       sequence:
       - data:
           title: Home Assistant – FRITZ!Box
-          message: 'Download seit 10 Minuten hoch ausgelastet: {{ states(''sensor.fritzboxtimo_download_durchsatz'')
-            }} Mbit/s
+          message: 'Download seit {{ states(''input_number.rt_warn_dauer_1773108731795_0'') | int(10) }} Minuten hoch ausgelastet:
+            {{ states(''sensor.fritzboxtimo_download_durchsatz'') }} Mbit/s
 
             '
-        action: notify.mobile_app_timos_iphone15_pro_max
+        action: !secret private_notify_1
       - data:
           title: FRITZ!Box Download-Auslastung
-          message: 'Download seit 10 Minuten hoch ausgelastet: {{ states(''sensor.fritzboxtimo_download_durchsatz'')
-            }} Mbit/s
+          message: 'Download seit {{ states(''input_number.rt_warn_dauer_1773108731795_0'') | int(10) }} Minuten hoch ausgelastet:
+            {{ states(''sensor.fritzboxtimo_download_durchsatz'') }} Mbit/s
 
             '
         action: persistent_notification.create
@@ -1235,15 +1229,15 @@
       sequence:
       - data:
           title: Home Assistant – FRITZ!Box
-          message: 'Upload seit 10 Minuten hoch ausgelastet: {{ states(''sensor.fritzboxtimo_upload_durchsatz'')
-            }} Mbit/s
+          message: 'Upload seit {{ states(''input_number.rt_warn_dauer_1773108731795_1'') | int(10) }} Minuten hoch ausgelastet:
+            {{ states(''sensor.fritzboxtimo_upload_durchsatz'') }} Mbit/s
 
             '
-        action: notify.mobile_app_timos_iphone15_pro_max
+        action: !secret private_notify_1
       - data:
           title: FRITZ!Box Upload-Auslastung
-          message: 'Upload seit 10 Minuten hoch ausgelastet: {{ states(''sensor.fritzboxtimo_upload_durchsatz'')
-            }} Mbit/s
+          message: 'Upload seit {{ states(''input_number.rt_warn_dauer_1773108731795_1'') | int(10) }} Minuten hoch ausgelastet:
+            {{ states(''sensor.fritzboxtimo_upload_durchsatz'') }} Mbit/s
 
             '
         action: persistent_notification.create
@@ -1306,8 +1300,7 @@
   mode: single
 - id: '1777075900378'
   alias: Trockner - Lauf fertig
-  description: Meldet erst nach mindestens 30 Minuten Laufzeit und zehn Minuten unter
-    10 W.
+  description: Meldet erst nach mindestens 30 Minuten Laufzeit und zehn Minuten unter 10 W.
   triggers:
   - trigger: numeric_state
     entity_id: sensor.stecker_waschetrockner_leistung
@@ -1318,12 +1311,12 @@
     entity_id: input_boolean.trockner_lauf_aktiv
     state: 'on'
   - condition: template
-    value_template: "{{ (as_timestamp(now())\n  - as_timestamp(states.input_boolean.trockner_lauf_aktiv.last_changed))\n
+    value_template: "{{ (as_timestamp(now())\n  - as_timestamp(states.input_boolean.trockner_lauf_aktiv.last_changed))\n \
       \ >= 1800 }}"
   actions:
-  - action: notify.mobile_app_timos_iphone15_pro_max
+  - action: !secret private_notify_1
     data:
-      title: "\U0001F9FA Trockner fertig"
+      title: 🧺 Trockner fertig
       message: Wäsche ist trocken und kann ausgeräumt werden.
       data:
         push:
@@ -1354,8 +1347,7 @@
   mode: single
 - id: '1788891000002'
   alias: Spülmaschine - Lauf fertig
-  description: Meldet erst nach mindestens 45 Minuten Laufzeit und 15 Minuten unter
-    3 W.
+  description: Meldet erst nach mindestens 45 Minuten Laufzeit und 15 Minuten unter 3 W.
   triggers:
   - trigger: numeric_state
     entity_id: sensor.shellyplugmg3_70af09e33520_leistung
@@ -1366,12 +1358,12 @@
     entity_id: input_boolean.spuelmaschine_lauf_aktiv
     state: 'on'
   - condition: template
-    value_template: "{{ (as_timestamp(now())\n  - as_timestamp(states.input_boolean.spuelmaschine_lauf_aktiv.last_changed))\n
-      \ >= 2700 }}"
+    value_template: "{{ (as_timestamp(now())\n  - as_timestamp(states.input_boolean.spuelmaschine_lauf_aktiv.last_changed))\n\
+      \  >= 2700 }}"
   actions:
-  - action: notify.mobile_app_timos_iphone15_pro_max
+  - action: !secret private_notify_1
     data:
-      title: "\U0001F37D️ Spülmaschine fertig"
+      title: 🍽️ Spülmaschine fertig
       message: Das Spülprogramm ist beendet und kann ausgeräumt werden.
       data:
         push:
@@ -1401,8 +1393,8 @@
     entity_id: input_boolean.rollo_west_sonnenschutz_aktiv
     state: 'on'
   - condition: template
-    value_template: "{{ (as_timestamp(now())\n  - as_timestamp(states.input_boolean.rollo_west_sonnenschutz_aktiv.last_changed))\n
-      \ > 45 }}"
+    value_template: "{{ (as_timestamp(now())\n  - as_timestamp(states.input_boolean.rollo_west_sonnenschutz_aktiv.last_changed))\n\
+      \  > 45 }}"
   actions:
   - action: input_boolean.turn_on
     target:
@@ -1426,9 +1418,8 @@
 - id: '1785008192931'
   alias: Küche - Licht Motion nach Tageszeit
   initial_state: false
-  description: Schaltet die Küchenlampen bei Bewegung je nach Tageszeit mit passender
-    Lichtfarbe. Der Nachlauf startet, sobald der Küchen-Bewegungsmelder wieder frei
-    ist.
+  description: Schaltet die Küchenlampen bei Bewegung je nach Tageszeit mit passender Lichtfarbe. Der Nachlauf startet, sobald
+    der Küchen-Bewegungsmelder wieder frei ist.
   triggers:
   - entity_id: binary_sensor.hue_motion_sensor_3_bewegung
     to: 'on'
@@ -1441,11 +1432,10 @@
   - variables:
       motion_sensors:
       - binary_sensor.hue_motion_sensor_3_bewegung
-      periode: "{% set t = now().strftime('%H:%M') %} {% if '07:01' <= t <= '09:00'
-        %}\n  morgens\n{% elif '09:01' <= t <= '20:00' %}\n  tag\n{% elif '20:01'
-        <= t <= '23:59' %}\n  abends\n{% else %}\n  nacht\n{% endif %}"
-      transition_seconds: "{% set p = periode | trim %} {% if p == 'nacht' %}\n  2\n{%
-        elif p == 'tag' %}\n  0.5\n{% else %}\n  1\n{% endif %}"
+      periode: "{% set t = now().strftime('%H:%M') %} {% if '07:01' <= t <= '09:00' %}\n  morgens\n{% elif '09:01' <= t <=\
+        \ '20:00' %}\n  tag\n{% elif '20:01' <= t <= '23:59' %}\n  abends\n{% else %}\n  nacht\n{% endif %}"
+      transition_seconds: "{% set p = periode | trim %} {% if p == 'nacht' %}\n  2\n{% elif p == 'tag' %}\n  0.5\n{% else\
+        \ %}\n  1\n{% endif %}"
   - choose:
     - conditions:
       - condition: template
@@ -1460,14 +1450,12 @@
           - 220
           - 90
           transition: '{{ transition_seconds | float }}'
-      - wait_template: "{{ expand(motion_sensors)\n   | selectattr('state', 'eq',
-          'on')\n   | list\n   | count == 0 }}"
+      - wait_template: "{{ expand(motion_sensors)\n   | selectattr('state', 'eq', 'on')\n   | list\n   | count == 0 }}"
         continue_on_timeout: false
       - delay:
           seconds: 30
       - condition: template
-        value_template: "{{ expand(motion_sensors)\n   | selectattr('state', 'eq',
-          'on')\n   | list\n   | count == 0 }}"
+        value_template: "{{ expand(motion_sensors)\n   | selectattr('state', 'eq', 'on')\n   | list\n   | count == 0 }}"
       - action: light.turn_off
         target:
           entity_id: light.kuche_2
@@ -1505,14 +1493,12 @@
           brightness_pct: 45
           color_temp_kelvin: 2300
           transition: '{{ transition_seconds | float }}'
-    - wait_template: "{{ expand(motion_sensors)\n   | selectattr('state', 'eq', 'on')\n
-        \  | list\n   | count == 0 }}"
+    - wait_template: "{{ expand(motion_sensors)\n   | selectattr('state', 'eq', 'on')\n   | list\n   | count == 0 }}"
       continue_on_timeout: false
     - delay:
         minutes: 1
     - condition: template
-      value_template: "{{ expand(motion_sensors)\n   | selectattr('state', 'eq', 'on')\n
-        \  | list\n   | count == 0 }}"
+      value_template: "{{ expand(motion_sensors)\n   | selectattr('state', 'eq', 'on')\n   | list\n   | count == 0 }}"
     - action: light.turn_off
       target:
         entity_id: light.kuche_2
@@ -1521,9 +1507,8 @@
   mode: restart
 - id: '1785008784986'
   alias: Küche - Bewegungslicht manueller Vorrang
-  description: Deaktiviert die Küchen-Bewegungsautomation bei manuellem Einschalten
-    über Taste 1. Taste 4 stoppt einen laufenden Nachlauf, setzt ihn zurück und aktiviert
-    die Bewegungsautomation nach dem manuellen Ausschalten wieder.
+  description: Deaktiviert die Küchen-Bewegungsautomation bei manuellem Einschalten über Taste 1. Taste 4 stoppt einen laufenden
+    Nachlauf, setzt ihn zurück und aktiviert die Bewegungsautomation nach dem manuellen Ausschalten wieder.
   triggers:
   - entity_id:
     - event.hue_dimmer_switch_kuche_taste_1
@@ -1556,31 +1541,28 @@
   mode: restart
 - id: '1785351803641'
   alias: Terrasse - Personenalarm bei Abwesenheit
-  description: Sendet Timo und Selina eine Push-Nachricht, wenn beide nicht zu Hause
-    sind und auf der Terrasse eine Person erkannt wird.
+  description: Sendet Timo und Selina eine Push-Nachricht, wenn beide nicht zu Hause sind und auf der Terrasse eine Person
+    erkannt wird.
   triggers:
   - trigger: state
     entity_id: binary_sensor.terrasse_person
     to: 'on'
   conditions:
   - condition: template
-    value_template: '{{ states(''person.timo_weinhold'') not in [''home'', ''unknown'',
-      ''unavailable''] and states(''person.selina'') not in [''home'', ''unknown'',
-      ''unavailable''] }}'
+    value_template: !secret presence_notification_condition
   actions:
   - action: persistent_notification.create
     data:
       title: Person auf der Terrasse
-      message: Während eurer Abwesenheit wurde auf der Terrasse eine Person erkannt.
-        [Kamerabild öffnen](/api/camera_proxy/camera.192_168_188_108_2)
+      message: Während eurer Abwesenheit wurde auf der Terrasse eine Person erkannt. [Kamerabild öffnen](/api/camera_proxy/camera.192_168_188_108_2)
       notification_id: terrasse_personenalarm_abwesenheit
-  - action: notify.mobile_app_timos_iphone15_pro_max
+  - action: !secret private_notify_1
     data:
       title: Person auf der Terrasse
       message: Auf der Terrasse wurde eine Person erkannt.
       data:
         image: /api/camera_proxy/camera.192_168_188_108_2
-  - action: notify.mobile_app_seli_iphone
+  - action: !secret private_notify_2
     data:
       title: Person auf der Terrasse
       message: Auf der Terrasse wurde eine Person erkannt.
@@ -1589,8 +1571,8 @@
   mode: single
 - id: '1785352407181'
   alias: Terrasse - Kritischer Nachtalarm
-  description: Sendet Timo zwischen 01:00 und 05:00 Uhr einen kritischen iPhone-Alarm,
-    wenn auf der Terrasse eine Person erkannt wird.
+  description: Sendet Timo zwischen 01:00 und 05:00 Uhr einen kritischen iPhone-Alarm, wenn auf der Terrasse eine Person erkannt
+    wird.
   triggers:
   - trigger: state
     entity_id: binary_sensor.terrasse_person
@@ -1603,10 +1585,9 @@
   - action: persistent_notification.create
     data:
       title: 'KRITISCH: Person auf der Terrasse'
-      message: Zwischen 01:00 und 05:00 Uhr wurde eine Person auf der Terrasse erkannt.
-        [Kamerabild öffnen](/api/camera_proxy/camera.192_168_188_108_2)
+      message: Zwischen 01:00 und 05:00 Uhr wurde eine Person auf der Terrasse erkannt. [Kamerabild öffnen](/api/camera_proxy/camera.192_168_188_108_2)
       notification_id: terrasse_kritischer_nachtalarm
-  - action: notify.mobile_app_timos_iphone15_pro_max
+  - action: !secret private_notify_1
     data:
       title: 'KRITISCH: Person auf der Terrasse'
       message: Zwischen 01:00 und 05:00 Uhr wurde eine Person auf der Terrasse erkannt.
@@ -1620,8 +1601,7 @@
   mode: single
 - id: '1788928206468'
   alias: iPad Local - Helligkeit
-  description: Hält iPad Local bei 40 Prozent und setzt nur bei aktivem Bildschirmschoner
-    auf 0 Prozent.
+  description: Hält iPad Local bei 40 Prozent und setzt nur bei aktivem Bildschirmschoner auf 0 Prozent.
   triggers:
   - trigger: state
     entity_id: binary_sensor.ipad_local_kiosk_screensaver
@@ -1633,16 +1613,16 @@
     event: start
   conditions: []
   actions:
-  - action: notify.mobile_app_ipad_local
+  - action: !secret private_notify_3
     data:
       message: kiosk_set_brightness
       data:
-        level: '{{ 0 if is_state(''binary_sensor.ipad_local_kiosk_screensaver'', ''on'')
-          else 40 }}'
+        level: '{{ 0 if is_state(''binary_sensor.ipad_local_kiosk_screensaver'', ''on'') else 40 }}'
   mode: restart
 - id: hue_langdruck_rollos_wohnzimmer_terrasse_20260926
   alias: Hue Dimmer - Wohnzimmer und Terrasse per Langdruck
-  description: Taste 2 lange = beide Rollos ganz auf, Taste 3 lange = Abendpositionen Wohnzimmer 40 Prozent und Terrasse 25 Prozent; auf den Schaltern Wohnzimmer, Küche und Kühlschrank.
+  description: Taste 2 lange = beide Rollos ganz auf, Taste 3 lange = Abendpositionen Wohnzimmer 40 Prozent und Terrasse 25
+    Prozent; auf den Schaltern Wohnzimmer, Küche und Kühlschrank.
   triggers:
   - trigger: state
     entity_id:
@@ -1654,7 +1634,7 @@
     - event.hue_dimmer_switch_kuhlschrank_taste_3
   conditions:
   - condition: template
-    value_template: "{{ trigger.to_state is not none and trigger.to_state.attributes.event_type == 'long_press' }}"
+    value_template: '{{ trigger.to_state is not none and trigger.to_state.attributes.event_type == ''long_press'' }}'
   actions:
   - parallel:
     - sequence:
@@ -1662,13 +1642,15 @@
         target:
           entity_id: cover.wohnzimmerfenster_rollo
         data:
-          position: "{{ 100 if trigger.entity_id.endswith('_taste_2') else 40 }}"
+          position: '{{ (states(''input_number.rt_rollo_wohnzimmer_morgen'') | float(100)) if trigger.entity_id.endswith(''_taste_2'')
+            else (states(''input_number.rt_rollo_wohnzimmer_abend'') | float(40)) }}'
     - sequence:
       - action: cover.set_cover_position
         target:
           entity_id: cover.terrassentur_rollo_rollo_terrassentur
         data:
-          position: "{{ 100 if trigger.entity_id.endswith('_taste_2') else 25 }}"
+          position: '{{ (states(''input_number.rt_rollo_terrasse_morgen'') | float(100)) if trigger.entity_id.endswith(''_taste_2'')
+            else (states(''input_number.rt_rollo_terrasse_abend'') | float(25)) }}'
   mode: restart
 - id: hue_langdruck_rollo_schlafzimmer_20260926
   alias: Hue Dimmer - Schlafzimmer-Rollo per Langdruck
@@ -1680,13 +1662,14 @@
     - event.schlafzimmer_bett_taste_3
   conditions:
   - condition: template
-    value_template: "{{ trigger.to_state is not none and trigger.to_state.attributes.event_type == 'long_press' }}"
+    value_template: '{{ trigger.to_state is not none and trigger.to_state.attributes.event_type == ''long_press'' }}'
   actions:
   - action: cover.set_cover_position
     target:
       entity_id: cover.rollo_schlafzimmer
     data:
-      position: "{{ 87 if trigger.entity_id.endswith('_taste_2') else 25 }}"
+      position: '{{ (states(''input_number.rt_rollo_schlafzimmer_morgen'') | float(87)) if trigger.entity_id.endswith(''_taste_2'')
+        else (states(''input_number.rt_rollo_schlafzimmer_abend'') | float(25)) }}'
   mode: restart
 - id: hue_kurzdruck_dimmen_schlafzimmer_20260926
   alias: Hue Dimmer - Schlafzimmer kurz dimmen
@@ -1698,13 +1681,13 @@
     - event.schlafzimmer_bett_taste_3
   conditions:
   - condition: template
-    value_template: "{{ trigger.to_state is not none and trigger.to_state.attributes.event_type == 'short_release' }}"
+    value_template: '{{ trigger.to_state is not none and trigger.to_state.attributes.event_type == ''short_release'' }}'
   actions:
   - action: light.turn_on
     target:
       entity_id: light.schlafzimmer
     data:
-      brightness_step: "{{ 25 if trigger.entity_id.endswith('_taste_2') else -25 }}"
+      brightness_step: '{{ 25 if trigger.entity_id.endswith(''_taste_2'') else -25 }}'
       transition: 0.4
   mode: queued
   max: 5
@@ -1718,11 +1701,12 @@
     - event.hue_dimmer_switch_gastezimmer_taste_3
   conditions:
   - condition: template
-    value_template: "{{ trigger.to_state is not none and trigger.to_state.attributes.event_type == 'long_press' }}"
+    value_template: '{{ trigger.to_state is not none and trigger.to_state.attributes.event_type == ''long_press'' }}'
   actions:
   - action: cover.set_cover_position
     target:
       entity_id: cover.shelly2pmg3_8cbfea9a6bb0_rollo_gastezimmer
     data:
-      position: "{{ 100 if trigger.entity_id.endswith('_taste_2') else 25 }}"
+      position: '{{ (states(''input_number.rt_rollo_gastezimmer_morgen'') | float(100)) if trigger.entity_id.endswith(''_taste_2'')
+        else (states(''input_number.rt_rollo_gastezimmer_abend'') | float(25)) }}'
   mode: restart

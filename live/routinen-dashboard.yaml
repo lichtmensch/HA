@@ -1,0 +1,912 @@
+title: Routinen & Zeiten
+views:
+- title: Übersicht
+  path: uebersicht
+  icon: mdi:view-dashboard
+  cards:
+  - type: markdown
+    content: '## Jetzt aktiv
+
+      **Flur:** {{ {''tag'':''Tag'',''morgens'':''Morgen'',''abends'':''Abend'',''nacht'':''Nacht'',''wochenende_frueh'':''Wochenende
+      früh''}.get(states(''sensor.routinen_flur_periode''), states(''sensor.routinen_flur_periode'')) }} · **Gästezimmer Dimmer:**
+      {{ states(''sensor.routinen_gastezimmer_dimmer_periode'') }} · **Deckenprofil:** {{ states(''sensor.routinen_gastezimmer_decke_periode'')
+      }}
+
+
+      **Sonnenschutz:** {{ ''aktiv'' if is_state(''input_boolean.rollo_west_sonnenschutz_aktiv'',''on'') else ''inaktiv''
+      }} · **Manueller Rollo-Vorrang:** {{ ''aktiv'' if is_state(''input_boolean.rollo_west_manuell_override'',''on'') else
+      ''inaktiv'' }}
+
+
+      {% set ns = namespace(names=[]) %}{% for a in states.automation %}{% if state_attr(a.entity_id,''current'') | int(0)
+      > 0 %}{% set ns.names = ns.names + [a.name] %}{% endif %}{% endfor %}**Laufende Abläufe:** {{ ns.names | join('', '')
+      if ns.names else ''Gerade kein Ablauf in Ausführung'' }}
+
+
+      „Aktiviert“ bedeutet eingeschaltet; die Zeitperiode ist das aktuell geltende Profil. Zielwerte gelten beim nächsten
+      regulären Auslösen.
+
+
+      **Küchenschalter:** {{ states(''sensor.routinen_kuche_schalter_periode'') }}'
+  - type: vertical-stack
+    cards:
+    - type: markdown
+      content: '### Flur-Zeitplan
+
+        | Profil | Gültigkeit | Helligkeit | Nachlauf |
+
+        |---|---|---:|---:|
+
+        | Morgen Mo–Fr | {{ states(''input_datetime.rt_flur_zeit_0701'')[:5] }}–{{ states(''input_datetime.rt_flur_zeit_0900'')[:5]
+        }} | {{ states(''input_number.rt_flur_helligkeit_65'') | int }} % | {{ states(''input_number.rt_flur_nachlauf_60'')
+        | int }} s |
+
+        | Wochenende früh | {{ states(''input_datetime.rt_flur_zeit_0600'')[:5] }}–vor {{ states(''input_datetime.rt_flur_zeit_0830'')[:5]
+        }} | {{ states(''input_number.rt_flur_helligkeit_45'') | int }} % | {{ states(''input_number.rt_flur_nachlauf_30'')
+        | int }} s |
+
+        | Morgen Wochenende | {{ states(''input_datetime.rt_flur_zeit_0830'')[:5] }}–{{ states(''input_datetime.rt_flur_zeit_0900'')[:5]
+        }} | {{ states(''input_number.rt_flur_helligkeit_65'') | int }} % | {{ states(''input_number.rt_flur_nachlauf_60'')
+        | int }} s |
+
+        | Tag | {{ states(''input_datetime.rt_flur_zeit_0901'')[:5] }}–{{ states(''input_datetime.rt_flur_zeit_2000'')[:5]
+        }} | {{ states(''input_number.rt_flur_helligkeit_90'') | int }} % | {{ states(''input_number.rt_flur_nachlauf_60'')
+        | int }} s |
+
+        | Abend | {{ states(''input_datetime.rt_flur_zeit_2001'')[:5] }}–{{ states(''input_datetime.rt_flur_zeit_2359'')[:5]
+        }} | {{ states(''input_number.rt_flur_helligkeit_45'') | int }} % | {{ states(''input_number.rt_flur_nachlauf_60'')
+        | int }} s |
+
+        | Nacht | übrige Zeiten | {{ states(''input_number.rt_flur_helligkeit_30'') | int }} % | {{ states(''input_number.rt_flur_nachlauf_30'')
+        | int }} s |
+
+
+        Nachlauf beginnt erst, wenn beide Bewegungsmelder frei sind. Nachts und am frühen Wochenende leuchtet nur die Dekolampe.
+        Abend und frühes Wochenende teilen bisher die 45-%-Einstellung.'
+    - type: entities
+      title: Flur-Licht
+      show_header_toggle: false
+      entities:
+      - entity: automation.flur_licht_motion_sonne_nacht_rueckkehr_cancel_off
+        name: Flur - Licht Motion nach Tageszeit
+      - type: attribute
+        entity: automation.flur_licht_motion_sonne_nacht_rueckkehr_cancel_off
+        attribute: last_triggered
+        name: Zuletzt ausgelöst
+  - type: vertical-stack
+    cards:
+    - type: markdown
+      content: '### Gästezimmer-Zeitprofile
+
+        | Profil | Dimmer | Decke erreichbar |
+
+        |---|---|---|
+
+        | Nacht | {{ states(''input_datetime.rt_gast_dimmer_zeit_233000'')[:5] }}–{{ states(''input_datetime.rt_gast_dimmer_zeit_070000'')[:5]
+        }} · {{ states(''input_number.rt_gast_dimmer_night_brightness'') | int }} % · {{ states(''input_number.rt_gast_dimmer_night_kelvin'')
+        | int }} K | {{ states(''input_datetime.rt_gast_decke_zeit_003000'')[:5] }}–{{ states(''input_datetime.rt_gast_decke_zeit_070000'')[:5]
+        }} · {{ states(''input_number.rt_gast_decke_night_brightness'') | int }} % · {{ states(''input_number.rt_gast_decke_night_kelvin'')
+        | int }} K |
+
+        | Morgen | {{ states(''input_datetime.rt_gast_dimmer_zeit_070000'')[:5] }}–{{ states(''input_datetime.rt_gast_dimmer_zeit_093000'')[:5]
+        }} · {{ states(''input_number.rt_gast_dimmer_morning_brightness'') | int }} % · {{ states(''input_number.rt_gast_dimmer_morning_kelvin'')
+        | int }} K | {{ states(''input_datetime.rt_gast_decke_zeit_070000'')[:5] }}–{{ states(''input_datetime.rt_gast_decke_zeit_093000'')[:5]
+        }} · {{ states(''input_number.rt_gast_decke_morning_brightness'') | int }} % · {{ states(''input_number.rt_gast_decke_morning_kelvin'')
+        | int }} K |
+
+        | Tag | {{ states(''input_datetime.rt_gast_dimmer_zeit_093000'')[:5] }}–{{ states(''input_datetime.rt_gast_dimmer_zeit_173000'')[:5]
+        }} · {{ states(''input_number.rt_gast_dimmer_day_brightness'') | int }} % · {{ states(''input_number.rt_gast_dimmer_day_kelvin'')
+        | int }} K | {{ states(''input_datetime.rt_gast_decke_zeit_093000'')[:5] }}–{{ states(''input_datetime.rt_gast_decke_zeit_173000'')[:5]
+        }} · {{ states(''input_number.rt_gast_decke_day_brightness'') | int }} % · {{ states(''input_number.rt_gast_decke_day_kelvin'')
+        | int }} K |
+
+        | Abend | {{ states(''input_datetime.rt_gast_dimmer_zeit_173000'')[:5] }}–{{ states(''input_datetime.rt_gast_dimmer_zeit_203000'')[:5]
+        }} · {{ states(''input_number.rt_gast_dimmer_evening_brightness'') | int }} % · {{ states(''input_number.rt_gast_dimmer_evening_kelvin'')
+        | int }} K | {{ states(''input_datetime.rt_gast_decke_zeit_173000'')[:5] }}–{{ states(''input_datetime.rt_gast_decke_zeit_220000'')[:5]
+        }} · {{ states(''input_number.rt_gast_decke_evening_brightness'') | int }} % · {{ states(''input_number.rt_gast_decke_evening_kelvin'')
+        | int }} K |
+
+        | Spätabend | {{ states(''input_datetime.rt_gast_dimmer_zeit_203000'')[:5] }}–{{ states(''input_datetime.rt_gast_dimmer_zeit_233000'')[:5]
+        }} · {{ states(''input_number.rt_gast_dimmer_late_brightness'') | int }} % · {{ states(''input_number.rt_gast_dimmer_late_kelvin'')
+        | int }} K | {{ states(''input_datetime.rt_gast_decke_zeit_220000'')[:5] }}–{{ states(''input_datetime.rt_gast_decke_zeit_003000'')[:5]
+        }} · {{ states(''input_number.rt_gast_decke_late_brightness'') | int }} % · {{ states(''input_number.rt_gast_decke_late_kelvin'')
+        | int }} K |
+
+        '
+    - type: entities
+      title: Gästezimmer
+      show_header_toggle: false
+      entities:
+      - entity: automation.gastezimmer_stromschalter_decke_koppelt_stehlampe_zeitprofil_wie_dimmer
+        name: Gästezimmer - Decke Erreichbarkeit steuert Dimmer-Profil (ohne Konflikt)
+      - type: attribute
+        entity: automation.gastezimmer_stromschalter_decke_koppelt_stehlampe_zeitprofil_wie_dimmer
+        attribute: last_triggered
+        name: Zuletzt ausgelöst
+      - entity: automation.hue_dimmer_gastezimmer_ohne_blueprint
+        name: Hue Dimmer Gästezimmer
+      - type: attribute
+        entity: automation.hue_dimmer_gastezimmer_ohne_blueprint
+        attribute: last_triggered
+        name: Zuletzt ausgelöst
+  - type: markdown
+    content: '## Wohnzimmer-Dimmer
+
+      Dieser Schalter hat feste Kurz-/Langdruckprofile.
+
+
+      **Taste 1 kurz:** Decke {{ states(''input_number.rt_wohnzimmer_kurz_decke'') | int }} % / {{ states(''input_number.rt_wohnzimmer_kurz_kelvin'')
+      | int }} K + Ambientelicht {{ states(''input_number.rt_wohnzimmer_kurz_ambient'') | int }} % in Orange.
+
+
+      **Taste 1 lang:** {{ states(''input_number.rt_wohnzimmer_lang_helligkeit'') | int }} % / {{ states(''input_number.rt_wohnzimmer_warmweiss_kelvin'')
+      | int }} K.
+
+
+      **Taste 2/3 kurz:** dimmen. **Taste 4 kurz:** Wohnzimmer aus. **Taste 4 lang:** Küche und Esszimmer aus. Zeitprofile
+      für Wohnzimmer/Esszimmer gehören zum separaten Kühlschrank-Schalter auf Hue.'
+  - type: markdown
+    content: '## Küchenschalter
+
+      **Aktuelles Profil:** {{ states(''sensor.routinen_kuche_schalter_periode'') }}
+
+
+      | Profil | Zeit | Helligkeit / Farbe |
+
+      |---|---|---|
+
+      | Morgen | {{ states(''input_datetime.rt_kuche_dimmer_zeit_060000'')[:5] }}–{{ states(''input_datetime.rt_kuche_dimmer_zeit_093000'')[:5]
+      }} | {{ states(''input_number.rt_kuche_dimmer_b_morning'') | int }} % · {{ states(''input_number.rt_kuche_dimmer_k_warm'')
+      | int }} K |
+
+      | Tag | {{ states(''input_datetime.rt_kuche_dimmer_zeit_093000'')[:5] }}–{{ states(''input_datetime.rt_kuche_dimmer_zeit_200000'')[:5]
+      }} | {{ states(''input_number.rt_kuche_dimmer_b_day'') | int }} % · {{ states(''input_number.rt_kuche_dimmer_k_day'')
+      | int }} K |
+
+      | Abend | {{ states(''input_datetime.rt_kuche_dimmer_zeit_200000'')[:5] }}–{{ states(''input_datetime.rt_kuche_dimmer_zeit_233000'')[:5]
+      }} | {{ states(''input_number.rt_kuche_dimmer_b_evening'') | int }} % · {{ states(''input_number.rt_kuche_dimmer_k_warm'')
+      | int }} K |
+
+      | Nacht | übrige Zeiten | {{ states(''input_number.rt_kuche_dimmer_b_night'') | int }} % · blauer Farbton (editierbar)
+      |
+
+
+      Taste 1 = Zeitprofil, Taste 2/3 kurz = dimmen, Taste 4 = aus. Der bestehende manuelle Vorrang bleibt erhalten. Die separate
+      Küchen-Bewegungsroutine ist weiterhin ausgeschaltet.'
+  - type: vertical-stack
+    cards:
+    - type: markdown
+      content: '### Rollo-Ablauf
+
+        **Abends:** Sonnenuntergang +30 Minuten → Abendpositionen.
+
+
+        **Mo–Fr:** ab {{ states(''input_datetime.rt_rollo_weekday_0700'')[:5] }} und Sonnenaufgang +30 Min.; Schlafzimmer/Gästezimmer
+        {{ states(''input_datetime.rt_rollo_weekday_1000'')[:5] }}.
+
+
+        **Wochenende:** ab {{ states(''input_datetime.rt_rollo_weekend_0830'')[:5] }} und Sonnenaufgang +60 Min.; Schlafzimmer/Gästezimmer
+        {{ states(''input_datetime.rt_rollo_weekend_1100'')[:5] }}.
+
+
+        **Schlafzimmer morgens:** {{ states(''input_number.rt_rollo_schlafzimmer_morgen'') | int }} %. Sonnenschutz bleibt
+        mit eigenen Zielwerten und manuellem Vorrang verknüpft.'
+    - type: entities
+      title: Rollos
+      show_header_toggle: false
+      entities:
+      - entity: automation.rollos_sonnenzeiten_wochenplan
+        name: Rollos - Sonnenzeiten + Wochenplan
+      - type: attribute
+        entity: automation.rollos_sonnenzeiten_wochenplan
+        attribute: last_triggered
+        name: Zuletzt ausgelöst
+      - entity: automation.rollos_sonnenschutz_westseite_40_nur_bei_sonne_temp
+        name: Rollos - Sonnenschutz Westseite intelligent
+      - type: attribute
+        entity: automation.rollos_sonnenschutz_westseite_40_nur_bei_sonne_temp
+        attribute: last_triggered
+        name: Zuletzt ausgelöst
+      - entity: automation.rollos_sonnenschutz_westseite_automatisch_beenden
+        name: Rollos - Sonnenschutz Westseite automatisch beenden
+      - type: attribute
+        entity: automation.rollos_sonnenschutz_westseite_automatisch_beenden
+        attribute: last_triggered
+        name: Zuletzt ausgelöst
+      - entity: automation.rollo_west_manuellen_override_setzen
+        name: Rollo West - Manuellen Override setzen
+      - type: attribute
+        entity: automation.rollo_west_manuellen_override_setzen
+        attribute: last_triggered
+        name: Zuletzt ausgelöst
+      - entity: automation.rollo_west_override_taglich_zurucksetzen
+        name: Rollo West - Override täglich zurücksetzen
+      - type: attribute
+        entity: automation.rollo_west_override_taglich_zurucksetzen
+        attribute: last_triggered
+        name: Zuletzt ausgelöst
+      - entity: automation.hue_dimmer_schlafzimmer_rollo_per_langdruck
+        name: Hue Dimmer - Schlafzimmer-Rollo per Langdruck
+      - type: attribute
+        entity: automation.hue_dimmer_schlafzimmer_rollo_per_langdruck
+        attribute: last_triggered
+        name: Zuletzt ausgelöst
+      - entity: automation.hue_dimmer_gastezimmer_rollo_per_langdruck
+        name: Hue Dimmer - Gästezimmer-Rollo per Langdruck
+      - type: attribute
+        entity: automation.hue_dimmer_gastezimmer_rollo_per_langdruck
+        attribute: last_triggered
+        name: Zuletzt ausgelöst
+      - entity: automation.hue_dimmer_wohnzimmer_und_terrasse_per_langdruck
+        name: Hue Dimmer - Wohnzimmer und Terrasse per Langdruck
+      - type: attribute
+        entity: automation.hue_dimmer_wohnzimmer_und_terrasse_per_langdruck
+        attribute: last_triggered
+        name: Zuletzt ausgelöst
+  - type: vertical-stack
+    cards:
+    - type: markdown
+      content: '### Warnungen
+
+        **Batterie:** beim Unterschreiten von {{ states(''input_number.rt_batterie_grenze'') | int }} % (bestehende Geräteausnahmen
+        bleiben).
+
+
+        **Kühlschranktür:** nach {{ states(''input_number.rt_warn_dauer_1773105691813_0'') | int }} Minuten offen.
+
+
+        **Wetter:** Wind >{{ states(''input_number.rt_warn_1773106433748_0'') }} km/h · Böen >{{ states(''input_number.rt_warn_1773106433748_1'')
+        }} km/h · Regen >{{ states(''input_number.rt_warn_1773106433748_2'') }} mm/h.
+
+
+        **Shelly-Fehler:** ereignisgesteuert, ohne Zeitplan. Schwellenänderungen gelten beim nächsten Sensorereignis; laufende
+        Wartezeiten werden nicht rückwirkend neu berechnet.'
+    - type: entities
+      title: Warnungen & System
+      show_header_toggle: false
+      entities:
+      - entity: automation.system_batterie_warnung
+        name: System - Batterie kritisch
+      - type: attribute
+        entity: automation.system_batterie_warnung
+        attribute: last_triggered
+        name: Zuletzt ausgelöst
+      - entity: automation.system_kuhlschrank_tur_offen_warnung
+        name: System - Kühlschrank Tür offen Warnung
+      - type: attribute
+        entity: automation.system_kuhlschrank_tur_offen_warnung
+        attribute: last_triggered
+        name: Zuletzt ausgelöst
+      - entity: automation.system_wetterwarnung_wind_und_regen
+        name: System - Wetterwarnung Wind und Regen
+      - type: attribute
+        entity: automation.system_wetterwarnung_wind_und_regen
+        attribute: last_triggered
+        name: Zuletzt ausgelöst
+      - entity: automation.system_wochentlicher_wartungsreport
+        name: System - Intelligente Wochenübersicht
+      - type: attribute
+        entity: automation.system_wochentlicher_wartungsreport
+        attribute: last_triggered
+        name: Zuletzt ausgelöst
+      - entity: automation.system_fritz_internet_auslastung_warnung
+        name: System - FRITZ Internet Auslastung Warnung
+      - type: attribute
+        entity: automation.system_fritz_internet_auslastung_warnung
+        attribute: last_triggered
+        name: Zuletzt ausgelöst
+      - entity: automation.system_host_neustart
+        name: System - Host Neustart
+      - type: attribute
+        entity: automation.system_host_neustart
+        attribute: last_triggered
+        name: Zuletzt ausgelöst
+      - entity: automation.terrasse_personenalarm_bei_abwesenheit
+        name: Terrasse - Personenalarm bei Abwesenheit
+      - type: attribute
+        entity: automation.terrasse_personenalarm_bei_abwesenheit
+        attribute: last_triggered
+        name: Zuletzt ausgelöst
+      - entity: automation.terrasse_kritischer_nachtalarm
+        name: Terrasse - Kritischer Nachtalarm
+      - type: attribute
+        entity: automation.terrasse_kritischer_nachtalarm
+        attribute: last_triggered
+        name: Zuletzt ausgelöst
+      - entity: automation.system_shelly_rollo_fehlerwarnung
+        name: System - Shelly Rollo Fehlerwarnung
+      - type: attribute
+        entity: automation.system_shelly_rollo_fehlerwarnung
+        attribute: last_triggered
+        name: Zuletzt ausgelöst
+  - type: vertical-stack
+    cards:
+    - type: entities
+      title: Weitere Routinen
+      show_header_toggle: false
+      entities:
+      - entity: automation.hue_dimmer_remote_kueche_2
+        name: Hue Dimmer Remote Kueche
+      - type: attribute
+        entity: automation.hue_dimmer_remote_kueche_2
+        attribute: last_triggered
+        name: Zuletzt ausgelöst
+      - entity: automation.hue_dimmer_wohnzimmer_gruppe_zeiten_10_steps
+        name: Hue Dimmer Wohnzimmer - Decke + Orange + Küche/Esszimmer Aus
+      - type: attribute
+        entity: automation.hue_dimmer_wohnzimmer_gruppe_zeiten_10_steps
+        attribute: last_triggered
+        name: Zuletzt ausgelöst
+      - entity: automation.abstellkammer_licht_bewegung
+        name: Abstellkammer Licht Bewegung
+      - type: attribute
+        entity: automation.abstellkammer_licht_bewegung
+        attribute: last_triggered
+        name: Zuletzt ausgelöst
+      - entity: automation.regen_letzte_stunde_setzen
+        name: Regen letzte Stunde setzen
+      - type: attribute
+        entity: automation.regen_letzte_stunde_setzen
+        attribute: last_triggered
+        name: Zuletzt ausgelöst
+      - entity: automation.regen_letzte_stunde_zurucksetzen
+        name: Regen letzte Stunde zurücksetzen
+      - type: attribute
+        entity: automation.regen_letzte_stunde_zurucksetzen
+        attribute: last_triggered
+        name: Zuletzt ausgelöst
+      - entity: automation.trockner_lauf_gestartet
+        name: Trockner - Lauf gestartet
+      - type: attribute
+        entity: automation.trockner_lauf_gestartet
+        attribute: last_triggered
+        name: Zuletzt ausgelöst
+      - entity: automation.trockner_lauf_fertig
+        name: Trockner - Lauf fertig
+      - type: attribute
+        entity: automation.trockner_lauf_fertig
+        attribute: last_triggered
+        name: Zuletzt ausgelöst
+      - entity: automation.spulmaschine_lauf_gestartet
+        name: Spülmaschine - Lauf gestartet
+      - type: attribute
+        entity: automation.spulmaschine_lauf_gestartet
+        attribute: last_triggered
+        name: Zuletzt ausgelöst
+      - entity: automation.spulmaschine_lauf_fertig
+        name: Spülmaschine - Lauf fertig
+      - type: attribute
+        entity: automation.spulmaschine_lauf_fertig
+        attribute: last_triggered
+        name: Zuletzt ausgelöst
+      - entity: automation.kuche_licht_motion_nach_tageszeit_2
+        name: Küche - Licht Motion nach Tageszeit
+      - type: attribute
+        entity: automation.kuche_licht_motion_nach_tageszeit_2
+        attribute: last_triggered
+        name: Zuletzt ausgelöst
+      - entity: automation.kuche_bewegungslicht_manueller_vorrang
+        name: Küche - Bewegungslicht manueller Vorrang
+      - type: attribute
+        entity: automation.kuche_bewegungslicht_manueller_vorrang
+        attribute: last_triggered
+        name: Zuletzt ausgelöst
+      - entity: automation.neue_automation
+        name: iPad Local - Helligkeit
+      - type: attribute
+        entity: automation.neue_automation
+        attribute: last_triggered
+        name: Zuletzt ausgelöst
+      - entity: automation.hue_dimmer_schlafzimmer_kurz_dimmen
+        name: Hue Dimmer - Schlafzimmer kurz dimmen
+      - type: attribute
+        entity: automation.hue_dimmer_schlafzimmer_kurz_dimmen
+        attribute: last_triggered
+        name: Zuletzt ausgelöst
+      - entity: automation.hue_gruppe_gaste_wc_korrigieren
+        name: Hue Gruppe Gäste WC korrigieren
+      - type: attribute
+        entity: automation.hue_gruppe_gaste_wc_korrigieren
+        attribute: last_triggered
+        name: Zuletzt ausgelöst
+  - type: entities
+    title: Bad-Heizung
+    show_header_toggle: false
+    entities:
+    - entity: automation.bad_morgenwarme_23_degc_mit_netatmo
+      name: Bad – Morgenwärme 22,5 °C mit Netatmo
+    - type: attribute
+      entity: automation.bad_morgenwarme_23_degc_mit_netatmo
+      attribute: last_triggered
+      name: Zuletzt ausgelöst
+    - entity: automation.bad_morgenverlauf_auswerten
+      name: Bad – Morgenverlauf auswerten
+    - type: attribute
+      entity: automation.bad_morgenverlauf_auswerten
+      attribute: last_triggered
+      name: Zuletzt ausgelöst
+  - &id001
+    type: markdown
+    content: '### Schlafzimmer Bett · Hue-Bridge
+
+      Stand: 04.10.2026. Bestehende Hue-Regeln, hier zunächst als Übersicht.
+
+
+      | Ab | Räume / Szenen |
+
+      |---|---|
+
+      | 07:00 | Schlafzimmer · Energie tanken |
+
+      | 10:00 | Schlafzimmer · Konzentrieren |
+
+      | 17:00 | Schlafzimmer · Lesen |
+
+      | 20:00 | Schlafzimmer · Entspannen |
+
+      | 23:00 | Schlafzimmer · Nachtlicht |
+
+
+      Das letzte Profil gilt über Mitternacht bis zum nächsten Eintrag. Die Szene wird durch den Tastendruck ausgewählt, nicht
+      automatisch zur Uhrzeit gestartet.
+
+
+      **Zum nächsten Tastendruck gilt aktuell:** {% set t=now().strftime(''%H:%M'') %}{{ ''Energie tanken'' if ''07:00'' <=
+      t < ''10:00'' else ''Konzentrieren'' if ''10:00'' <= t < ''17:00'' else ''Lesen'' if ''17:00'' <= t < ''20:00'' else
+      ''Entspannen'' if ''20:00'' <= t < ''23:00'' else ''Nachtlicht'' }}'
+  - &id002
+    type: markdown
+    content: '### Hue dimmer switch Kühlschrank · Hue-Bridge
+
+      Stand: 04.10.2026. Bestehende Hue-Regeln, hier zunächst als Übersicht.
+
+
+      | Ab | Räume / Szenen |
+
+      |---|---|
+
+      | 07:00 | Wohnzimmer · Energie tanken; Esszimmer · Hell |
+
+      | 10:00 | Wohnzimmer · Konzentrieren; Esszimmer · Hell |
+
+      | 17:00 | Wohnzimmer · Lesen; Esszimmer · Hell |
+
+      | 20:00 | Wohnzimmer · Entspannen; Esszimmer · Gedimmt |
+
+      | 23:00 | Wohnzimmer · Nachtlicht; Esszimmer · Nachtlicht |
+
+
+      Das letzte Profil gilt über Mitternacht bis zum nächsten Eintrag. Die Szene wird durch den Tastendruck ausgewählt, nicht
+      automatisch zur Uhrzeit gestartet.
+
+
+      **Zum nächsten Tastendruck gilt aktuell:** {% set t=now().strftime(''%H:%M'') %}{{ ''Energie tanken / Hell'' if ''07:00''
+      <= t < ''10:00'' else ''Konzentrieren / Hell'' if ''10:00'' <= t < ''17:00'' else ''Lesen / Hell'' if ''17:00'' <= t
+      < ''20:00'' else ''Entspannen / Gedimmt'' if ''20:00'' <= t < ''23:00'' else ''Nachtlicht / Nachtlicht'' }}'
+  - type: vertical-stack
+    cards:
+    - &id003
+      type: markdown
+      content: '## QNAP · UniFi-Wochenprüfung
+
+
+        **Jeden Sonntag um {{ states("input_datetime.qnap_unifi_pruefzeit")[:5] }} Uhr.**
+
+
+        QNAP per Wake-on-LAN starten → Controller abwarten → gemeldete Firmware-/Controller-Updates lesen → ohne Updates geordnet
+        herunterfahren. Mit Updates bleibt die QNAP eingeschaltet und informiert Timos iPhone. Keine Update-Installation.
+
+
+        Bei nicht erfolgreicher Prüfung wird nicht heruntergefahren; stattdessen wird ein Fehler gemeldet. Der vorhandene
+        UniFi-Lesezugang wird beibehalten; eine erzwungene neue Firmware-Suche ist damit nicht erlaubt.
+
+
+        Der NAS-/Controller-Start kann mehrere Minuten dauern. Der Ablauf wartet bis zu 20 Minuten auf prüfbare Update-Daten.'
+    - &id004
+      type: entities
+      title: Status & Zeit
+      show_header_toggle: false
+      entities:
+      - input_datetime.qnap_unifi_pruefzeit
+      - type: simple-entity
+        entity: input_text.qnap_unifi_pruefstatus
+      - type: simple-entity
+        entity: input_datetime.qnap_unifi_letzte_pruefung
+      - automation.qnap_unifi_updateprufung_am_sonntag
+      - script.qnap_unifi_wochenpruefung
+      - sensor.timosqnap_status
+- title: Flur
+  path: flur
+  cards:
+  - type: markdown
+    content: Zeiten und Zielwerte sind direkt editierbar. Änderungen wirken beim nächsten Auslösen. Zeitgrenzen bitte in ihrer
+      bisherigen Reihenfolge halten.
+  - type: markdown
+    content: '### Flur-Zeitplan
+
+      | Profil | Gültigkeit | Helligkeit | Nachlauf |
+
+      |---|---|---:|---:|
+
+      | Morgen Mo–Fr | {{ states(''input_datetime.rt_flur_zeit_0701'')[:5] }}–{{ states(''input_datetime.rt_flur_zeit_0900'')[:5]
+      }} | {{ states(''input_number.rt_flur_helligkeit_65'') | int }} % | {{ states(''input_number.rt_flur_nachlauf_60'')
+      | int }} s |
+
+      | Wochenende früh | {{ states(''input_datetime.rt_flur_zeit_0600'')[:5] }}–vor {{ states(''input_datetime.rt_flur_zeit_0830'')[:5]
+      }} | {{ states(''input_number.rt_flur_helligkeit_45'') | int }} % | {{ states(''input_number.rt_flur_nachlauf_30'')
+      | int }} s |
+
+      | Morgen Wochenende | {{ states(''input_datetime.rt_flur_zeit_0830'')[:5] }}–{{ states(''input_datetime.rt_flur_zeit_0900'')[:5]
+      }} | {{ states(''input_number.rt_flur_helligkeit_65'') | int }} % | {{ states(''input_number.rt_flur_nachlauf_60'')
+      | int }} s |
+
+      | Tag | {{ states(''input_datetime.rt_flur_zeit_0901'')[:5] }}–{{ states(''input_datetime.rt_flur_zeit_2000'')[:5] }}
+      | {{ states(''input_number.rt_flur_helligkeit_90'') | int }} % | {{ states(''input_number.rt_flur_nachlauf_60'') | int
+      }} s |
+
+      | Abend | {{ states(''input_datetime.rt_flur_zeit_2001'')[:5] }}–{{ states(''input_datetime.rt_flur_zeit_2359'')[:5]
+      }} | {{ states(''input_number.rt_flur_helligkeit_45'') | int }} % | {{ states(''input_number.rt_flur_nachlauf_60'')
+      | int }} s |
+
+      | Nacht | übrige Zeiten | {{ states(''input_number.rt_flur_helligkeit_30'') | int }} % | {{ states(''input_number.rt_flur_nachlauf_30'')
+      | int }} s |
+
+
+      Nachlauf beginnt erst, wenn beide Bewegungsmelder frei sind. Nachts und am frühen Wochenende leuchtet nur die Dekolampe.
+      Abend und frühes Wochenende teilen bisher die 45-%-Einstellung.'
+  - type: entities
+    title: Flur · Zeiten
+    show_header_toggle: false
+    entities:
+    - input_datetime.rt_flur_zeit_0600
+    - input_datetime.rt_flur_zeit_0701
+    - input_datetime.rt_flur_zeit_0830
+    - input_datetime.rt_flur_zeit_0900
+    - input_datetime.rt_flur_zeit_0901
+    - input_datetime.rt_flur_zeit_2000
+    - input_datetime.rt_flur_zeit_2001
+    - input_datetime.rt_flur_zeit_2359
+  - type: entities
+    title: Flur · Zielwerte
+    show_header_toggle: false
+    entities:
+    - input_number.rt_flur_helligkeit_30
+    - input_number.rt_flur_nachlauf_30
+    - input_number.rt_flur_helligkeit_45
+    - input_number.rt_flur_helligkeit_65
+    - input_number.rt_flur_helligkeit_90
+    - input_number.rt_flur_nachlauf_60
+    - input_number.rt_flur_uebergang_nacht
+    - input_number.rt_flur_uebergang_tag
+    - input_number.rt_flur_uebergang_sonst
+- title: Gästezimmer
+  path: gaestezimmer
+  cards:
+  - type: markdown
+    content: Zeiten und Zielwerte sind direkt editierbar. Änderungen wirken beim nächsten Auslösen. Zeitgrenzen bitte in ihrer
+      bisherigen Reihenfolge halten.
+  - type: markdown
+    content: '### Gästezimmer-Zeitprofile
+
+      | Profil | Dimmer | Decke erreichbar |
+
+      |---|---|---|
+
+      | Nacht | {{ states(''input_datetime.rt_gast_dimmer_zeit_233000'')[:5] }}–{{ states(''input_datetime.rt_gast_dimmer_zeit_070000'')[:5]
+      }} · {{ states(''input_number.rt_gast_dimmer_night_brightness'') | int }} % · {{ states(''input_number.rt_gast_dimmer_night_kelvin'')
+      | int }} K | {{ states(''input_datetime.rt_gast_decke_zeit_003000'')[:5] }}–{{ states(''input_datetime.rt_gast_decke_zeit_070000'')[:5]
+      }} · {{ states(''input_number.rt_gast_decke_night_brightness'') | int }} % · {{ states(''input_number.rt_gast_decke_night_kelvin'')
+      | int }} K |
+
+      | Morgen | {{ states(''input_datetime.rt_gast_dimmer_zeit_070000'')[:5] }}–{{ states(''input_datetime.rt_gast_dimmer_zeit_093000'')[:5]
+      }} · {{ states(''input_number.rt_gast_dimmer_morning_brightness'') | int }} % · {{ states(''input_number.rt_gast_dimmer_morning_kelvin'')
+      | int }} K | {{ states(''input_datetime.rt_gast_decke_zeit_070000'')[:5] }}–{{ states(''input_datetime.rt_gast_decke_zeit_093000'')[:5]
+      }} · {{ states(''input_number.rt_gast_decke_morning_brightness'') | int }} % · {{ states(''input_number.rt_gast_decke_morning_kelvin'')
+      | int }} K |
+
+      | Tag | {{ states(''input_datetime.rt_gast_dimmer_zeit_093000'')[:5] }}–{{ states(''input_datetime.rt_gast_dimmer_zeit_173000'')[:5]
+      }} · {{ states(''input_number.rt_gast_dimmer_day_brightness'') | int }} % · {{ states(''input_number.rt_gast_dimmer_day_kelvin'')
+      | int }} K | {{ states(''input_datetime.rt_gast_decke_zeit_093000'')[:5] }}–{{ states(''input_datetime.rt_gast_decke_zeit_173000'')[:5]
+      }} · {{ states(''input_number.rt_gast_decke_day_brightness'') | int }} % · {{ states(''input_number.rt_gast_decke_day_kelvin'')
+      | int }} K |
+
+      | Abend | {{ states(''input_datetime.rt_gast_dimmer_zeit_173000'')[:5] }}–{{ states(''input_datetime.rt_gast_dimmer_zeit_203000'')[:5]
+      }} · {{ states(''input_number.rt_gast_dimmer_evening_brightness'') | int }} % · {{ states(''input_number.rt_gast_dimmer_evening_kelvin'')
+      | int }} K | {{ states(''input_datetime.rt_gast_decke_zeit_173000'')[:5] }}–{{ states(''input_datetime.rt_gast_decke_zeit_220000'')[:5]
+      }} · {{ states(''input_number.rt_gast_decke_evening_brightness'') | int }} % · {{ states(''input_number.rt_gast_decke_evening_kelvin'')
+      | int }} K |
+
+      | Spätabend | {{ states(''input_datetime.rt_gast_dimmer_zeit_203000'')[:5] }}–{{ states(''input_datetime.rt_gast_dimmer_zeit_233000'')[:5]
+      }} · {{ states(''input_number.rt_gast_dimmer_late_brightness'') | int }} % · {{ states(''input_number.rt_gast_dimmer_late_kelvin'')
+      | int }} K | {{ states(''input_datetime.rt_gast_decke_zeit_220000'')[:5] }}–{{ states(''input_datetime.rt_gast_decke_zeit_003000'')[:5]
+      }} · {{ states(''input_number.rt_gast_decke_late_brightness'') | int }} % · {{ states(''input_number.rt_gast_decke_late_kelvin'')
+      | int }} K |
+
+      '
+  - type: markdown
+    content: Dimmer und Erreichbarkeit der Deckenlampe haben bewusst getrennte Zeitfenster und Zielwerte. Die vorhandenen
+      Unterschiede bleiben erhalten.
+  - type: entities
+    title: Gästezimmer · Deckenprofil Zielwerte
+    show_header_toggle: false
+    entities:
+    - input_number.rt_gast_decke_morning_brightness
+    - input_number.rt_gast_decke_morning_kelvin
+    - input_number.rt_gast_decke_morning_transition
+    - input_number.rt_gast_decke_day_brightness
+    - input_number.rt_gast_decke_day_kelvin
+    - input_number.rt_gast_decke_day_transition
+    - input_number.rt_gast_decke_evening_brightness
+    - input_number.rt_gast_decke_evening_kelvin
+    - input_number.rt_gast_decke_evening_transition
+    - input_number.rt_gast_decke_late_brightness
+    - input_number.rt_gast_decke_late_kelvin
+    - input_number.rt_gast_decke_late_transition
+    - input_number.rt_gast_decke_night_brightness
+    - input_number.rt_gast_decke_night_kelvin
+    - input_number.rt_gast_decke_night_transition
+    - input_number.rt_gast_decke_off_transition
+  - type: entities
+    title: Gästezimmer · Deckenprofil Zeiten
+    show_header_toggle: false
+    entities:
+    - input_datetime.rt_gast_decke_zeit_003000
+    - input_datetime.rt_gast_decke_zeit_070000
+    - input_datetime.rt_gast_decke_zeit_093000
+    - input_datetime.rt_gast_decke_zeit_173000
+    - input_datetime.rt_gast_decke_zeit_220000
+  - type: entities
+    title: Gästezimmer · Dimmer Zielwerte
+    show_header_toggle: false
+    entities:
+    - input_number.rt_gast_dimmer_morning_brightness
+    - input_number.rt_gast_dimmer_morning_kelvin
+    - input_number.rt_gast_dimmer_morning_transition
+    - input_number.rt_gast_dimmer_day_brightness
+    - input_number.rt_gast_dimmer_day_kelvin
+    - input_number.rt_gast_dimmer_day_transition
+    - input_number.rt_gast_dimmer_evening_brightness
+    - input_number.rt_gast_dimmer_evening_kelvin
+    - input_number.rt_gast_dimmer_evening_transition
+    - input_number.rt_gast_dimmer_late_brightness
+    - input_number.rt_gast_dimmer_late_kelvin
+    - input_number.rt_gast_dimmer_late_transition
+    - input_number.rt_gast_dimmer_night_brightness
+    - input_number.rt_gast_dimmer_night_kelvin
+    - input_number.rt_gast_dimmer_night_transition
+    - input_number.rt_gast_dimmer_off_transition
+    - input_number.rt_gast_dimmer_step_pct
+    - input_number.rt_gast_dimmer_step_transition
+    - input_number.rt_gast_dimmer_langdruck_helligkeit
+    - input_number.rt_gast_dimmer_langdruck_kelvin
+    - input_number.rt_gast_dimmer_langdruck_uebergang
+  - type: entities
+    title: Gästezimmer · Dimmer Zeiten
+    show_header_toggle: false
+    entities:
+    - input_datetime.rt_gast_dimmer_zeit_233000
+    - input_datetime.rt_gast_dimmer_zeit_070000
+    - input_datetime.rt_gast_dimmer_zeit_093000
+    - input_datetime.rt_gast_dimmer_zeit_173000
+    - input_datetime.rt_gast_dimmer_zeit_203000
+- title: Rollos
+  path: rollos
+  cards:
+  - type: markdown
+    content: Zeiten und Zielwerte sind direkt editierbar. Änderungen wirken beim nächsten Auslösen. Zeitgrenzen bitte in ihrer
+      bisherigen Reihenfolge halten.
+  - type: markdown
+    content: '### Rollo-Ablauf
+
+      **Abends:** Sonnenuntergang +30 Minuten → Abendpositionen.
+
+
+      **Mo–Fr:** ab {{ states(''input_datetime.rt_rollo_weekday_0700'')[:5] }} und Sonnenaufgang +30 Min.; Schlafzimmer/Gästezimmer
+      {{ states(''input_datetime.rt_rollo_weekday_1000'')[:5] }}.
+
+
+      **Wochenende:** ab {{ states(''input_datetime.rt_rollo_weekend_0830'')[:5] }} und Sonnenaufgang +60 Min.; Schlafzimmer/Gästezimmer
+      {{ states(''input_datetime.rt_rollo_weekend_1100'')[:5] }}.
+
+
+      **Schlafzimmer morgens:** {{ states(''input_number.rt_rollo_schlafzimmer_morgen'') | int }} %. Sonnenschutz bleibt mit
+      eigenen Zielwerten und manuellem Vorrang verknüpft.'
+  - type: markdown
+    content: '**Sonnenregeln bleiben erhalten:** abends Sonnenuntergang +30 Min.; morgens Mo–Fr frühestens zur eingestellten
+      Uhrzeit und Sonnenaufgang +30 Min., Wochenende +60 Min. Schlafzimmer/Gästezimmer öffnen separat zur späteren Zeit. Sonnenschutz
+      hat eigene Zielwerte, auch beim Beenden. Sonnenabstände bleiben fest.'
+  - type: entities
+    title: Rollos · Zeiten
+    show_header_toggle: false
+    entities:
+    - input_datetime.rt_rollo_weekday_0700
+    - input_datetime.rt_rollo_weekend_0830
+    - input_datetime.rt_rollo_weekday_1000
+    - input_datetime.rt_rollo_weekend_1100
+  - type: entities
+    title: Rollos · Abend
+    show_header_toggle: false
+    entities:
+    - input_number.rt_rollo_bad_abend
+    - input_number.rt_rollo_gaste_wc_abend
+    - input_number.rt_rollo_wohnzimmer_abend
+    - input_number.rt_rollo_gastezimmer_abend
+    - input_number.rt_rollo_schlafzimmer_abend
+    - input_number.rt_rollo_terrasse_abend
+  - type: entities
+    title: Rollos · Morgen
+    show_header_toggle: false
+    entities:
+    - input_number.rt_rollo_bad_morgen
+    - input_number.rt_rollo_gaste_wc_morgen
+    - input_number.rt_rollo_wohnzimmer_morgen
+    - input_number.rt_rollo_terrasse_morgen
+    - input_number.rt_rollo_schlafzimmer_morgen
+    - input_number.rt_rollo_gastezimmer_morgen
+  - type: entities
+    title: Rollos · Sonnenschutz
+    show_header_toggle: false
+    entities:
+    - input_number.rt_rollo_wohnzimmer_sonnenschutz
+    - input_number.rt_rollo_schlafzimmer_sonnenschutz
+    - input_number.rt_rollo_gaste_wc_sonnenschutz
+    - input_number.rt_rollo_terrasse_sonnenschutz
+  - type: entities
+    title: Rollos · nach Sonnenschutz
+    show_header_toggle: false
+    entities:
+    - input_number.rt_rollo_wohnzimmer_nach_sonnenschutz
+    - input_number.rt_rollo_schlafzimmer_nach_sonnenschutz
+    - input_number.rt_rollo_gaste_wc_nach_sonnenschutz
+    - input_number.rt_rollo_terrasse_nach_sonnenschutz
+- title: Warnungen
+  path: warnungen
+  cards:
+  - type: markdown
+    content: Zeiten und Zielwerte sind direkt editierbar. Änderungen wirken beim nächsten Auslösen. Zeitgrenzen bitte in ihrer
+      bisherigen Reihenfolge halten.
+  - type: markdown
+    content: '### Warnungen
+
+      **Batterie:** beim Unterschreiten von {{ states(''input_number.rt_batterie_grenze'') | int }} % (bestehende Geräteausnahmen
+      bleiben).
+
+
+      **Kühlschranktür:** nach {{ states(''input_number.rt_warn_dauer_1773105691813_0'') | int }} Minuten offen.
+
+
+      **Wetter:** Wind >{{ states(''input_number.rt_warn_1773106433748_0'') }} km/h · Böen >{{ states(''input_number.rt_warn_1773106433748_1'')
+      }} km/h · Regen >{{ states(''input_number.rt_warn_1773106433748_2'') }} mm/h.
+
+
+      **Shelly-Fehler:** ereignisgesteuert, ohne Zeitplan. Schwellenänderungen gelten beim nächsten Sensorereignis; laufende
+      Wartezeiten werden nicht rückwirkend neu berechnet.'
+  - type: entities
+    title: Warnungen · Einstellungen
+    show_header_toggle: false
+    entities:
+    - input_number.rt_batterie_grenze
+    - input_number.rt_warn_dauer_1773105691813_0
+    - input_number.rt_warn_1773106433748_0
+    - input_number.rt_warn_1773106433748_1
+    - input_number.rt_warn_1773106433748_2
+    - input_number.rt_warn_1773108731795_0
+    - input_number.rt_warn_dauer_1773108731795_0
+    - input_number.rt_warn_1773108731795_1
+    - input_number.rt_warn_dauer_1773108731795_1
+- title: Küche
+  path: kueche
+  cards:
+  - type: markdown
+    content: '## Küchenschalter
+
+      **Aktuelles Profil:** {{ states(''sensor.routinen_kuche_schalter_periode'') }}
+
+
+      | Profil | Zeit | Helligkeit / Farbe |
+
+      |---|---|---|
+
+      | Morgen | {{ states(''input_datetime.rt_kuche_dimmer_zeit_060000'')[:5] }}–{{ states(''input_datetime.rt_kuche_dimmer_zeit_093000'')[:5]
+      }} | {{ states(''input_number.rt_kuche_dimmer_b_morning'') | int }} % · {{ states(''input_number.rt_kuche_dimmer_k_warm'')
+      | int }} K |
+
+      | Tag | {{ states(''input_datetime.rt_kuche_dimmer_zeit_093000'')[:5] }}–{{ states(''input_datetime.rt_kuche_dimmer_zeit_200000'')[:5]
+      }} | {{ states(''input_number.rt_kuche_dimmer_b_day'') | int }} % · {{ states(''input_number.rt_kuche_dimmer_k_day'')
+      | int }} K |
+
+      | Abend | {{ states(''input_datetime.rt_kuche_dimmer_zeit_200000'')[:5] }}–{{ states(''input_datetime.rt_kuche_dimmer_zeit_233000'')[:5]
+      }} | {{ states(''input_number.rt_kuche_dimmer_b_evening'') | int }} % · {{ states(''input_number.rt_kuche_dimmer_k_warm'')
+      | int }} K |
+
+      | Nacht | übrige Zeiten | {{ states(''input_number.rt_kuche_dimmer_b_night'') | int }} % · blauer Farbton (editierbar)
+      |
+
+
+      Taste 1 = Zeitprofil, Taste 2/3 kurz = dimmen, Taste 4 = aus. Der bestehende manuelle Vorrang bleibt erhalten. Die separate
+      Küchen-Bewegungsroutine ist weiterhin ausgeschaltet.'
+  - type: entities
+    title: Küche · Schalter-Zielwerte
+    show_header_toggle: false
+    entities:
+    - input_number.rt_kuche_dimmer_b_morning
+    - input_number.rt_kuche_dimmer_b_day
+    - input_number.rt_kuche_dimmer_b_evening
+    - input_number.rt_kuche_dimmer_b_night
+    - input_number.rt_kuche_dimmer_k_warm
+    - input_number.rt_kuche_dimmer_k_day
+    - input_number.rt_kuche_dimmer_tr_on
+    - input_number.rt_kuche_dimmer_tr_off
+    - input_number.rt_kuche_dimmer_tr_step
+    - input_number.rt_kuche_dimmer_step_pct
+    - input_number.rt_kuche_nacht_hue
+    - input_number.rt_kuche_nacht_saturation
+  - type: entities
+    title: Küche · Schalter-Zeiten
+    show_header_toggle: false
+    entities:
+    - input_datetime.rt_kuche_dimmer_zeit_060000
+    - input_datetime.rt_kuche_dimmer_zeit_093000
+    - input_datetime.rt_kuche_dimmer_zeit_200000
+    - input_datetime.rt_kuche_dimmer_zeit_233000
+- title: Wohnzimmer
+  path: wohnzimmer
+  cards:
+  - type: markdown
+    content: '## Wohnzimmer-Dimmer
+
+      Dieser Schalter hat feste Kurz-/Langdruckprofile.
+
+
+      **Taste 1 kurz:** Decke {{ states(''input_number.rt_wohnzimmer_kurz_decke'') | int }} % / {{ states(''input_number.rt_wohnzimmer_kurz_kelvin'')
+      | int }} K + Ambientelicht {{ states(''input_number.rt_wohnzimmer_kurz_ambient'') | int }} % in Orange.
+
+
+      **Taste 1 lang:** {{ states(''input_number.rt_wohnzimmer_lang_helligkeit'') | int }} % / {{ states(''input_number.rt_wohnzimmer_warmweiss_kelvin'')
+      | int }} K.
+
+
+      **Taste 2/3 kurz:** dimmen. **Taste 4 kurz:** Wohnzimmer aus. **Taste 4 lang:** Küche und Esszimmer aus. Zeitprofile
+      für Wohnzimmer/Esszimmer gehören zum separaten Kühlschrank-Schalter auf Hue.'
+  - type: entities
+    title: Wohnzimmer · Schalter-Zielwerte
+    show_header_toggle: false
+    entities:
+    - input_number.rt_wohnzimmer_transition_s
+    - input_number.rt_wohnzimmer_dim_transition_s
+    - input_number.rt_wohnzimmer_off_transition_s
+    - input_number.rt_wohnzimmer_warmweiss_kelvin
+    - input_number.rt_wohnzimmer_orange_hue
+    - input_number.rt_wohnzimmer_orange_saturation
+    - input_number.rt_wohnzimmer_kurz_decke
+    - input_number.rt_wohnzimmer_kurz_kelvin
+    - input_number.rt_wohnzimmer_kurz_ambient
+    - input_number.rt_wohnzimmer_lang_helligkeit
+    - input_number.rt_wohnzimmer_dimmschritt
+- title: Hue-Zeitprofile
+  path: hue
+  cards:
+  - *id001
+  - *id002
+- title: QNAP
+  path: qnap
+  icon: mdi:nas
+  cards:
+  - *id003
+  - *id004
+  - type: entities
+    title: UniFi · Gemeldete Firmware-Updates
+    show_header_toggle: false
+    entities:
+    - update.u7_wohnzimmer_firmware
+    - update.u7_gastezimmer_firmware
+  - type: button
+    name: QNAP wecken
+    icon: mdi:power
+    tap_action:
+      action: perform-action
+      perform_action: wake_on_lan.send_magic_packet
+      data:
+        mac: !secret qnap_wol_mac
+        broadcast_address: !secret qnap_wol_broadcast
+        broadcast_port: 9

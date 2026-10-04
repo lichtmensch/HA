@@ -1,0 +1,179 @@
+wake_on_lan: {}
+shell_command:
+  qnap_unifi_updates_pruefen: python3 /config/maintenance/qnap_unifi.py check
+  qnap_geordnet_herunterfahren: python3 /config/maintenance/qnap_unifi.py shutdown
+  qnap_erreichbarkeit_pruefen: python3 /config/maintenance/qnap_unifi.py probe
+input_datetime:
+  qnap_unifi_pruefzeit:
+    name: QNAP · Sonntagsprüfung um
+    has_date: false
+    has_time: true
+  qnap_unifi_letzte_pruefung:
+    name: QNAP · Letzte erfolgreiche Update-Prüfung
+    has_date: true
+    has_time: true
+input_text:
+  qnap_unifi_pruefstatus:
+    name: QNAP · Prüfstatus
+    max: 255
+script:
+  qnap_unifi_wochenpruefung:
+    alias: QNAP · UniFi-Updates prüfen und bei Bedarf ausschalten
+    description: Weckt die QNAP, wartet auf einen vollständig lesbaren Controller-Status und meldet Geräte-/Controller-Updates.
+      Bei Fehlern bleibt die QNAP an. Installiert keine Updates.
+    mode: single
+    max_exceeded: silent
+    sequence:
+    - variables:
+        controller_deadline: '{{ as_timestamp(now()) + 1200 }}'
+    - action: input_text.set_value
+      target:
+        entity_id: input_text.qnap_unifi_pruefstatus
+      data:
+        value: QNAP und Controller werden geprüft
+    - action: wake_on_lan.send_magic_packet
+      data:
+        mac: !secret qnap_wol_mac
+        broadcast_address: !secret qnap_wol_broadcast
+        broadcast_port: 9
+    - repeat:
+        sequence:
+        - action: shell_command.qnap_unifi_updates_pruefen
+          response_variable: probe
+        - variables:
+            pruefung: '{{ probe.stdout | default(''{}'') | from_json(default={''ok'':false}) }}'
+        - if: '{{ not pruefung.get(''ok'',false) }}'
+          then:
+          - delay: 00:00:30
+        until: '{{ pruefung.get(''ok'',false) or as_timestamp(now()) >= controller_deadline }}'
+    - if: '{{ not pruefung.get(''ok'',false) }}'
+      then:
+      - action: input_text.set_value
+        target:
+          entity_id: input_text.qnap_unifi_pruefstatus
+        data:
+          value: Controller nach 20 Minuten nicht prüfbar
+      - action: !secret private_notify_1
+        data:
+          title: 'QNAP / UniFi: Prüfung fehlgeschlagen'
+          message: Controller nach 20 Minuten nicht prüfbar Die QNAP bleibt eingeschaltet.
+          data:
+            tag: qnap-unifi-wochencheck
+            url: /dashboard-routinen/qnap
+      - stop: Controller nach 20 Minuten nicht prüfbar
+    - action: input_text.set_value
+      target:
+        entity_id: input_text.qnap_unifi_pruefstatus
+      data:
+        value: Controller bereit; Update-Status wird erneut geprüft
+    - delay: 00:02:00
+    - action: shell_command.qnap_unifi_updates_pruefen
+      response_variable: check
+    - variables:
+        pruefung: '{{ check.stdout | default(''{}'') | from_json(default={''ok'':false}) }}'
+    - if: '{{ not pruefung.get(''ok'',false) }}'
+      then:
+      - action: input_text.set_value
+        target:
+          entity_id: input_text.qnap_unifi_pruefstatus
+        data:
+          value: Update-Prüfung nicht erfolgreich
+      - action: !secret private_notify_1
+        data:
+          title: 'QNAP / UniFi: Prüfung fehlgeschlagen'
+          message: Update-Prüfung nicht erfolgreich Die QNAP bleibt eingeschaltet.
+          data:
+            tag: qnap-unifi-wochencheck
+            url: /dashboard-routinen/qnap
+      - stop: Update-Prüfung nicht erfolgreich
+    - action: input_datetime.set_datetime
+      target:
+        entity_id: input_datetime.qnap_unifi_letzte_pruefung
+      data:
+        datetime: '{{ now().strftime(''%Y-%m-%d %H:%M:%S'') }}'
+    - choose:
+      - conditions: '{{ pruefung.updates | length > 0 }}'
+        sequence:
+        - action: input_text.set_value
+          target:
+            entity_id: input_text.qnap_unifi_pruefstatus
+          data:
+            value: Updates vorhanden – QNAP bleibt eingeschaltet
+        - action: !secret private_notify_1
+          data:
+            title: 'UniFi: Updates verfügbar'
+            message: '{{ pruefung.updates | map(attribute=''name'') | join('', '') }}. Details: {% for u in pruefung.updates
+              %}{{ u.name }}: {{ u.installed }} → {{ u.available }}{% if not loop.last %}; {% endif %}{% endfor
+              %}. Die QNAP bleibt für die Aktualisierung eingeschaltet.'
+            data:
+              tag: qnap-unifi-wochencheck
+              url: /dashboard-routinen/qnap
+      default:
+      - variables:
+          shutdown_deadline: '{{ as_timestamp(now()) + 300 }}'
+      - action: input_text.set_value
+        target:
+          entity_id: input_text.qnap_unifi_pruefstatus
+        data:
+          value: Keine UniFi-Updates – QNAP fährt herunter
+      - action: shell_command.qnap_geordnet_herunterfahren
+        response_variable: shutdown
+      - variables:
+          abschalten: '{{ shutdown.stdout | default(''{}'') | from_json(default={''ok'':false}) }}'
+      - if: '{{ not abschalten.get(''ok'',false) }}'
+        then:
+        - action: input_text.set_value
+          target:
+            entity_id: input_text.qnap_unifi_pruefstatus
+          data:
+            value: QNAP-Herunterfahren wurde nicht bestätigt
+        - action: !secret private_notify_1
+          data:
+            title: 'QNAP / UniFi: Prüfung fehlgeschlagen'
+            message: QNAP-Herunterfahren wurde nicht bestätigt Die QNAP bleibt eingeschaltet.
+            data:
+              tag: qnap-unifi-wochencheck
+              url: /dashboard-routinen/qnap
+        - stop: QNAP-Herunterfahren wurde nicht bestätigt
+      - repeat:
+          sequence:
+          - delay: 00:00:15
+          - action: shell_command.qnap_erreichbarkeit_pruefen
+            response_variable: power
+          - variables:
+              powerstatus: '{{ power.stdout | default(''{}'') | from_json(default={''ok'':false}) }}'
+          until: '{{ not powerstatus.get(''online'',true) or as_timestamp(now()) >= shutdown_deadline }}'
+      - if: '{{ powerstatus.get(''online'',true) }}'
+        then:
+        - action: input_text.set_value
+          target:
+            entity_id: input_text.qnap_unifi_pruefstatus
+          data:
+            value: QNAP nach 5 Minuten weiterhin erreichbar
+        - action: !secret private_notify_1
+          data:
+            title: 'QNAP / UniFi: Prüfung fehlgeschlagen'
+            message: QNAP nach 5 Minuten weiterhin erreichbar Die QNAP bleibt eingeschaltet.
+            data:
+              tag: qnap-unifi-wochencheck
+              url: /dashboard-routinen/qnap
+        - stop: QNAP nach 5 Minuten weiterhin erreichbar
+        else:
+        - action: input_text.set_value
+          target:
+            entity_id: input_text.qnap_unifi_pruefstatus
+          data:
+            value: Keine Updates – QNAP ist heruntergefahren
+automation:
+- id: qnap_unifi_sonntag_1200
+  alias: QNAP · UniFi-Updateprüfung am Sonntag
+  mode: single
+  triggers:
+  - trigger: time
+    at: input_datetime.qnap_unifi_pruefzeit
+  conditions:
+  - condition: time
+    weekday:
+    - sun
+  actions:
+  - action: script.qnap_unifi_wochenpruefung

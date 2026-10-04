@@ -29,9 +29,7 @@ alles_aus_haus:
   description: ''
 rollos_alle_schliesen_30_komfortposition:
   alias: Rollos - Alle schließen (wie Abendroutine)
-  description: >-
-    Wie die Abendroutine: Bad und Gäste-WC 0 %, Wohnzimmer 40 %, Terrasse,
-    Schlafzimmer und Gästezimmer 25 %. Die bestehende Skript-ID bleibt erhalten.
+  description: Nutzt die editierbaren Routinen-Zielwerte; Ablauf und Skript-ID bleiben erhalten.
   icon: mdi:blinds-horizontal-closed
   sequence:
   - parallel:
@@ -39,37 +37,37 @@ rollos_alle_schliesen_30_komfortposition:
       - action: script.rollo_position_sicher_anfahren
         data:
           rollo: cover.shelly2pmg3_8cbfea97b428_rollo_gaste_wc
-          zielposition: 0
+          zielposition: '{{ states(''input_number.rt_rollo_gaste_wc_abend'') | float(0) }}'
     - sequence:
       - action: script.rollo_position_sicher_anfahren
         data:
           rollo: cover.shelly2pmg3_8cbfea9cc4f4_rollo_bad
-          zielposition: 0
+          zielposition: '{{ states(''input_number.rt_rollo_bad_abend'') | float(0) }}'
     - sequence:
       - action: script.rollo_position_sicher_anfahren
         data:
           rollo: cover.wohnzimmerfenster_rollo
-          zielposition: 40
+          zielposition: '{{ states(''input_number.rt_rollo_wohnzimmer_abend'') | float(40) }}'
     - sequence:
       - action: script.rollo_position_sicher_anfahren
         data:
           rollo: cover.terrassentur_rollo_rollo_terrassentur
-          zielposition: 25
+          zielposition: '{{ states(''input_number.rt_rollo_terrasse_abend'') | float(25) }}'
     - sequence:
       - action: script.rollo_position_sicher_anfahren
         data:
           rollo: cover.rollo_schlafzimmer
-          zielposition: 25
+          zielposition: '{{ states(''input_number.rt_rollo_schlafzimmer_abend'') | float(25) }}'
     - sequence:
       - action: script.rollo_position_sicher_anfahren
         data:
           rollo: cover.shelly2pmg3_8cbfea9a6bb0_rollo_gastezimmer
-          zielposition: 25
+          zielposition: '{{ states(''input_number.rt_rollo_gastezimmer_abend'') | float(25) }}'
   mode: single
 kaffeevollautomat_ausgewahltes_getrank_starten:
   alias: Kaffeevollautomat - Ausgewähltes Getränk starten
-  description: Startet das zuvor am Dashboard ausgewählte Getränk nur bei verbundener,
-    bereiter Maschine und freigegebenem Fernstart.
+  description: Startet das zuvor am Dashboard ausgewählte Getränk nur bei verbundener, bereiter Maschine und freigegebenem
+    Fernstart.
   icon: mdi:coffee-to-go-outline
   mode: single
   sequence:
@@ -83,17 +81,16 @@ kaffeevollautomat_ausgewahltes_getrank_starten:
     entity_id: sensor.kaffeevollautomat_betriebszustand
     state: ready
   - condition: template
-    value_template: "{{ states('select.kaffeevollautomat_ausgewahltes_programm')\n
-      \  not in ['unknown', 'unavailable', 'none', ''] }}"
+    value_template: "{{ states('select.kaffeevollautomat_ausgewahltes_programm')\n   not in ['unknown', 'unavailable', 'none',\
+      \ ''] }}"
   - action: home_connect.set_program_and_options
     data:
-      device_id: 1c7036dadf412fffe224608f8a1c92e5
+      device_id: !secret private_device_2
       affects_to: active_program
       program: '{{ states(''select.kaffeevollautomat_ausgewahltes_programm'') }}'
 rollos_alle_oeffnen_schlafzimmer_87:
   alias: Rollos - Alle öffnen (Schlafzimmer 87 %)
-  description: Öffnet alle Rollos vollständig und begrenzt das Schlafzimmerrollo auf
-    87 Prozent.
+  description: Nutzt die editierbaren Routinen-Zielwerte; Ablauf und Skript-ID bleiben erhalten.
   icon: mdi:window-shutter-open
   mode: restart
   sequence:
@@ -102,36 +99,35 @@ rollos_alle_oeffnen_schlafzimmer_87:
       - action: script.rollo_position_sicher_anfahren
         data:
           rollo: cover.wohnzimmerfenster_rollo
-          zielposition: 100
+          zielposition: '{{ states(''input_number.rt_rollo_wohnzimmer_morgen'') | float(100) }}'
     - sequence:
       - action: script.rollo_position_sicher_anfahren
         data:
           rollo: cover.terrassentur_rollo_rollo_terrassentur
-          zielposition: 100
+          zielposition: '{{ states(''input_number.rt_rollo_terrasse_morgen'') | float(100) }}'
     - sequence:
       - action: script.rollo_position_sicher_anfahren
         data:
           rollo: cover.shelly2pmg3_8cbfea9a6bb0_rollo_gastezimmer
-          zielposition: 100
+          zielposition: '{{ states(''input_number.rt_rollo_gastezimmer_morgen'') | float(100) }}'
     - sequence:
       - action: script.rollo_position_sicher_anfahren
         data:
           rollo: cover.shelly2pmg3_8cbfea97b428_rollo_gaste_wc
-          zielposition: 100
+          zielposition: '{{ states(''input_number.rt_rollo_gaste_wc_morgen'') | float(100) }}'
     - sequence:
       - action: script.rollo_position_sicher_anfahren
         data:
           rollo: cover.shelly2pmg3_8cbfea9cc4f4_rollo_bad
-          zielposition: 100
+          zielposition: '{{ states(''input_number.rt_rollo_bad_morgen'') | float(100) }}'
     - sequence:
       - action: script.rollo_position_sicher_anfahren
         data:
           rollo: cover.rollo_schlafzimmer
-          zielposition: 87
+          zielposition: '{{ states(''input_number.rt_rollo_schlafzimmer_morgen'') | float(87) }}'
 ipad_haus_verlassen:
   alias: iPad Flur - Haus verlassen
-  description: Speichert alle Lichtzustaende ausserhalb des Flurs und schaltet diese
-    Lampen aus.
+  description: Speichert alle Lichtzustaende ausserhalb des Flurs und schaltet diese Lampen aus.
   icon: mdi:exit-run
   mode: single
   sequence:
@@ -217,8 +213,7 @@ ipad_wieder_da:
   - choose:
     - conditions:
       - condition: template
-        value_template: '{{ states.scene.ipad_lichtzustand_vor_verlassen is not none
-          }}'
+        value_template: '{{ states.scene.ipad_lichtzustand_vor_verlassen is not none }}'
       sequence:
       - action: scene.turn_on
         target:
@@ -229,13 +224,12 @@ ipad_wieder_da:
     - action: persistent_notification.create
       data:
         title: Lichtzustand nicht gespeichert
-        message: Bitte zuerst auf Haus verlassen tippen, damit ein Lichtzustand gespeichert
-          wird.
+        message: Bitte zuerst auf Haus verlassen tippen, damit ein Lichtzustand gespeichert wird.
         notification_id: ipad_lichtzustand_fehlt
 rollo_position_sicher_anfahren:
   alias: Rollo - Position sicher anfahren
-  description: 'Fährt ein Rollo auf eine Zielposition und wiederholt den Befehl genau
-    einmal, falls ein kurzer Verbindungsabbruch die erste Ausführung verhindert.
+  description: 'Fährt ein Rollo auf eine Zielposition und wiederholt den Befehl genau einmal, falls ein kurzer Verbindungsabbruch
+    die erste Ausführung verhindert.
 
     '
   mode: parallel
@@ -281,13 +275,12 @@ rollo_position_sicher_anfahren:
         position: '{{ ziel }}'
   - delay: 00:00:07
   - variables:
-      position_nach_befehl: '{{ state_attr(rollo, ''current_position'') | int(-1)
-        }}'
+      position_nach_befehl: '{{ state_attr(rollo, ''current_position'') | int(-1) }}'
       zustand_nach_befehl: '{{ states(rollo) }}'
   - if:
     - condition: template
-      value_template: "{{ position_nach_befehl != start_position\n   or position_nach_befehl
-        == ziel\n   or zustand_nach_befehl in ['opening', 'closing'] }}\n"
+      value_template: "{{ position_nach_befehl != start_position\n   or position_nach_befehl == ziel\n   or zustand_nach_befehl\
+        \ in ['opening', 'closing'] }}\n"
     then: []
     else:
     - wait_template: '{{ states(rollo) not in [''unavailable'', ''unknown''] }}'

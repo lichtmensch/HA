@@ -1,0 +1,898 @@
+input_datetime:
+  rt_flur_zeit_0600:
+    name: Wochenende früh ab
+    has_date: false
+    has_time: true
+  rt_flur_zeit_0701:
+    name: Mo–Fr Morgen ab
+    has_date: false
+    has_time: true
+  rt_flur_zeit_0830:
+    name: Wochenende Morgen ab
+    has_date: false
+    has_time: true
+  rt_flur_zeit_0900:
+    name: Morgen bis
+    has_date: false
+    has_time: true
+  rt_flur_zeit_0901:
+    name: Tag ab
+    has_date: false
+    has_time: true
+  rt_flur_zeit_2000:
+    name: Tag bis
+    has_date: false
+    has_time: true
+  rt_flur_zeit_2001:
+    name: Abend ab
+    has_date: false
+    has_time: true
+  rt_flur_zeit_2359:
+    name: Abend bis
+    has_date: false
+    has_time: true
+  rt_gast_decke_zeit_003000:
+    name: Nacht ab
+    has_date: false
+    has_time: true
+  rt_gast_decke_zeit_070000:
+    name: Morgen ab
+    has_date: false
+    has_time: true
+  rt_gast_decke_zeit_093000:
+    name: Tag ab
+    has_date: false
+    has_time: true
+  rt_gast_decke_zeit_173000:
+    name: Abend ab
+    has_date: false
+    has_time: true
+  rt_gast_decke_zeit_220000:
+    name: Spätabend ab
+    has_date: false
+    has_time: true
+  rt_gast_dimmer_zeit_233000:
+    name: Nacht ab
+    has_date: false
+    has_time: true
+  rt_gast_dimmer_zeit_070000:
+    name: Morgen ab
+    has_date: false
+    has_time: true
+  rt_gast_dimmer_zeit_093000:
+    name: Tag ab
+    has_date: false
+    has_time: true
+  rt_gast_dimmer_zeit_173000:
+    name: Abend ab
+    has_date: false
+    has_time: true
+  rt_gast_dimmer_zeit_203000:
+    name: Spätabend ab
+    has_date: false
+    has_time: true
+  rt_rollo_weekday_0700:
+    name: Mo–Fr · Früheste Öffnung
+    has_date: false
+    has_time: true
+  rt_rollo_weekend_0830:
+    name: Wochenende · Früheste Öffnung
+    has_date: false
+    has_time: true
+  rt_rollo_weekday_1000:
+    name: Mo–Fr · Schlafzimmer/Gästezimmer
+    has_date: false
+    has_time: true
+  rt_rollo_weekend_1100:
+    name: Wochenende · Schlafzimmer/Gästezimmer
+    has_date: false
+    has_time: true
+  rt_kuche_dimmer_zeit_060000:
+    name: Morgen ab
+    has_date: false
+    has_time: true
+  rt_kuche_dimmer_zeit_093000:
+    name: Tag ab
+    has_date: false
+    has_time: true
+  rt_kuche_dimmer_zeit_200000:
+    name: Abend ab
+    has_date: false
+    has_time: true
+  rt_kuche_dimmer_zeit_233000:
+    name: Nacht ab
+    has_date: false
+    has_time: true
+input_number:
+  rt_flur_helligkeit_30:
+    name: Flur Helligkeit 30 %
+    min: 0
+    max: 100
+    step: 1
+    mode: box
+    unit_of_measurement: '%'
+  rt_flur_nachlauf_30:
+    name: Flur Nachlauf 30 s
+    min: 1
+    max: 600
+    step: 1
+    mode: box
+    unit_of_measurement: s
+  rt_flur_helligkeit_45:
+    name: Flur Helligkeit 45 %
+    min: 0
+    max: 100
+    step: 1
+    mode: box
+    unit_of_measurement: '%'
+  rt_flur_helligkeit_65:
+    name: Flur Helligkeit 65 %
+    min: 0
+    max: 100
+    step: 1
+    mode: box
+    unit_of_measurement: '%'
+  rt_flur_helligkeit_90:
+    name: Flur Helligkeit 90 %
+    min: 0
+    max: 100
+    step: 1
+    mode: box
+    unit_of_measurement: '%'
+  rt_flur_nachlauf_60:
+    name: Flur Nachlauf 60 s
+    min: 1
+    max: 600
+    step: 1
+    mode: box
+    unit_of_measurement: s
+  rt_flur_uebergang_nacht:
+    name: Flur Übergang Nacht
+    min: 0
+    max: 20
+    step: 0.1
+    mode: box
+    unit_of_measurement: s
+  rt_flur_uebergang_tag:
+    name: Flur Übergang Tag
+    min: 0
+    max: 20
+    step: 0.1
+    mode: box
+    unit_of_measurement: s
+  rt_flur_uebergang_sonst:
+    name: Flur Übergang sonst
+    min: 0
+    max: 20
+    step: 0.1
+    mode: box
+    unit_of_measurement: s
+  rt_gast_decke_morning_brightness:
+    name: Morgen · Helligkeit
+    min: 0
+    max: 100
+    step: 1
+    mode: box
+    unit_of_measurement: '%'
+  rt_gast_decke_morning_kelvin:
+    name: Morgen · Farbtemperatur
+    min: 2000
+    max: 6500
+    step: 50
+    mode: box
+    unit_of_measurement: K
+  rt_gast_decke_morning_transition:
+    name: Morgen · Übergang
+    min: 0
+    max: 100
+    step: 0.1
+    mode: box
+    unit_of_measurement: s
+  rt_gast_decke_day_brightness:
+    name: Tag · Helligkeit
+    min: 0
+    max: 100
+    step: 1
+    mode: box
+    unit_of_measurement: '%'
+  rt_gast_decke_day_kelvin:
+    name: Tag · Farbtemperatur
+    min: 2000
+    max: 6500
+    step: 50
+    mode: box
+    unit_of_measurement: K
+  rt_gast_decke_day_transition:
+    name: Tag · Übergang
+    min: 0
+    max: 100
+    step: 0.1
+    mode: box
+    unit_of_measurement: s
+  rt_gast_decke_evening_brightness:
+    name: Abend · Helligkeit
+    min: 0
+    max: 100
+    step: 1
+    mode: box
+    unit_of_measurement: '%'
+  rt_gast_decke_evening_kelvin:
+    name: Abend · Farbtemperatur
+    min: 2000
+    max: 6500
+    step: 50
+    mode: box
+    unit_of_measurement: K
+  rt_gast_decke_evening_transition:
+    name: Abend · Übergang
+    min: 0
+    max: 100
+    step: 0.1
+    mode: box
+    unit_of_measurement: s
+  rt_gast_decke_late_brightness:
+    name: Spätabend · Helligkeit
+    min: 0
+    max: 100
+    step: 1
+    mode: box
+    unit_of_measurement: '%'
+  rt_gast_decke_late_kelvin:
+    name: Spätabend · Farbtemperatur
+    min: 2000
+    max: 6500
+    step: 50
+    mode: box
+    unit_of_measurement: K
+  rt_gast_decke_late_transition:
+    name: Spätabend · Übergang
+    min: 0
+    max: 100
+    step: 0.1
+    mode: box
+    unit_of_measurement: s
+  rt_gast_decke_night_brightness:
+    name: Nacht · Helligkeit
+    min: 0
+    max: 100
+    step: 1
+    mode: box
+    unit_of_measurement: '%'
+  rt_gast_decke_night_kelvin:
+    name: Nacht · Farbtemperatur
+    min: 2000
+    max: 6500
+    step: 50
+    mode: box
+    unit_of_measurement: K
+  rt_gast_decke_night_transition:
+    name: Nacht · Übergang
+    min: 0
+    max: 100
+    step: 0.1
+    mode: box
+    unit_of_measurement: s
+  rt_gast_decke_off_transition:
+    name: Ausschalten · Übergang
+    min: 0
+    max: 100
+    step: 0.1
+    mode: box
+    unit_of_measurement: s
+  rt_gast_dimmer_morning_brightness:
+    name: Morgen · Helligkeit
+    min: 0
+    max: 100
+    step: 1
+    mode: box
+    unit_of_measurement: '%'
+  rt_gast_dimmer_morning_kelvin:
+    name: Morgen · Farbtemperatur
+    min: 2000
+    max: 6500
+    step: 50
+    mode: box
+    unit_of_measurement: K
+  rt_gast_dimmer_morning_transition:
+    name: Morgen · Übergang
+    min: 0
+    max: 100
+    step: 0.1
+    mode: box
+    unit_of_measurement: s
+  rt_gast_dimmer_day_brightness:
+    name: Tag · Helligkeit
+    min: 0
+    max: 100
+    step: 1
+    mode: box
+    unit_of_measurement: '%'
+  rt_gast_dimmer_day_kelvin:
+    name: Tag · Farbtemperatur
+    min: 2000
+    max: 6500
+    step: 50
+    mode: box
+    unit_of_measurement: K
+  rt_gast_dimmer_day_transition:
+    name: Tag · Übergang
+    min: 0
+    max: 100
+    step: 0.1
+    mode: box
+    unit_of_measurement: s
+  rt_gast_dimmer_evening_brightness:
+    name: Abend · Helligkeit
+    min: 0
+    max: 100
+    step: 1
+    mode: box
+    unit_of_measurement: '%'
+  rt_gast_dimmer_evening_kelvin:
+    name: Abend · Farbtemperatur
+    min: 2000
+    max: 6500
+    step: 50
+    mode: box
+    unit_of_measurement: K
+  rt_gast_dimmer_evening_transition:
+    name: Abend · Übergang
+    min: 0
+    max: 100
+    step: 0.1
+    mode: box
+    unit_of_measurement: s
+  rt_gast_dimmer_late_brightness:
+    name: Spätabend · Helligkeit
+    min: 0
+    max: 100
+    step: 1
+    mode: box
+    unit_of_measurement: '%'
+  rt_gast_dimmer_late_kelvin:
+    name: Spätabend · Farbtemperatur
+    min: 2000
+    max: 6500
+    step: 50
+    mode: box
+    unit_of_measurement: K
+  rt_gast_dimmer_late_transition:
+    name: Spätabend · Übergang
+    min: 0
+    max: 100
+    step: 0.1
+    mode: box
+    unit_of_measurement: s
+  rt_gast_dimmer_night_brightness:
+    name: Nacht · Helligkeit
+    min: 0
+    max: 100
+    step: 1
+    mode: box
+    unit_of_measurement: '%'
+  rt_gast_dimmer_night_kelvin:
+    name: Nacht · Farbtemperatur
+    min: 2000
+    max: 6500
+    step: 50
+    mode: box
+    unit_of_measurement: K
+  rt_gast_dimmer_night_transition:
+    name: Nacht · Übergang
+    min: 0
+    max: 100
+    step: 0.1
+    mode: box
+    unit_of_measurement: s
+  rt_gast_dimmer_off_transition:
+    name: Ausschalten · Übergang
+    min: 0
+    max: 100
+    step: 0.1
+    mode: box
+    unit_of_measurement: s
+  rt_gast_dimmer_step_pct:
+    name: Dimmschritt · Prozent
+    min: 0
+    max: 100
+    step: 1
+    mode: box
+    unit_of_measurement: '%'
+  rt_gast_dimmer_step_transition:
+    name: Dimmschritt · Übergang
+    min: 0
+    max: 100
+    step: 0.1
+    mode: box
+    unit_of_measurement: s
+  rt_gast_dimmer_langdruck_helligkeit:
+    name: Langdruck Helligkeit
+    min: 0
+    max: 100
+    step: 1
+    mode: box
+    unit_of_measurement: '%'
+  rt_gast_dimmer_langdruck_kelvin:
+    name: Langdruck Farbtemperatur
+    min: 2000
+    max: 6500
+    step: 50
+    mode: box
+    unit_of_measurement: K
+  rt_gast_dimmer_langdruck_uebergang:
+    name: Langdruck Übergang
+    min: 0
+    max: 20
+    step: 0.1
+    mode: box
+    unit_of_measurement: s
+  rt_rollo_bad_abend:
+    name: Bad Abend
+    min: 0
+    max: 100
+    step: 1
+    mode: box
+    unit_of_measurement: '%'
+  rt_rollo_gaste_wc_abend:
+    name: Gaste Wc Abend
+    min: 0
+    max: 100
+    step: 1
+    mode: box
+    unit_of_measurement: '%'
+  rt_rollo_wohnzimmer_abend:
+    name: Wohnzimmer Abend
+    min: 0
+    max: 100
+    step: 1
+    mode: box
+    unit_of_measurement: '%'
+  rt_rollo_gastezimmer_abend:
+    name: Gastezimmer Abend
+    min: 0
+    max: 100
+    step: 1
+    mode: box
+    unit_of_measurement: '%'
+  rt_rollo_schlafzimmer_abend:
+    name: Schlafzimmer Abend
+    min: 0
+    max: 100
+    step: 1
+    mode: box
+    unit_of_measurement: '%'
+  rt_rollo_terrasse_abend:
+    name: Terrasse Abend
+    min: 0
+    max: 100
+    step: 1
+    mode: box
+    unit_of_measurement: '%'
+  rt_rollo_bad_morgen:
+    name: Bad Morgen
+    min: 0
+    max: 100
+    step: 1
+    mode: box
+    unit_of_measurement: '%'
+  rt_rollo_gaste_wc_morgen:
+    name: Gaste Wc Morgen
+    min: 0
+    max: 100
+    step: 1
+    mode: box
+    unit_of_measurement: '%'
+  rt_rollo_wohnzimmer_morgen:
+    name: Wohnzimmer Morgen
+    min: 0
+    max: 100
+    step: 1
+    mode: box
+    unit_of_measurement: '%'
+  rt_rollo_terrasse_morgen:
+    name: Terrasse Morgen
+    min: 0
+    max: 100
+    step: 1
+    mode: box
+    unit_of_measurement: '%'
+  rt_rollo_schlafzimmer_morgen:
+    name: Schlafzimmer Morgen
+    min: 0
+    max: 100
+    step: 1
+    mode: box
+    unit_of_measurement: '%'
+  rt_rollo_gastezimmer_morgen:
+    name: Gastezimmer Morgen
+    min: 0
+    max: 100
+    step: 1
+    mode: box
+    unit_of_measurement: '%'
+  rt_rollo_wohnzimmer_sonnenschutz:
+    name: Wohnzimmer Sonnenschutz
+    min: 0
+    max: 100
+    step: 1
+    mode: box
+    unit_of_measurement: '%'
+  rt_rollo_schlafzimmer_sonnenschutz:
+    name: Schlafzimmer Sonnenschutz
+    min: 0
+    max: 100
+    step: 1
+    mode: box
+    unit_of_measurement: '%'
+  rt_rollo_gaste_wc_sonnenschutz:
+    name: Gaste Wc Sonnenschutz
+    min: 0
+    max: 100
+    step: 1
+    mode: box
+    unit_of_measurement: '%'
+  rt_rollo_terrasse_sonnenschutz:
+    name: Terrasse Sonnenschutz
+    min: 0
+    max: 100
+    step: 1
+    mode: box
+    unit_of_measurement: '%'
+  rt_rollo_wohnzimmer_nach_sonnenschutz:
+    name: Wohnzimmer nach Sonnenschutz
+    min: 0
+    max: 100
+    step: 1
+    mode: box
+    unit_of_measurement: '%'
+  rt_rollo_schlafzimmer_nach_sonnenschutz:
+    name: Schlafzimmer nach Sonnenschutz
+    min: 0
+    max: 100
+    step: 1
+    mode: box
+    unit_of_measurement: '%'
+  rt_rollo_gaste_wc_nach_sonnenschutz:
+    name: Gaste Wc nach Sonnenschutz
+    min: 0
+    max: 100
+    step: 1
+    mode: box
+    unit_of_measurement: '%'
+  rt_rollo_terrasse_nach_sonnenschutz:
+    name: Terrasse nach Sonnenschutz
+    min: 0
+    max: 100
+    step: 1
+    mode: box
+    unit_of_measurement: '%'
+  rt_batterie_grenze:
+    name: Batterie kritisch bis
+    min: 0
+    max: 50
+    step: 1
+    mode: box
+    unit_of_measurement: '%'
+  rt_warn_dauer_1773105691813_0:
+    name: System - Kühlschrank Tür offen Warnung Wartezeit
+    min: 1
+    max: 120
+    step: 1
+    mode: box
+    unit_of_measurement: min
+  rt_warn_1773106433748_0:
+    name: System - Wetterwarnung Wind und Regen wind
+    min: 0
+    max: 1000
+    step: 0.1
+    mode: box
+    unit_of_measurement: km/h
+  rt_warn_1773106433748_1:
+    name: System - Wetterwarnung Wind und Regen boe
+    min: 0
+    max: 1000
+    step: 0.1
+    mode: box
+    unit_of_measurement: km/h
+  rt_warn_1773106433748_2:
+    name: System - Wetterwarnung Wind und Regen regen
+    min: 0
+    max: 1000
+    step: 0.1
+    mode: box
+    unit_of_measurement: mm
+  rt_warn_1773108731795_0:
+    name: System - FRITZ Internet Auslastung Warnung download
+    min: 0
+    max: 1000
+    step: 0.1
+    mode: box
+    unit_of_measurement: Mbit/s
+  rt_warn_dauer_1773108731795_0:
+    name: System - FRITZ Internet Auslastung Warnung Wartezeit
+    min: 1
+    max: 120
+    step: 1
+    mode: box
+    unit_of_measurement: min
+  rt_warn_1773108731795_1:
+    name: System - FRITZ Internet Auslastung Warnung upload
+    min: 0
+    max: 1000
+    step: 0.1
+    mode: box
+    unit_of_measurement: Mbit/s
+  rt_warn_dauer_1773108731795_1:
+    name: System - FRITZ Internet Auslastung Warnung Wartezeit
+    min: 1
+    max: 120
+    step: 1
+    mode: box
+    unit_of_measurement: min
+  rt_kuche_dimmer_b_morning:
+    name: Morgen · Helligkeit
+    min: 0
+    max: 100
+    step: 1
+    mode: box
+    unit_of_measurement: '%'
+  rt_kuche_dimmer_b_day:
+    name: Tag · Helligkeit
+    min: 0
+    max: 100
+    step: 1
+    mode: box
+    unit_of_measurement: '%'
+  rt_kuche_dimmer_b_evening:
+    name: Abend · Helligkeit
+    min: 0
+    max: 100
+    step: 1
+    mode: box
+    unit_of_measurement: '%'
+  rt_kuche_dimmer_b_night:
+    name: Nacht · Helligkeit
+    min: 0
+    max: 100
+    step: 1
+    mode: box
+    unit_of_measurement: '%'
+  rt_kuche_dimmer_k_warm:
+    name: Morgen/Abend · Farbtemperatur
+    min: 2000
+    max: 6500
+    step: 50
+    mode: box
+    unit_of_measurement: K
+  rt_kuche_dimmer_k_day:
+    name: Tag · Farbtemperatur
+    min: 2000
+    max: 6500
+    step: 50
+    mode: box
+    unit_of_measurement: K
+  rt_kuche_dimmer_tr_on:
+    name: Einschalten · Übergang
+    min: 0
+    max: 100
+    step: 0.1
+    mode: box
+    unit_of_measurement: s
+  rt_kuche_dimmer_tr_off:
+    name: Ausschalten · Übergang
+    min: 0
+    max: 100
+    step: 0.1
+    mode: box
+    unit_of_measurement: s
+  rt_kuche_dimmer_tr_step:
+    name: Dimmschritt · Übergang
+    min: 0
+    max: 100
+    step: 0.1
+    mode: box
+    unit_of_measurement: s
+  rt_kuche_dimmer_step_pct:
+    name: Dimmschritt
+    min: 0
+    max: 100
+    step: 1
+    mode: box
+    unit_of_measurement: '%'
+  rt_kuche_nacht_hue:
+    name: Nacht · Farbton
+    min: 0
+    max: 360
+    step: 1
+    mode: box
+    unit_of_measurement: °
+  rt_kuche_nacht_saturation:
+    name: Nacht · Sättigung
+    min: 0
+    max: 100
+    step: 1
+    mode: box
+    unit_of_measurement: '%'
+  rt_wohnzimmer_transition_s:
+    name: Einschalten · Übergang
+    min: 0
+    max: 20
+    step: 0.1
+    mode: box
+    unit_of_measurement: s
+  rt_wohnzimmer_dim_transition_s:
+    name: Dimmschritt · Übergang
+    min: 0
+    max: 20
+    step: 0.1
+    mode: box
+    unit_of_measurement: s
+  rt_wohnzimmer_off_transition_s:
+    name: Ausschalten · Übergang
+    min: 0
+    max: 20
+    step: 0.1
+    mode: box
+    unit_of_measurement: s
+  rt_wohnzimmer_warmweiss_kelvin:
+    name: Langdruck · Farbtemperatur
+    min: 2000
+    max: 6500
+    step: 50
+    mode: box
+    unit_of_measurement: K
+  rt_wohnzimmer_orange_hue:
+    name: Ambientelicht · Farbton
+    min: 0
+    max: 360
+    step: 1
+    mode: box
+    unit_of_measurement: °
+  rt_wohnzimmer_orange_saturation:
+    name: Ambientelicht · Sättigung
+    min: 0
+    max: 100
+    step: 1
+    mode: box
+    unit_of_measurement: '%'
+  rt_wohnzimmer_kurz_decke:
+    name: Kurzdruck · Deckenhelligkeit
+    min: 0
+    max: 100
+    step: 1
+    mode: box
+    unit_of_measurement: '%'
+  rt_wohnzimmer_kurz_kelvin:
+    name: Kurzdruck · Farbtemperatur
+    min: 2000
+    max: 6500
+    step: 50
+    mode: box
+    unit_of_measurement: K
+  rt_wohnzimmer_kurz_ambient:
+    name: Kurzdruck · Ambientelicht
+    min: 0
+    max: 100
+    step: 1
+    mode: box
+    unit_of_measurement: '%'
+  rt_wohnzimmer_lang_helligkeit:
+    name: Langdruck · Helligkeit
+    min: 0
+    max: 100
+    step: 1
+    mode: box
+    unit_of_measurement: '%'
+  rt_wohnzimmer_dimmschritt:
+    name: Dimmschritt
+    min: 0
+    max: 100
+    step: 1
+    mode: box
+    unit_of_measurement: '%'
+template:
+- sensor:
+  - name: Routinen Flur Periode
+    unique_id: routinen_flur_periode
+    state: "{% set t = now().strftime('%H:%M') %}\n{% set weekend = now().weekday() in [5, 6] %}\n\n{% if weekend %}\n  {%\
+      \ if states('input_datetime.rt_flur_zeit_0600')[:5] <= t < states('input_datetime.rt_flur_zeit_0830')[:5] %}\n    wochenende_frueh\n\
+      \  {% elif states('input_datetime.rt_flur_zeit_0830')[:5] <= t <= states('input_datetime.rt_flur_zeit_0900')[:5] %}\n\
+      \    morgens\n  {% elif states('input_datetime.rt_flur_zeit_0901')[:5] <= t <= states('input_datetime.rt_flur_zeit_2000')[:5]\
+      \ %}\n    tag\n  {% elif states('input_datetime.rt_flur_zeit_2001')[:5] <= t <= states('input_datetime.rt_flur_zeit_2359')[:5]\
+      \ %}\n    abends\n  {% else %}\n    nacht\n  {% endif %}\n{% else %}\n  {% if states('input_datetime.rt_flur_zeit_0701')[:5]\
+      \ <= t <= states('input_datetime.rt_flur_zeit_0900')[:5] %}\n    morgens\n  {% elif states('input_datetime.rt_flur_zeit_0901')[:5]\
+      \ <= t <= states('input_datetime.rt_flur_zeit_2000')[:5] %}\n    tag\n  {% elif states('input_datetime.rt_flur_zeit_2001')[:5]\
+      \ <= t <= states('input_datetime.rt_flur_zeit_2359')[:5] %}\n    abends\n  {% else %}\n    nacht\n  {% endif %}\n{%\
+      \ endif %}"
+    icon: mdi:clock-outline
+  - name: Routinen Gästezimmer Dimmer Periode
+    unique_id: routinen_1772158332905_periode
+    state: '{% set t = now().strftime("%H:%M:%S") %}
+
+      {% if ((states(''input_datetime.rt_gast_dimmer_zeit_233000'') <= t < states(''input_datetime.rt_gast_dimmer_zeit_070000''))
+      if states(''input_datetime.rt_gast_dimmer_zeit_233000'') < states(''input_datetime.rt_gast_dimmer_zeit_070000'') else
+      (t >= states(''input_datetime.rt_gast_dimmer_zeit_233000'') or t < states(''input_datetime.rt_gast_dimmer_zeit_070000'')))
+      %}Nacht
+
+      {% elif ((states(''input_datetime.rt_gast_dimmer_zeit_070000'') <= t < states(''input_datetime.rt_gast_dimmer_zeit_093000''))
+      if states(''input_datetime.rt_gast_dimmer_zeit_070000'') < states(''input_datetime.rt_gast_dimmer_zeit_093000'') else
+      (t >= states(''input_datetime.rt_gast_dimmer_zeit_070000'') or t < states(''input_datetime.rt_gast_dimmer_zeit_093000'')))
+      %}Morgen
+
+      {% elif ((states(''input_datetime.rt_gast_dimmer_zeit_093000'') <= t < states(''input_datetime.rt_gast_dimmer_zeit_173000''))
+      if states(''input_datetime.rt_gast_dimmer_zeit_093000'') < states(''input_datetime.rt_gast_dimmer_zeit_173000'') else
+      (t >= states(''input_datetime.rt_gast_dimmer_zeit_093000'') or t < states(''input_datetime.rt_gast_dimmer_zeit_173000'')))
+      %}Tag
+
+      {% elif ((states(''input_datetime.rt_gast_dimmer_zeit_173000'') <= t < states(''input_datetime.rt_gast_dimmer_zeit_203000''))
+      if states(''input_datetime.rt_gast_dimmer_zeit_173000'') < states(''input_datetime.rt_gast_dimmer_zeit_203000'') else
+      (t >= states(''input_datetime.rt_gast_dimmer_zeit_173000'') or t < states(''input_datetime.rt_gast_dimmer_zeit_203000'')))
+      %}Abend
+
+      {% elif ((states(''input_datetime.rt_gast_dimmer_zeit_203000'') <= t < states(''input_datetime.rt_gast_dimmer_zeit_233000''))
+      if states(''input_datetime.rt_gast_dimmer_zeit_203000'') < states(''input_datetime.rt_gast_dimmer_zeit_233000'') else
+      (t >= states(''input_datetime.rt_gast_dimmer_zeit_203000'') or t < states(''input_datetime.rt_gast_dimmer_zeit_233000'')))
+      %}Spätabend
+
+      {% else %}Kein Zeitprofil{% endif %}'
+    icon: mdi:clock-outline
+  - name: Routinen Gästezimmer Decke Periode
+    unique_id: routinen_1772142255363_periode
+    state: '{% set t = now().strftime("%H:%M:%S") %}
+
+      {% if ((states(''input_datetime.rt_gast_decke_zeit_003000'') <= t < states(''input_datetime.rt_gast_decke_zeit_070000''))
+      if states(''input_datetime.rt_gast_decke_zeit_003000'') < states(''input_datetime.rt_gast_decke_zeit_070000'') else
+      (t >= states(''input_datetime.rt_gast_decke_zeit_003000'') or t < states(''input_datetime.rt_gast_decke_zeit_070000'')))
+      %}Nacht
+
+      {% elif ((states(''input_datetime.rt_gast_decke_zeit_070000'') <= t < states(''input_datetime.rt_gast_decke_zeit_093000''))
+      if states(''input_datetime.rt_gast_decke_zeit_070000'') < states(''input_datetime.rt_gast_decke_zeit_093000'') else
+      (t >= states(''input_datetime.rt_gast_decke_zeit_070000'') or t < states(''input_datetime.rt_gast_decke_zeit_093000'')))
+      %}Morgen
+
+      {% elif ((states(''input_datetime.rt_gast_decke_zeit_093000'') <= t < states(''input_datetime.rt_gast_decke_zeit_173000''))
+      if states(''input_datetime.rt_gast_decke_zeit_093000'') < states(''input_datetime.rt_gast_decke_zeit_173000'') else
+      (t >= states(''input_datetime.rt_gast_decke_zeit_093000'') or t < states(''input_datetime.rt_gast_decke_zeit_173000'')))
+      %}Tag
+
+      {% elif ((states(''input_datetime.rt_gast_decke_zeit_173000'') <= t < states(''input_datetime.rt_gast_decke_zeit_220000''))
+      if states(''input_datetime.rt_gast_decke_zeit_173000'') < states(''input_datetime.rt_gast_decke_zeit_220000'') else
+      (t >= states(''input_datetime.rt_gast_decke_zeit_173000'') or t < states(''input_datetime.rt_gast_decke_zeit_220000'')))
+      %}Abend
+
+      {% elif ((states(''input_datetime.rt_gast_decke_zeit_220000'') <= t < states(''input_datetime.rt_gast_decke_zeit_003000''))
+      if states(''input_datetime.rt_gast_decke_zeit_220000'') < states(''input_datetime.rt_gast_decke_zeit_003000'') else
+      (t >= states(''input_datetime.rt_gast_decke_zeit_220000'') or t < states(''input_datetime.rt_gast_decke_zeit_003000'')))
+      %}Spätabend
+
+      {% else %}Kein Zeitprofil{% endif %}'
+    icon: mdi:clock-outline
+  - name: Routinen Küche Schalter Periode
+    unique_id: routinen_kuche_schalter_periode
+    state: '{% set t = now().strftime("%H:%M:%S") %}
+
+      {% if ((states(''input_datetime.rt_kuche_dimmer_zeit_060000'') <= t < states(''input_datetime.rt_kuche_dimmer_zeit_093000''))
+      if states(''input_datetime.rt_kuche_dimmer_zeit_060000'') < states(''input_datetime.rt_kuche_dimmer_zeit_093000'') else
+      (t >= states(''input_datetime.rt_kuche_dimmer_zeit_060000'') or t < states(''input_datetime.rt_kuche_dimmer_zeit_093000'')))
+      %}Morgen
+
+      {% elif ((states(''input_datetime.rt_kuche_dimmer_zeit_093000'') <= t < states(''input_datetime.rt_kuche_dimmer_zeit_200000''))
+      if states(''input_datetime.rt_kuche_dimmer_zeit_093000'') < states(''input_datetime.rt_kuche_dimmer_zeit_200000'') else
+      (t >= states(''input_datetime.rt_kuche_dimmer_zeit_093000'') or t < states(''input_datetime.rt_kuche_dimmer_zeit_200000'')))
+      %}Tag
+
+      {% elif ((states(''input_datetime.rt_kuche_dimmer_zeit_200000'') <= t < states(''input_datetime.rt_kuche_dimmer_zeit_233000''))
+      if states(''input_datetime.rt_kuche_dimmer_zeit_200000'') < states(''input_datetime.rt_kuche_dimmer_zeit_233000'') else
+      (t >= states(''input_datetime.rt_kuche_dimmer_zeit_200000'') or t < states(''input_datetime.rt_kuche_dimmer_zeit_233000'')))
+      %}Abend
+
+      {% else %}Nacht{% endif %}'
+    icon: mdi:clock-outline
+lovelace:
+  dashboards:
+    dashboard-routinen:
+      mode: yaml
+      title: Routinen & Zeiten
+      icon: mdi:calendar-clock
+      show_in_sidebar: true
+      filename: routinen-dashboard.yaml
